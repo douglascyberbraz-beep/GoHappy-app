@@ -1,90 +1,104 @@
 window.KindrProfile = {
-    render: (container, user) => {
+    render: (container) => {
+        const user = window.KindrAuth.checkAuth();
         if (!user) {
-            // Fallback if accessed directly without auth (shouldn't happen due to app.js check)
-            container.innerHTML = '<p>Por favor inicia sesión.</p>';
+            container.innerHTML = `<div class="p-20 center-text"><p>Inicia sesión para ver tu perfil.</p></div>`;
             return;
         }
 
+        const levelInfo = window.KindrPoints.getLevelInfo(user.points);
+
         container.innerHTML = `
-        <div class="profile-header" style="background: linear-gradient(135deg, var(--primary-navy), var(--primary-dark)); padding: 40px 20px;">
-            <div class="avatar-large" style="font-weight: 800;">
-                ${user.name.charAt(0)}
-            </div>
-            <h2 style="font-weight: 800; letter-spacing: -0.5px; margin-top: 10px; color: white;">${user.name}</h2>
-            <span id="trophy-btn" class="rank-badge" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); cursor: pointer;">🏆 ${user.rank}</span>
-        </div>
-        
-        <div class="stats-row" style="margin-top: -20px; position: relative; z-index: 10;">
-            <div class="stat-item">
-                <span class="count">${user.points}</span>
-                <span class="label">Puntos</span>
-            </div>
-            <div class="stat-item">
-                <span class="count">12</span>
-                <span class="label">Reseñas</span>
-            </div>
-            <div class="stat-item">
-                <span class="count">5</span>
-                <span class="label">Logros</span>
-            </div>
-        </div>
+            <div class="profile-page">
+                <div class="profile-hero center-text">
+                    <div class="profile-avatar-large gradient-bg">${user.photo || '👤'}</div>
+                    <h2 class="profile-name">${user.nickname || 'Usuario Kindr'}</h2>
+                    <p class="profile-email">${user.email}</p>
+                </div>
 
-        <div class="level-progress-container" style="margin: 0 20px; padding: 20px; background: white; border-radius: 20px; box-shadow: var(--shadow-soft);">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <span style="font-weight:700; color:var(--primary-navy);">Nivel 4: Explorador</span>
-                <span style="font-size:0.8rem; color:var(--text-light);">150 / 200 XP</span>
-            </div>
-            <div style="width:100%; height:12px; background:#f0f0f0; border-radius:10px; overflow:hidden;">
-                <div style="width:75%; height:100%; background:linear-gradient(90deg, var(--primary-blue), var(--primary-dark));"></div>
-            </div>
-            <p style="font-size:0.75rem; color:var(--text-light); margin-top:10px;">¡Aporta 5 reseñas más para subir de nivel!</p>
-        </div>
-
-        <div class="qr-section">
-            <h3 style="color: var(--primary-navy);">Tu Pase Familiar</h3>
-            <p style="color: var(--text-light); font-size: 0.9rem;">Escanea para acceder a eventos</p>
-            <div id="qrcode">
-                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${user.id}" alt="QR Code">
-            </div>
-        </div>
-
-        <div style="padding-bottom: 20px;">
-            <button id="logout-btn" class="btn-danger">Cerrar Sesión</button>
-        </div>
-
-        <!-- Club Kindr Modal -->
-        <div id="club-modal" class="modal hidden">
-            <div class="auth-container slide-up-anim">
-                <div class="auth-card">
-                    <div style="font-size: 4rem;">👑</div>
-                    <h2 style="color: var(--accent-yellow); text-shadow: 1px 1px 0 #dbaa00;">CLUB KINDR</h2>
-                    <p>Canjea tus puntos por premios reales.</p>
-                    <hr class="divider">
-                    <div style="text-align:left; margin-top:20px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:15px; padding:10px; background:#f9f9f9; border-radius:12px;">
-                            <span>☕ café Gratis</span>
-                            <button class="btn-tiny">100 pts</button>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; margin-bottom:15px; padding:10px; background:#f9f9f9; border-radius:12px;">
-                            <span>🎟️ Entrada Zoo -50%</span>
-                            <button class="btn-tiny" style="background:#ccc; cursor:not-allowed;">500 pts</button>
-                        </div>
+                <div class="profile-section gamification-card premium-glass">
+                    <div class="level-header">
+                        <span class="level-badge">${levelInfo.icon} ${levelInfo.name}</span>
+                        <span class="points-total"><strong>${user.points}</strong> pts</span>
                     </div>
-                    <button id="close-club-btn" class="btn-text">Cerrar</button>
+                    <div class="level-progress-container">
+                        <div class="level-progress-bar" style="width: ${levelInfo.progress}%"></div>
+                    </div>
+                    <p class="level-footer">
+                        ${levelInfo.nextPoints ? `Te faltan ${levelInfo.nextPoints - user.points} pts para el siguiente nivel` : '¡Nivel máximo alcanzado!'}
+                    </p>
+                </div>
+
+                <div class="profile-section invite-card premium-glass">
+                    <h3>🎁 Invita y Gana</h3>
+                    <p>Gana 100 puntos por cada amigo que se registre con tu código.</p>
+                    
+                    <div id="referral-qr" class="referral-qr"></div>
+                    
+                    <div class="referral-code-box">
+                        <span id="ref-code">${user.referralCode}</span>
+                        <button id="copy-ref-link" class="btn-secondary small">Copiar Enlace</button>
+                    </div>
+                </div>
+
+                <div class="profile-actions" style="margin-top: 30px;">
+                    <button id="install-pwa-btn" class="btn-primary full-width" style="display:none; margin-bottom: 10px;">📲 Instalar App</button>
+                    <button id="terms-link" class="btn-text full-width" style="margin-bottom: 10px; color: var(--primary-blue);">📜 Términos y Condiciones</button>
+                    <button id="logout-btn" class="btn-outline full-width">Cerrar Sesión</button>
                 </div>
             </div>
-        </div>
-    `;
+        `;
 
-        document.getElementById('logout-btn').addEventListener('click', window.KindrAuth.logout);
+        // Generate QR Code
+        setTimeout(() => {
+            const qrContainer = document.getElementById('referral-qr');
+            if (qrContainer && window.QRCode) {
+                new QRCode(qrContainer, {
+                    text: `https://kindr.app/invite/${user.referralCode}`,
+                    width: 128,
+                    height: 128,
+                    colorDark: "#001d3d",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+        }, 100);
 
-        document.getElementById('trophy-btn').addEventListener('click', () => {
-            document.getElementById('club-modal').classList.remove('hidden');
+        // Copy Link Logic
+        document.getElementById('copy-ref-link').addEventListener('click', () => {
+            const link = `https://kindr.app/join?ref=${user.referralCode}`;
+            navigator.clipboard.writeText(link).then(() => {
+                const btn = document.getElementById('copy-ref-link');
+                btn.innerText = '¡Copiado!';
+                btn.classList.add('success');
+                setTimeout(() => {
+                    btn.innerText = 'Copiar Enlace';
+                    btn.classList.remove('success');
+                }, 2000);
+            });
         });
 
-        document.getElementById('close-club-btn').addEventListener('click', () => {
-            document.getElementById('club-modal').classList.add('hidden');
+        // Terms & Conditions link
+        document.getElementById('terms-link').addEventListener('click', () => {
+            window.KindrApp.loadPage('legal');
+        });
+
+        // PWA Install
+        const installBtn = document.getElementById('install-pwa-btn');
+        if (window.deferredPrompt) {
+            installBtn.style.display = 'block';
+            installBtn.addEventListener('click', async () => {
+                window.deferredPrompt.prompt();
+                const result = await window.deferredPrompt.userChoice;
+                if (result.outcome === 'accepted') {
+                    installBtn.style.display = 'none';
+                }
+                window.deferredPrompt = null;
+            });
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            window.KindrAuth.logout();
         });
     }
 };

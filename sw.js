@@ -1,5 +1,5 @@
-const CACHE_NAME = 'kindr-cache-v12.0.3';
-const TILE_CACHE = 'kindr-tiles-v12.0.3';
+const CACHE_NAME = 'kindr-cache-v1.0.0';
+const TILE_CACHE = 'kindr-tiles-v1.0.0';
 const ASSETS = [
     './',
     'index.html',
@@ -16,7 +16,6 @@ const ASSETS = [
     'js/pages/profile.js',
     'js/pages/chat.js',
     'assets/logo.png',
-    'assets/logo.svg',
     'assets/map-marker.png',
     'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
     'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',

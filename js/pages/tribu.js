@@ -2,7 +2,7 @@ window.KindrTribu = {
     // Keep state cached in memory
     postsCache: null,
 
-    render: (container) => {
+    render: async (container) => {
         container.innerHTML = `
             <div class="page-header sticky-header">
                 <h2>🏘️ Tribu</h2>
@@ -11,7 +11,7 @@ window.KindrTribu = {
             </div>
             
             <div id="tribu-feed" class="content-list stagger-group" style="padding-bottom: 100px;">
-                <!-- Posts go here -->
+                <div class="center-text p-20"><div class="typing-dots"><span></span><span></span><span></span></div></div>
             </div>
 
             <!-- New Post Modal -->
@@ -30,10 +30,10 @@ window.KindrTribu = {
 
         const feedContainer = document.getElementById('tribu-feed');
 
-        if (!window.KindrTribu.postsCache) {
-            window.KindrTribu.postsCache = window.KindrData.getTribuPosts();
-        }
-        const posts = window.KindrTribu.postsCache;
+        // Load posts from Firestore
+        const posts = await window.KindrData.getTribuPosts();
+        window.KindrTribu.postsCache = posts;
+
 
         const renderPosts = (postList) => {
             feedContainer.innerHTML = '';
@@ -74,24 +74,58 @@ window.KindrTribu = {
             modal.classList.add('hidden');
         });
 
-        document.getElementById('publish-btn').addEventListener('click', () => {
+        document.getElementById('publish-btn').addEventListener('click', async () => {
             const text = contentInput.value.trim();
-            if (text) {
-                // Mock Add Post
-                posts.unshift({
-                    id: Date.now(),
-                    user: "Tú",
-                    avatar: "😎",
-                    time: "Ahora",
-                    content: text,
-                    likes: 0,
-                    comments: 0
-                });
-                renderPosts(posts);
-                modal.classList.add('hidden');
-                contentInput.value = '';
-                // Sound effect or vibration could go here
+            const user = window.KindrAuth.checkAuth();
+
+            if (!user) {
+                alert("Identifícate para participar en la Tribu.");
+                return;
             }
+
+            if (text && text.length <= 160) {
+                const publishBtn = document.getElementById('publish-btn');
+                publishBtn.disabled = true;
+                publishBtn.textContent = 'Publicando...';
+
+                try {
+                    // Persist to Firestore
+                    await window.KindrData.addTribuPost(text, user);
+
+                    // Add points
+                    window.KindrPoints.addPoints('COMMENT');
+
+                    // Add to visual list
+                    posts.unshift({
+                        id: Date.now(),
+                        user: user.nickname || "Tú",
+                        avatar: user.photo || "😎",
+                        time: "Ahora",
+                        content: text,
+                        likes: 0,
+                        comments: 0
+                    });
+                    renderPosts(posts);
+                    modal.classList.add('hidden');
+                    contentInput.value = '';
+                    document.querySelector('.char-count').innerText = '0/160';
+                    alert("¡Publicado! Has ganado 5 puntos.");
+                } catch (e) {
+                    alert("Error al publicar. Inténtalo de nuevo.");
+                    console.error("Tribu publish error:", e);
+                } finally {
+                    publishBtn.disabled = false;
+                    publishBtn.textContent = 'Publicar';
+                }
+            }
+        });
+
+        // Dynamic Char count
+        contentInput.addEventListener('input', () => {
+            const count = contentInput.value.length;
+            document.querySelector('.char-count').innerText = `${count}/160`;
+            if (count > 160) document.querySelector('.char-count').style.color = 'red';
+            else document.querySelector('.char-count').style.color = '#666';
         });
 
         // Add Styles for Tribu Page specifically

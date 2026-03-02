@@ -1,4 +1,4 @@
-// Kindr App - Premium Pulse Build 2024.02.15.2
+// Kindr App - Production v1.0.0
 // Sound System
 window.KindrSound = {
     play: (type) => {
@@ -40,26 +40,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             splash.style.display = 'none';
             document.getElementById('bottom-nav').classList.remove('hidden');
 
-            // Beta Readiness Notification
-            if (localStorage.getItem('kindr_beta_cached')) {
-                const badge = document.createElement('div');
-                badge.textContent = "Beta Ready: Castilla y León (Offline)";
-                badge.style.cssText = "position:fixed; top:20px; left:50%; transform:translateX(-50%); background:rgba(0,44,119,0.8); color:white; padding:6px 15px; border-radius:20px; font-size:11px; z-index:2000; font-weight:600; backdrop-filter:blur(5px);";
-                document.body.appendChild(badge);
-                setTimeout(() => badge.style.opacity = '0', 3000);
-            }
+            // Beta Readiness Notification removed for Production
         }, 500);
     }, 2000); // Reduced slightly for better feel
 
-    // Check Auth
-    const user = window.KindrAuth.checkAuth();
-    const isGuest = localStorage.getItem('kindr_guest') === 'true';
+    // Initialize Firebase Auth and wait for state
+    window.KindrAuth.init((user) => {
+        if (!user) {
+            // No auth state: show modal
+            if (!document.getElementById('auth-modal')) {
+                window.KindrAuth.renderAuthModal();
+            }
+        } else {
+            appState.user = user;
+            // Remove modal if it exists (e.g., after login)
+            const modal = document.getElementById('auth-modal');
+            if (modal) modal.remove();
+        }
+    });
 
-    if (!user && !isGuest) {
-        window.KindrAuth.renderAuthModal();
-    } else {
-        appState.user = user || { name: 'Invitado', isGuest: true };
-    }
+    // Also do a quick sync check to handle initial render
+    const quickUser = window.KindrAuth.checkAuth();
+    appState.user = quickUser;
 
     // Initialize Navigation
     setupNavigation();
@@ -130,12 +132,35 @@ function loadPage(pageName) {
             case 'profile':
                 window.KindrProfile.render(container, appState.user);
                 break;
+            case 'legal':
+                window.KindrLegal.render(container);
+                break;
         }
         setTimeout(() => container.classList.remove('page-enter'), 600);
     }
 }
 
-function updateNavStyles(activePage) {
-    // Optional: Add specific animation or style based on page
-    console.log(`Navegando a: ${activePage}`);
-}
+window.KindrApp = {
+    currentPage: appState.currentPage,
+    loadPage: loadPage
+};
+
+// PWA Install Prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log("PWA Install Prompt captured");
+
+    // Reveal install button if it exists
+    const installBtn = document.getElementById('install-pwa-btn');
+    if (installBtn) installBtn.style.display = 'block';
+});
+
+// Global Points Listener
+window.addEventListener('pointsUpdated', (e) => {
+    console.log("Global Points Update:", e.detail);
+    if (appState.currentPage === 'profile') {
+        window.KindrProfile.render(document.getElementById('main-content'));
+    }
+});
