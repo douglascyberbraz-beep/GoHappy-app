@@ -106,57 +106,59 @@ function updateNavStyles(pageName) {
     });
 }
 
-function loadPage(pageName) {
-    appState.currentPage = pageName;
-    const container = document.getElementById('main-content');
-    const mapViewport = document.getElementById('map-viewport-v11');
+async function loadPage(pageName) {
+    try {
+        console.log(`Cargando página: ${pageName}`);
+        appState.currentPage = pageName;
+        const container = document.getElementById('main-content');
+        const mapViewport = document.getElementById('map-viewport-v11');
 
-    // Default hiding
-    container.classList.add('hidden');
-    mapViewport.style.display = 'none';
-    container.innerHTML = ''; // Clear other pages content
+        // Default hiding
+        container.classList.add('hidden');
+        if (mapViewport) mapViewport.style.display = 'none';
+        container.innerHTML = '<div class="center-text p-20"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
 
-    // Special style for nav items
-    updateNavStyles(pageName);
+        // Special style for nav items
+        updateNavStyles(pageName);
 
-    if (pageName === 'map') {
-        window.KindrMap.render(mapViewport);
-    } else {
-        container.classList.remove('hidden');
-        container.classList.add('page-enter'); // Add animation
-        switch (pageName) {
-            case 'news':
-                window.KindrNews.render(container);
-                break;
-            case 'events':
-                window.KindrEvents.render(container);
-                break;
-            case 'tribu':
-                window.KindrTribu.render(container);
-                break;
-            case 'ranking':
-                window.KindrRanking.render(container);
-                break;
-            case 'chat':
-                window.KindrChat.render(container);
-                break;
-            case 'profile':
-                window.KindrProfile.render(container, appState.user);
-                break;
-            case 'legal':
-                window.KindrLegal.render(container);
-                break;
-            case 'quests':
-                window.KindrQuestsPage.render(container);
-                break;
-            case 'safe':
-                window.KindrSafePage.render(container);
-                break;
-            case 'memories':
-                window.KindrMemories.render(container);
-                break;
+        if (pageName === 'map') {
+            if (window.KindrMap) {
+                window.KindrMap.render(mapViewport);
+            } else {
+                console.error("KindrMap no definido");
+            }
+        } else {
+            container.classList.remove('hidden');
+            container.classList.add('page-enter');
+
+            // Map table of renderers to satisfy pageName
+            const renderers = {
+                'news': window.KindrNews,
+                'events': window.KindrEvents,
+                'tribu': window.KindrTribu,
+                'ranking': window.KindrRanking,
+                'chat': window.KindrChat,
+                'profile': window.KindrProfile,
+                'legal': window.KindrLegal,
+                'quests': window.KindrQuestsPage,
+                'safe': window.KindrSafePage,
+                'memories': window.KindrMemories
+            };
+
+            const renderer = renderers[pageName];
+            if (renderer && renderer.render) {
+                await renderer.render(container);
+            } else {
+                container.innerHTML = `<div class="p-20 center-text"><h3>Página en construcción</h3><p>La sección ${pageName} estará disponible pronto.</p></div>`;
+            }
+
+            setTimeout(() => container.classList.remove('page-enter'), 600);
         }
-        setTimeout(() => container.classList.remove('page-enter'), 600);
+    } catch (err) {
+        console.error(`Error cargando página ${pageName}:`, err);
+        const container = document.getElementById('main-content');
+        container.classList.remove('hidden');
+        container.innerHTML = `<div class="p-20 center-text" style="color:red;"><h3>Error de carga</h3><p>Vuelve a intentarlo o recarga la app.</p></div>`;
     }
 }
 

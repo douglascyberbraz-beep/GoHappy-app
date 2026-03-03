@@ -25,7 +25,7 @@ const GEMINI_API_KEY = "AIzaSyD4tkqbo7diSZzpzu92magJiQJmpSoL8_Y";
 // Inicializar Firebase (Versión Compat para ejecución local sin servidor)
 if (window.firebase) {
     firebase.initializeApp(firebaseConfig);
-    window.KindrApp = firebase.app();
+    window.KindrFirebaseApp = firebase.app();
     window.KindrAuthReal = firebase.auth();
     window.KindrDB = firebase.firestore();
     console.log("🔥 Firebase conectado correctamente");
