@@ -222,31 +222,24 @@ body {
     right: 0 !important;
     bottom: 0 !important;
     width: 100% !important;
-    height: 115% !important;
-    /* Slight over-extend for tilt coverage */
+    height: 100% !important;
     z-index: 0;
     background: #eef2f7;
     overflow: hidden !important;
-
-    /* Magical GPS Perspective - Refined for stability */
-    transform: perspective(800px) rotateX(25deg);
-    transform-origin: bottom center;
-    margin-top: -8%;
-    /* Subtle compensation */
 }
 
 /* Magical Floating Markers */
 @keyframes magical-float {
     0% {
-        transform: translateY(0) rotateX(-25deg);
+        transform: translateY(0);
     }
 
     50% {
-        transform: translateY(-12px) rotateX(-25deg);
+        transform: translateY(-12px);
     }
 
     100% {
-        transform: translateY(0) rotateX(-25deg);
+        transform: translateY(0);
     }
 }
 
@@ -266,7 +259,6 @@ body {
 
 .leaflet-marker-icon {
     animation: magical-float 3s infinite ease-in-out;
-    transform-origin: bottom center;
 }
 
 .kindr-marker-pin {
@@ -312,7 +304,7 @@ body {
     height: 150px;
     background: linear-gradient(to top, var(--accent-pink), transparent);
     transform-origin: bottom center;
-    transform: translateX(-50%) rotateX(-25deg);
+    transform: translateX(-50%);
     animation: magic-beam 3s infinite linear;
     pointer-events: none;
     z-index: -1;

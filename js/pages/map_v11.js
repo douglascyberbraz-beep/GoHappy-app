@@ -31,50 +31,57 @@ window.KindrMap = {
     },
 
     init: async (container) => {
-        if (window.KindrMap.isInitialized) return;
+        if (window.KindrMap.isInitialized && window.KindrMap.instance) return;
 
-        console.log("Initializing Definitive Map Engine v1.0.0...");
+        try {
+            console.log("Initializing Definitive Map Engine v1.0.0...");
 
-        // Setup the Base Map with Canvas for maximum performance
-        const map = L.map(container, {
-            zoomControl: false,
-            attributionControl: false,
-            tap: true,
-            preferCanvas: true
-        }).setView([41.6520, -4.7286], 16); // Default to Valladolid Center (Street level for GPS)
+            // Setup the Base Map with Canvas for maximum performance
+            if (!window.KindrMap.instance) {
+                const map = L.map(container, {
+                    zoomControl: false,
+                    attributionControl: false,
+                    tap: true,
+                    preferCanvas: true
+                }).setView([41.6520, -4.7286], 15); // Default to Valladolid Center
 
-        // Switching to CartoDB Voyager for a more vibrant, "Waze-style" base
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-            subdomains: 'abcd',
-            maxZoom: 20,
-            className: 'kindr-map-tiles'
-        }).addTo(map);
+                // Switching to CartoDB Voyager for a more vibrant, "Waze-style" base
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+                    subdomains: 'abcd',
+                    maxZoom: 20,
+                    className: 'kindr-map-tiles'
+                }).addTo(map);
 
-        // Ultimate fix para problema de celdas/cuadrículas en dispositivos móviles usando ResizeObserver
-        const resizeObserver = new ResizeObserver(() => {
-            map.invalidateSize();
-        });
-        resizeObserver.observe(container);
+                window.KindrMap.instance = map;
+            }
 
-        // REMOVED: CSS filters which cause choppiness on mobile
+            // Ultimate fix para problema de celdas/cuadrículas en dispositivos móviles usando ResizeObserver
+            const resizeObserver = new ResizeObserver(() => {
+                if (window.KindrMap.instance) window.KindrMap.instance.invalidateSize();
+            });
+            resizeObserver.observe(container);
 
-        window.KindrMap.instance = map;
-        window.KindrMap.isInitialized = true;
+            window.KindrMap.isInitialized = true;
 
-        // UI Injections
-        window.KindrMap.injectUI(container);
+            // UI Injections
+            window.KindrMap.injectUI(container);
 
-        // Load Markers
-        await window.KindrMap.loadMarkers();
+            // Load Markers
+            await window.KindrMap.loadMarkers();
 
-        // Check for Geolocation
-        window.KindrMap.tryAutoLocate();
+            // Check for Geolocation
+            window.KindrMap.tryAutoLocate();
 
-        // New Feature: Clic largo o clic para añadir punto (Función Estrella)
-        map.on('contextmenu', (e) => {
-            window.KindrMap.showAddSiteModal(e.latlng.lat, e.latlng.lng);
-        });
+            // New Feature: Clic largo o clic para añadir punto
+            window.KindrMap.instance.on('contextmenu', (e) => {
+                window.KindrMap.showAddSiteModal(e.latlng.lat, e.latlng.lng);
+            });
+        } catch (e) {
+            console.error("KindrMap Init Failed:", e);
+            // Fallback UI inside container instead of crashing app.js
+            container.innerHTML = `<div class="p-20 center-text" style="color:var(--primary-navy);"><h3>Magia cargando...</h3><p>Estamos preparando el mapa para ti.</p></div>`;
+        }
     },
 
     injectUI: (container) => {
