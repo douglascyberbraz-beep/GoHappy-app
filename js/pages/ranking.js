@@ -37,11 +37,14 @@ window.KindrRanking = {
                 let medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `<span class="rank-num">#${index + 1}</span>`;
                 card.innerHTML = `
                     <div class="rank-position" style="font-size: 1.5rem; min-width: 40px; display: flex; justify-content: center;">${medal}</div>
-                    <div class="rank-info" style="flex: 1; padding: 0 10px;">
+                    <div class="rank-image" style="width: 50px; height: 50px; border-radius: 12px; overflow: hidden; margin-right: 12px; background: #eee; flex-shrink: 0;">
+                        ${site.image ? `<img src="${site.image}" style="width: 100%; height: 100%; object-fit: cover;">` : `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary-blue), #4cc9f0); color: white; font-size: 1.2rem;">📍</div>`}
+                    </div>
+                    <div class="rank-info" style="flex: 1; padding: 0;">
                         <h3 style="margin: 0; font-size: 1rem; color: var(--primary-navy);">${site.name}</h3>
                         <span class="rank-badge" style="font-size: 0.75rem; color: #888;">${site.type || 'Lugar'}</span>
                     </div>
-                    <div class="rank-score" style="font-weight: 800; color: #FBC02D;">⭐ ${site.rating || '?'}</div>
+                    <div class="rank-score" style="font-weight: 800; color: #FBC02D; min-width: 50px; text-align: right;">⭐ ${site.rating || '?'}</div>
                 `;
 
                 // Clicking triggers map navigation
