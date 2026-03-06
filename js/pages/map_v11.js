@@ -43,12 +43,12 @@ window.KindrMap = {
             preferCanvas: true
         }).setView([41.6520, -4.7286], 13); // Default to Valladolid Center
 
-        // Switching to CartoDB Positron for a cleaner, ultra-premium "Clean" look
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        // Switching to CartoDB Voyager for a more vibrant, "Waze-style" base
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
             subdomains: 'abcd',
             maxZoom: 20,
-            className: 'kindr-map-tiles' // CRITICAL: Used for CSS branding filters
+            className: 'kindr-map-tiles'
         }).addTo(map);
 
         // Ultimate fix para problema de celdas/cuadrículas en dispositivos móviles usando ResizeObserver

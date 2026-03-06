@@ -229,16 +229,16 @@ body {
     overflow: hidden !important;
 }
 
-/* Branded Map Layer - Clean & Professional */
+/* Branded Map Layer - Waze-style: Clean, Vibrant, Pastel */
 .kindr-map-tiles {
-    filter: hue-rotate(190deg) saturate(0.8) brightness(1.02) contrast(1.1);
-    /* This creates a soft blue/navy tint aligned with Kindr colors */
-    opacity: 0.95;
+    filter: brightness(1.05) contrast(1.1) saturate(1.4) hue-rotate(-10deg) sepia(0.1);
+    /* This creates high-contrast, poppy colors with vibrant greens and soft blues */
+    opacity: 1;
 }
 
 /* Ensure common Leaflet elements stay crisp */
 .leaflet-container {
-    background: #f0f4f8 !important;
+    background: #eef2f7 !important;
 }
 
 /* Profile & Gamification */
