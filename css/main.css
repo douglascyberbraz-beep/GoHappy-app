@@ -140,13 +140,12 @@ body {
     color: var(--text-light);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     min-width: 42px;
-    /* Denser for 7 items */
     flex-shrink: 0;
+    position: relative;
 }
 
 .nav-item .icon {
     font-size: 1.5rem;
-    /* Larger for mobile */
     margin-bottom: 2px;
 }
 
@@ -158,11 +157,18 @@ body {
 }
 
 .nav-item.active {
-    color: var(--primary-dark);
+    color: var(--primary-navy);
 }
 
-.nav-item.active .icon {
-    transform: scale(1.2) translateY(-2px);
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    width: 4px;
+    height: 4px;
+    background: var(--primary-blue);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--primary-blue);
 }
 
 /* Main Map Button Orb */
