@@ -71,7 +71,7 @@ body {
     width: 100%;
     height: 100%;
     height: 100dvh;
-    background: linear-gradient(135deg, var(--white) 0%, #f0f7ff 100%);
+    background: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -89,9 +89,9 @@ body {
     width: 220px;
     height: auto;
     max-width: 80%;
+    /* Multiply blends non-perfect whites if parents is white */
     mix-blend-mode: multiply;
-    /* Removes white background */
-    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+    /* Removed drop-shadow to avoid square border on non-transparent images */
 }
 
 @keyframes logoBounce {
@@ -2437,7 +2437,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(180deg, rgba(76, 201, 240, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    background: transparent;
     margin-bottom: 10px;
 }
 
@@ -2447,8 +2447,8 @@ body {
 }
 
 .profile-glow {
-    box-shadow: 0 0 30px rgba(76, 201, 240, 0.3);
     border: 4px solid var(--white);
+    /* Removed blue shadow as per user request */
 }
 
 .level-label-bubble {

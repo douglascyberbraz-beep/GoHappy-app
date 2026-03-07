@@ -8,9 +8,10 @@ window.KidoaAI = {
 
     // Buscar Noticias Regionales
     getNews: async (coordinates = "41.6520, -4.7286") => {
-        const prompt = `Busca las 3 noticias más relevantes de hoy sobre crianza, ayudas económicas, becas o trámites familiares en un radio de 30km de las coordenadas ${coordinates}. 
-        Prioriza contenido local de Castilla y León.
-        Formato JSON estricto: [ { "title": "", "summary": "", "source": "url", "sourceName": "" } ]`;
+        const prompt = `Busca las 3 noticias o eventos oficiales más relevantes de HOY sobre crianza, ayudas, becas o actividades familiares en un radio de 50km de las coordenadas ${coordinates}. 
+        IMPORTANTE: Busca información REAL en páginas oficiales del ayuntamiento, periódicos locales o el BOE.
+        Resumen corto y tono premium.
+        Formato JSON estricto: [ { "title": "", "summary": "", "link": "url_real", "sourceName": "Ayuntamiento de...", "date": "Hoy" } ]`;
 
         return await window.KidoaAI._callGemini(prompt);
     },

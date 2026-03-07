@@ -2,7 +2,7 @@ window.KidoaRanking = {
     render: async (container) => {
         container.innerHTML = `
             <div class="page-header center-text">
-                <h2 style="color: var(--primary-navy); font-weight: 800; font-size: 24px;">🏆 Ranking KIDOA</h2>
+                <h2 style="color: var(--primary-navy); font-weight: 800; font-size: 24px;">🏆 RANKING</h2>
                 <p style="font-size: 13px; color: #888; margin-top: -5px; margin-bottom: 15px;">Los mejores de la comunidad</p>
                 <div class="tab-scroller">
                     <button class="tab-btn active" data-tab="sites">Top Sitios</button>

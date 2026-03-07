@@ -3,7 +3,7 @@ window.KidoaQuestsPage = {
         container.innerHTML = `
             <div class="quests-page">
                 <div class="page-header center-text" style="padding-bottom: 5px;">
-                    <h2 style="color: var(--primary-navy); font-weight: 800;">⚔️ KIDOA Quest</h2>
+                    <h2 style="color: var(--primary-navy); font-weight: 800;">⚔️ QUESTS</h2>
                     <p style="color: #888; font-size: 13px;">Misiones familiares para explorar juntos</p>
                 </div>
 

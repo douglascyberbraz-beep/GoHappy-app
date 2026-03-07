@@ -6,7 +6,7 @@ window.KidoaTribu = {
     render: async (container) => {
         container.innerHTML = `
             <div class="page-header sticky-header">
-                <h2 id="tribu-title">🏘️ La Tribu</h2>
+                <h2 id="tribu-title" style="color: var(--primary-navy); font-weight: 800;">🏘️ TRIBU</h2>
             </div>
             
             <div id="tribu-content" class="content-list stagger-group" style="padding-bottom: 100px; width: 100%; display: flex; flex-direction: column; align-items: center;">

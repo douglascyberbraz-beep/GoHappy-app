@@ -3,7 +3,7 @@ window.KidoaSafePage = {
         container.innerHTML = `
             <div class="safe-page">
                 <div class="page-header center-text">
-                    <h2 style="color: var(--primary-navy); font-weight: 800;">🛡️ KIDOA Safe</h2>
+                    <h2 style="color: var(--primary-navy); font-weight: 800;">🛡️ SAFE</h2>
                     <p style="color: #888; font-size: 13px;">Alertas de seguridad en tu zona</p>
                 </div>
 
