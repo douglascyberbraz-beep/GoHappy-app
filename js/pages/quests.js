@@ -22,7 +22,7 @@ window.KidoaQuestsPage = {
                     </div>
                 </div>
 
-                <div id="quests-list" class="quests-list">
+                <div id="quests-list" class="quests-list stagger-group">
                     <div class="center-text p-20"><div class="typing-dots"><span></span><span></span><span></span></div><p>Preparando tus misiones...</p></div>
                 </div>
 
