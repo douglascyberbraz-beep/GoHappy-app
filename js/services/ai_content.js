@@ -127,40 +127,96 @@ window.KidoaAI = {
         }
 
         try {
+            const requestBody = {
+                contents: [{ parts: [{ text: prompt }] }]
+            };
+
+            if (expectJson) {
+                requestBody.generationConfig = { response_mime_type: "application/json" };
+            }
+
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${window.GEMINI_KEY}`, {
                 method: 'POST',
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
             });
 
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("Gemini API Error:", response.status, errorText);
+                return window.KidoaAI._getMockData(prompt);
+            }
+
             const data = await response.json();
+
+            if (!data.candidates || !data.candidates[0].content) {
+                console.error("Gemini returned no content:", data);
+                return window.KidoaAI._getMockData(prompt);
+            }
+
             const text = data.candidates[0].content.parts[0].text;
 
             if (expectJson) {
-                const cleanJson = text.replace(/```json|```/g, '').trim();
-                return JSON.parse(cleanJson);
+                try {
+                    let cleanText = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+                    const firstBrace = cleanText.indexOf('{');
+                    const firstBracket = cleanText.indexOf('[');
+                    const lastBrace = cleanText.lastIndexOf('}');
+                    const lastBracket = cleanText.lastIndexOf(']');
+
+                    let startIndex = Math.min(
+                        firstBrace !== -1 ? firstBrace : Infinity,
+                        firstBracket !== -1 ? firstBracket : Infinity
+                    );
+                    let endIndex = Math.max(
+                        lastBrace !== -1 ? lastBrace : -1,
+                        lastBracket !== -1 ? lastBracket : -1
+                    );
+
+                    if (startIndex !== Infinity && endIndex !== -1) {
+                        cleanText = cleanText.substring(startIndex, endIndex + 1);
+                    }
+
+                    return JSON.parse(cleanText);
+                } catch (e) {
+                    console.error("Error parsing Gemini JSON:", text, e);
+                    return window.KidoaAI._getMockData(prompt);
+                }
             }
             return text;
         } catch (e) {
-            console.error("Error en KidoaAI:", e);
-            return expectJson ? [] : "Lo siento, tengo problemas para conectarme ahora mismo.";
+            console.error("Network or execution error en KidoaAI:", e);
+            return window.KidoaAI._getMockData(prompt);
         }
     },
 
     _getMockData: (prompt) => {
+        const lowerPrompt = prompt.toLowerCase();
         // Fallback robusto para demos sin internet/clave - Centrado en Valladolid/Castilla y León
-        if (prompt.includes('Activities') || prompt.includes('Today')) return [
+        if (lowerPrompt.includes('today') || lowerPrompt.includes('activities') || lowerPrompt.includes('hoy')) return [
             { id: 1, title: "Pícnic en el Campo Grande", summary: "Disfruta de una tarde entre pavos reales y patos en el corazón de Valladolid. ¡Llevad pan para los patos!", time: "16:00 - 19:00", location: "Parque Campo Grande", lat: 41.6444, lng: -4.7303, price: "Gratis", age: "Todas las edades" },
             { id: 2, title: "Ruta de Fuentes Monumentales", summary: "Explora las fuentes más famosas del centro: desde la Fuente de Cervantes hasta la Plaza Mayor.", time: "Mañana o Tarde", location: "Plaza Mayor", lat: 41.6525, lng: -4.7286, price: "Gratis", age: "6-12 años" },
             { id: 3, title: "Visita al Museo de la Ciencia", summary: "Descubre el planetario y las salas interactivas. Ideal para un día nublado.", time: "10:00 - 18:00", location: "Museo de la Ciencia", lat: 41.6385, lng: -4.7431, price: "5€", age: "4-15 años" }
         ];
 
-        if (prompt.includes('News') || prompt.includes('Noticias')) return [
+        if (lowerPrompt.includes('news') || lowerPrompt.includes('noticias')) return [
             { id: 101, title: "Nuevas ayudas a la Conciliación JCYL", summary: "La Junta de Castilla y León anuncia el nuevo programa de apoyo para familias con niños menores de 3 años.", source: "https://www.jcyl.es", sourceName: "Junta de Castilla y León", date: "Hoy" },
             { id: 102, title: "Valladolid amplía carriles bici escolares", summary: "El ayuntamiento mejora la seguridad en los accesos a los centros educativos del barrio de Parquesol.", source: "https://www.valladolid.es", sourceName: "Ayto. Valladolid", date: "Ayer" }
         ];
 
-        if (prompt.includes('Events')) return [
+        if (lowerPrompt.includes('events') || lowerPrompt.includes('eventos')) return [
             { id: 201, title: "Taller de Teatro Infantil", date: "Próximo Sábado", location: "Teatro Calderón", price: "3€", lat: 41.6550, lng: -4.7240 }
+        ];
+
+        if (lowerPrompt.includes('becas') || lowerPrompt.includes('ayudas')) return [
+            { title: "Ayudas de Comedor", description: "Beca de comedor para rentas bajas.", status: "PLAZO ABIERTO", statusColor: "green", linkText: "Bases" }
+        ];
+
+        if (lowerPrompt.includes('lugares') || lowerPrompt.includes('locations') || lowerPrompt.includes('guía turístico')) return [
+            { id: 301, name: "Parque Ribera de Castilla", type: "park", lat: 41.6620, lng: -4.7250, rating: 4.8, reviews: 310 },
+            { id: 302, name: "Teatro Zorrilla Infantil", type: "theater", lat: 41.6525, lng: -4.7290, rating: 4.5, reviews: 154 },
+            { id: 303, name: "Ludoteca La Magia", type: "kidzone", lat: 41.6410, lng: -4.7400, rating: 4.9, reviews: 89 },
+            { id: 304, name: "Restaurante Kid-Friendly El Parque", type: "food", lat: 41.6510, lng: -4.7320, rating: 4.3, reviews: 205 }
         ];
 
         return [];

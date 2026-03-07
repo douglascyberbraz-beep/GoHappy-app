@@ -28,10 +28,12 @@ window.KidoaMap = {
                 container: container,
                 style: 'https://demotiles.maplibre.org/style.json',
                 center: [-4.7286, 41.6520],
-                zoom: 15,
-                pitch: 0, // Traditional flat view
+                zoom: 18.5, // Navegador GPS muy cercano
+                pitch: 80, // Perspectiva profunda estilo GPS
                 bearing: 0,
-                antialias: true
+                antialias: true,
+                pitchWithRotate: true,
+                maxPitch: 85
             });
 
             window.KidoaMap.instance.on('load', async () => {
@@ -54,6 +56,25 @@ window.KidoaMap = {
                 window.KidoaMap.injectUI(container);
                 await window.KidoaMap.loadMarkers();
                 window.KidoaMap.startGPSWatch();
+
+                // 🪄 GPS Idle Animation Loop (Haz tu magia)
+                let lastTime = 0;
+                let isUserInteracting = false;
+
+                window.KidoaMap.instance.on('mousedown', () => isUserInteracting = true);
+                window.KidoaMap.instance.on('touchstart', () => isUserInteracting = true);
+                window.KidoaMap.instance.on('mouseup', () => { setTimeout(() => isUserInteracting = false, 3000) });
+                window.KidoaMap.instance.on('touchend', () => { setTimeout(() => isUserInteracting = false, 3000) });
+
+                const animateMap = (timestamp) => {
+                    if (!isUserInteracting && window.KidoaMap.instance) {
+                        const bearing = window.KidoaMap.instance.getBearing();
+                        // Slowly pan the camera around like a GPS waiting for movement
+                        window.KidoaMap.instance.rotateTo((bearing + 0.05) % 360, { duration: 0 });
+                    }
+                    requestAnimationFrame(animateMap);
+                };
+                requestAnimationFrame(animateMap);
             });
 
             window.KidoaMap.instance.on('dblclick', (e) => {
@@ -69,8 +90,22 @@ window.KidoaMap = {
     injectUI: (container) => {
         if (document.querySelector('.map-search-container')) return;
 
+        // Waze 3D Horizon Sky & Niebla
+        container.style.position = 'relative';
+        const sky = document.createElement('div');
+        sky.style.position = 'absolute';
+        sky.style.top = '0';
+        sky.style.left = '0';
+        sky.style.width = '100%';
+        sky.style.height = '200px';
+        sky.style.background = 'linear-gradient(to bottom, rgba(135,206,235,1) 0%, rgba(255,255,255,0.7) 40%, rgba(255,255,255,0) 100%)';
+        sky.style.pointerEvents = 'none';
+        sky.style.zIndex = '1';
+        container.appendChild(sky);
+
         const overlay = document.createElement('div');
         overlay.className = 'map-search-container';
+        overlay.style.zIndex = '5';
         overlay.innerHTML = `
             <div class="map-search-bar" style="display:flex; align-items:center; background: white; border-radius: 25px; padding: 2px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex:1; width: 100%;">
                 <span class="gemini-sparkle" style="margin-right:8px; font-size:1.2rem;">✨</span>
@@ -93,17 +128,7 @@ window.KidoaMap = {
         locateBtn.innerHTML = '🎯';
         container.appendChild(locateBtn);
 
-        const compassBtn = document.createElement('button');
-        compassBtn.id = 'map-compass';
-        compassBtn.className = 'fab-btn';
-        compassBtn.style.bottom = '160px';
-        compassBtn.style.right = '20px';
-        compassBtn.innerHTML = '🧭';
-        container.appendChild(compassBtn);
-
-        compassBtn.onclick = () => {
-            window.KidoaMap.instance.easeTo({ bearing: 0, pitch: 0, duration: 1000 });
-        };
+        // Brújula eliminada a petición del usuario.
 
         const input = document.getElementById('map-search-input');
         input.addEventListener('keypress', (e) => {
@@ -113,7 +138,7 @@ window.KidoaMap = {
         document.getElementById('locate-me-btn').addEventListener('click', () => {
             if (window.KidoaMap.userMarker) {
                 const lngLat = window.KidoaMap.userMarker.getLngLat();
-                window.KidoaMap.instance.flyTo({ center: lngLat, zoom: 16, pitch: 0, speed: 1.2 });
+                window.KidoaMap.instance.flyTo({ center: lngLat, zoom: 17, pitch: 60, speed: 1.2 });
             } else {
                 window.KidoaMap.locateUser();
             }
@@ -229,17 +254,44 @@ window.KidoaMap = {
             }
 
             window.KidoaMap.updateUserIcon(lat, lng);
-            if (pos.coords.heading !== null) {
-                window.KidoaMap.instance.easeTo({ bearing: pos.coords.heading, duration: 1000 });
-            }
+            window.KidoaMap.instance.easeTo({
+                center: [lng, lat],
+                bearing: pos.coords.heading !== null ? pos.coords.heading : window.KidoaMap.instance.getBearing(),
+                pitch: 72,
+                zoom: 17.5,
+                duration: 1200
+            });
         }, null, { enableHighAccuracy: true });
     },
 
     updateUserIcon: (lat, lng) => {
         if (!window.KidoaMap.userMarker) {
             const el = document.createElement('div');
-            el.innerHTML = `<div class="user-marker-3d" style="font-size: 2.5rem; filter: drop-shadow(0 0 10px rgba(76,201,240,0.8)); cursor: pointer;">👨‍👩‍👧‍👦</div>`;
-            window.KidoaMap.userMarker = new maplibregl.Marker({ element: el })
+            el.innerHTML = `
+                <div class="waze-nav-icon" style="
+                    width: 70px; height: 70px; 
+                    background: radial-gradient(circle, rgba(76,201,240,0.5) 0%, rgba(76,201,240,0) 70%); 
+                    border-radius: 50%; 
+                    display: flex; align-items: center; justify-content: center;
+                    animation: radar-pulse 2s infinite ease-out;
+                ">
+                    <div style="
+                        width: 0; height: 0; 
+                        border-left: 14px solid transparent;
+                        border-right: 14px solid transparent;
+                        border-bottom: 26px solid #FF3366; /* Hot pink arrow */
+                        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+                        transform: translateY(-4px);
+                    "></div>
+                </div>
+                <style>
+                    @keyframes radar-pulse {
+                        0% { transform: scale(0.6) rotateX(45deg); opacity: 1; }
+                        100% { transform: scale(1.6) rotateX(45deg); opacity: 0; }
+                    }
+                </style>
+            `;
+            window.KidoaMap.userMarker = new maplibregl.Marker({ element: el, pitchAlignment: 'map', rotationAlignment: 'map' })
                 .setLngLat([lng, lat])
                 .addTo(window.KidoaMap.instance);
         } else {
@@ -258,7 +310,7 @@ window.KidoaMap = {
         navigator.geolocation.getCurrentPosition((pos) => {
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
-            window.KidoaMap.instance.flyTo({ center: [lng, lat], zoom: 16, pitch: 0 });
+            window.KidoaMap.instance.flyTo({ center: [lng, lat], zoom: 17, pitch: 60 });
             window.KidoaMap.updateUserIcon(lat, lng);
         });
     },
@@ -274,24 +326,24 @@ window.KidoaMap = {
         const modal = document.createElement('div');
         modal.className = 'modal';
         modal.innerHTML = `
-            <div class="auth-container slide-up-anim">
-                <div class="auth-card premium-glass" style="max-height: 85vh; overflow-y: auto;">
-                    <h3 style="color:var(--primary-navy);">${name ? `Reseñar ${name}` : 'Añadir Lugar 📍'}</h3>
-                    <p style="font-size:12px; color:#666; margin-bottom:15px;">Suma puntos y ayuda a otras familias.</p>
-                    
-                    ${name ? '' : '<input type="text" id="new-site-name" placeholder="Nombre (Ej: Parque Sol)..." class="review-input">'}
-                    
-                    <div class="star-rating" style="font-size: 2rem; margin: 10px 0;">
-                        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+                < div class="auth-container slide-up-anim" >
+                    <div class="auth-card premium-glass" style="max-height: 85vh; overflow-y: auto;">
+                        <h3 style="color:var(--primary-navy);">${name ? `Reseñar ${name}` : 'Añadir Lugar 📍'}</h3>
+                        <p style="font-size:12px; color:#666; margin-bottom:15px;">Suma puntos y ayuda a otras familias.</p>
+
+                        ${name ? '' : '<input type="text" id="new-site-name" placeholder="Nombre (Ej: Parque Sol)..." class="review-input">'}
+
+                        <div class="star-rating" style="font-size: 2rem; margin: 10px 0;">
+                            <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+                        </div>
+
+                        <textarea id="review-text" class="review-input" placeholder="¿Qué tal el sitio? (Misión, limpieza, sombra...)" style="height:80px;"></textarea>
+
+                        <button id="post-review-btn" class="btn-primary full-width">Publicar en Kidoa</button>
+                        <button class="btn-text full-width" style="margin-top:10px;" onclick="this.closest('.modal').remove()">Cancelar</button>
                     </div>
-                    
-                    <textarea id="review-text" class="review-input" placeholder="¿Qué tal el sitio? (Misión, limpieza, sombra...)" style="height:80px;"></textarea>
-                    
-                    <button id="post-review-btn" class="btn-primary full-width">Publicar en Kidoa</button>
-                    <button class="btn-text full-width" style="margin-top:10px;" onclick="this.closest('.modal').remove()">Cancelar</button>
-                </div>
-            </div>
-        `;
+            </div >
+                `;
         document.body.appendChild(modal);
 
         let rating = 0;
