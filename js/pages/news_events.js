@@ -25,19 +25,23 @@ window.KidoaNewsEvents = {
         const loadContent = async (tab) => {
             content.innerHTML = '<div class="center-text p-20"><div class="typing-dots"><span></span><span></span><span></span></div><p>Cargando información personalizada...</p></div>';
 
-            let coords = "41.6520, -4.7286"; // Valladolid default
-            if (navigator.geolocation) {
+            let coords = window.lastKnownCoords || "41.6520, -4.7286"; // Cache or Default
+
+            if (!window.lastKnownCoords && navigator.geolocation) {
                 try {
                     const pos = await new Promise((resolve, reject) => {
-                        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 3000 });
+                        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 4000 });
                     });
                     if (pos) {
-                        coords = `${pos.coords.latitude}, ${pos.coords.longitude}`;
+                        window.lastKnownCoords = `${pos.coords.latitude}, ${pos.coords.longitude}`;
+                        coords = window.lastKnownCoords;
                         locStatus.innerText = "📍 Información de tu zona";
                     }
                 } catch (e) {
-                    locStatus.innerText = "📍 Valladolid (Predeterminado)";
+                    locStatus.innerText = "📍 Información Regional (Predeterminada)";
                 }
+            } else if (window.lastKnownCoords) {
+                locStatus.innerText = "📍 Información de tu zona";
             }
 
             if (tab === 'news') {

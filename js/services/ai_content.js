@@ -1,38 +1,41 @@
 window.KidoaAI = {
     // Especialización en Crianza
     SYSTEM_PROMPT: `Eres KIDOA IA, la asistente oficial de la App KIDOA, experta líder en crianza consciente, salud infantil (0-15 años), psicología positiva y nutrición. 
-    Tu misión es ayudar a padres modernos a encontrar planes y soluciones.
+    Tu misión es ayudar a padres modernos a encontrar planes y soluciones basados ESTRICTAMENTE en su zona geográfica actual.
     - Estilo: Empático, ultra-personalizado, premium.
-    - Seguridad: Si detectas consultas médicas críticas, ofrece consejos de calma pero siempre recomienda visitar al pediatra.
-    - Conocimiento: Conoces perfectamente Castilla y León y las ayudas/becas estatales vigentes.`,
+    - Geografía: Identifica SIEMPRE la ciudad y provincia de las coordenadas proporcionadas y limita la información a esa zona.
+    - Seguridad: Si detectas consultas médicas críticas, ofrece consejos de calma pero siempre recomienda visitar al pediatra.`,
 
     // Buscar Noticias Regionales
     getNews: async (coordinates = "41.6520, -4.7286") => {
-        const prompt = `Busca las 3 noticias o eventos oficiales más relevantes de HOY sobre crianza, niños, hijos, parques, escuelas o trámites familiares cerca de ${coordinates}.
-        IMPORTANTE: Busca información REAL en páginas oficiales (ej: jcyl.es, ayuntamientos o diarios locales de Castilla y León). 
-        Prioriza palabras clave: crianza, hijos, educación infantil.
-        Resumen corto y elegante.
-        Formato JSON estricto: [ { "title": "", "summary": "", "link": "url_real", "sourceName": "JCYL / Ayto / Diario...", "date": "Hoy" } ]`;
+        const prompt = `Actúa como periodista local. Ubicación del usuario: ${coordinates}.
+        1. Identifica la CIUDAD y PROVINCIA de estas coordenadas.
+        2. Busca 3 noticias o avisos oficiales REALES de HOY sobre crianza, parques, colegios o vida familiar específicos de esa ciudad o provincia.
+        3. Prioriza fuentes oficiales (ayuntamientos, juntas regionales, diarios locales).
+        4. No menciones otras regiones. Solo información de su zona o provincia autonoma.
+        Formato JSON: [ { "title": "", "summary": "", "link": "url", "sourceName": "Fuente Local", "date": "Hoy" } ]`;
 
         return await window.KidoaAI._callGemini(prompt);
     },
 
     // Buscar Eventos Infantiles (0-15 años)
     getEvents: async (coordinates = "41.6520, -4.7286") => {
-        const prompt = `Busca eventos infantiles (0-15 años) para los próximos 7 días cerca de ${coordinates}.
-        Enfoque: Actividades al aire libre, musicales, obras de teatro infantil, talleres en museos locales. 
-        IMPORTANTE: Busca en agendas culturales de Ayuntamientos o prensa local de la zona.
-        Necesito las coordenadas aproximadas del evento.
-        Formato JSON estricto: [ { "title": "", "date": "", "location": "", "price": "", "lat": NUM, "lng": NUM } ]`;
+        const prompt = `Busca eventos infantiles (0-15 años) cerca de ${coordinates}.
+        1. Identifica la CIUDAD de estas coordenadas.
+        2. Busca eventos REALES para los próximos 7 días: teatro infantil, música, aire libre, talleres.
+        3. Solo eventos en su municipio o municipios colindantes (su zona).
+        Formato JSON: [ { "title": "", "date": "", "location": "Sitio Real", "price": "", "lat": NUM, "lng": NUM } ]`;
 
         return await window.KidoaAI._callGemini(prompt);
     },
 
     // Buscar Becas y Ayudas
     getBecas: async (coordinates = "41.6520, -4.7286") => {
-        const prompt = `Busca las 3 becas o ayudas económicas familiares más recientes en el BOCYL (Boletín Oficial de Castilla y León) o JCYL cerca de ${coordinates}.
-        Keywords: niños, hijos, crianza, infantil, libros, guardería.
-        Formato JSON estricto: [ { "title": "", "description": "", "status": "PLAZO ABIERTO / CERRADO", "statusColor": "green o orange", "linkText": "Ver en BOCYL/JCYL" } ]`;
+        const prompt = `Ubicación: ${coordinates}.
+        1. Identifica la PROVINCIA y COMUNIDAD AUTÓNOMA.
+        2. Busca 3 becas o ayudas familiares activas en el boletín oficial de esa comunidad (ej: BOCYL, DOGC, BOCM, etc.) o del ayuntamiento local.
+        3. Keywords: niños, crianza, infantil, educación.
+        Formato JSON: [ { "title": "", "description": "", "status": "PLAZO ABIERTO", "statusColor": "green", "linkText": "Ver bases oficiales" } ]`;
 
         return await window.KidoaAI._callGemini(prompt);
     },
