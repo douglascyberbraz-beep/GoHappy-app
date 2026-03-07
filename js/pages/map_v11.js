@@ -225,6 +225,7 @@ window.KidoaMap = {
             window.KidoaMap.updateUserIcon(lat, lng);
             if (pos.coords.heading !== null) {
                 window.KidoaMap.instance.easeTo({ bearing: pos.coords.heading, duration: 1000 });
+                window.KidoaMap.updateUserHeading(pos.coords.heading);
             }
         }, null, { enableHighAccuracy: true });
     },
@@ -232,12 +233,29 @@ window.KidoaMap = {
     updateUserIcon: (lat, lng) => {
         if (!window.KidoaMap.userMarker) {
             const el = document.createElement('div');
-            el.innerHTML = `<div class="user-marker-3d" style="font-size: 2.5rem; filter: drop-shadow(0 0 10px rgba(76,201,240,0.8)); cursor: pointer;">👨‍👩‍👧‍👦</div>`;
+            el.className = 'user-gps-arrow-wrap';
+            el.innerHTML = `
+                <div class="user-gps-arrow" style="
+                    width: 30px; height: 30px; 
+                    background: var(--primary-blue); 
+                    clip-path: polygon(50% 0%, 0% 100%, 50% 75%, 100% 100%);
+                    box-shadow: 0 0 15px var(--primary-blue);
+                    border: 2px solid white;
+                    transition: transform 0.3s ease;
+                "></div>
+            `;
             window.KidoaMap.userMarker = new maplibregl.Marker({ element: el })
                 .setLngLat([lng, lat])
                 .addTo(window.KidoaMap.instance);
         } else {
             window.KidoaMap.userMarker.setLngLat([lng, lat]);
+        }
+    },
+
+    updateUserHeading: (heading) => {
+        const arrow = document.querySelector('.user-gps-arrow');
+        if (arrow && heading !== null) {
+            arrow.style.transform = `rotate(${heading}deg)`;
         }
     },
 
