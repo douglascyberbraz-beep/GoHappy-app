@@ -83,9 +83,16 @@ window.KidoaMap = {
             // Start GPS watch for moving
             window.KidoaMap.startGPSWatch();
 
-            // New Feature: Clic largo o clic para añadir punto
+            // New Feature: Clic largo o clic normal para añadir punto en el mapa
             window.KidoaMap.instance.on('contextmenu', (e) => {
                 window.KidoaMap.showAddSiteModal(e.latlng.lat, e.latlng.lng);
+            });
+            window.KidoaMap.instance.on('click', (e) => {
+                // If they click on the empty map, let them create a site there
+                // We add a tiny delay to ensure it doesn't fire when dragging
+                setTimeout(() => {
+                    window.KidoaMap.showAddSiteModal(e.latlng.lat, e.latlng.lng);
+                }, 200);
             });
         } catch (e) {
             console.error("KidoaMap Init Failed:", e);
@@ -217,10 +224,10 @@ window.KidoaMap = {
         modal.innerHTML = `
             <div class="auth-container slide-up-anim">
                 <div class="auth-card premium-glass" style="max-height: 90vh; overflow-y: auto;">
-                    <h3>${name ? `Reseñar ${name}` : 'Añadir Nuevo Sitio'}</h3>
-                    <p style="font-size:0.8rem">Gana hasta 50 puntos por esta acción</p>
+                    <h3>${name ? `Reseñar ${name}` : 'Añadir Nuevo Lugar 📍'}</h3>
+                    <p style="font-size:0.8rem">${name ? 'Gana hasta 50 puntos' : 'Descubrir un nuevo lugar da 100 puntos!'}</p>
                     
-                    ${name ? '' : '<input type="text" id="site-name" placeholder="Nombre del sitio..." class="review-input">'}
+                    ${name ? '' : '<input type="text" id="site-name" placeholder="Nombre del sitio (Ej: Parque Central)..." class="review-input" style="font-weight:bold; border: 2px solid var(--primary-blue);">'}
                     
                     <div class="star-rating" id="star-selector">
                         <span class="star" data-val="1">★</span>
@@ -305,14 +312,18 @@ window.KidoaMap = {
 
             // Create a marker on the fly if it was a new site
             if (!name) {
-                window.KidoaMap.createMarker({
+                const newMarker = window.KidoaMap.createMarker({
                     name: finalName,
                     lat: lat,
                     lng: lng,
                     rating: selectedStars,
                     reviews: 1,
-                    type: 'new'
+                    type: 'new' // generic newly added type
                 });
+                window.KidoaMap.markers.push({ instance: newMarker, data: { type: 'new' } });
+
+                // Fly to newly added site
+                window.KidoaMap.instance.flyTo([lat, lng], 18);
             }
 
             alert(`¡Reseña publicada! Has ganado puntos y subido de nivel.`);
@@ -498,8 +509,12 @@ window.KidoaMap = {
             });
             window.KidoaMap.userMarker = L.marker([lat, lng], { icon: familyIcon, zIndexOffset: 1000 }).addTo(window.KidoaMap.instance);
             window.KidoaMap.userMarker.bindPopup('<div style="font-weight:bold;color:var(--primary-navy)">¡De camino en familia!</div>');
+
+            // Force leaflet to draw the icon strictly now
+            window.KidoaMap.userMarker.update();
         } else {
             window.KidoaMap.userMarker.setLatLng([lat, lng]);
+            window.KidoaMap.userMarker.update();
         }
     },
 
