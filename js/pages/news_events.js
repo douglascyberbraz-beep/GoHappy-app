@@ -3,7 +3,7 @@ window.KidoaNewsEvents = {
         container.innerHTML = `
             <div class="page-header sticky-header" style="flex-direction: column; align-items: stretch; gap: 15px; padding-bottom: 5px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2 style="color: var(--primary-navy); font-weight: 800;">🗞️ NEWS</h2>
+                    <h2 style="color: var(--primary-navy); font-weight: 800; letter-spacing: 1px;">NEWS</h2>
                     <span id="loc-status" style="font-size: 10px; color: #888; background: #eee; padding: 4px 8px; border-radius: 10px;">📍 Detectando ubicación...</span>
                 </div>
                 

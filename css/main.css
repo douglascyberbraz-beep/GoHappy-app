@@ -89,9 +89,10 @@ body {
     width: 220px;
     height: auto;
     max-width: 80%;
-    /* Multiply blends non-perfect whites if parents is white */
+    /* Multiply blends non-perfect whites if parent is white */
     mix-blend-mode: multiply;
-    /* Removed drop-shadow to avoid square border on non-transparent images */
+    /* Filter pushes near-white pixels to pure white (#fff) for perfect multiply blending */
+    filter: brightness(1.05) contrast(1.05);
 }
 
 @keyframes logoBounce {
