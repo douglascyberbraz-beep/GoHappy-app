@@ -102,7 +102,7 @@ window.KidoaMap = {
         container.appendChild(compassBtn);
 
         compassBtn.onclick = () => {
-            window.KidoaMap.instance.easeTo({ bearing: 0, pitch: 45, duration: 1000 });
+            window.KidoaMap.instance.easeTo({ bearing: 0, pitch: 60, duration: 1000 });
         };
 
         const input = document.getElementById('map-search-input');
@@ -113,7 +113,7 @@ window.KidoaMap = {
         document.getElementById('locate-me-btn').addEventListener('click', () => {
             if (window.KidoaMap.userMarker) {
                 const lngLat = window.KidoaMap.userMarker.getLngLat();
-                window.KidoaMap.instance.flyTo({ center: lngLat, zoom: 18, pitch: 60, speed: 1.2 });
+                window.KidoaMap.instance.flyTo({ center: lngLat, zoom: 18, pitch: 65, speed: 1.2, curve: 1.4 });
             } else {
                 window.KidoaMap.locateUser();
             }

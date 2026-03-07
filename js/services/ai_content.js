@@ -40,6 +40,26 @@ window.KidoaAI = {
         return await window.KidoaAI._callGemini(prompt);
     },
 
+    getTodayActivities: async (coordinates = "41.6520, -4.7286") => {
+        const prompt = `Actúa como un planificador de ocio familiar experto. Ubicación del usuario: ${coordinates}.
+        Tu misión es generar el hub "TODAY" (¿Qué hacer hoy?).
+        1. Identifica la CIUDAD y PROVINCIA de estas coordenadas.
+        2. Busca 4-5 actividades REALES y VARIADAS para HOY mismo en un radio de 1 hora de viaje.
+        3. Incluye: talleres, museos, parques temáticos, cine, teatro infantil o eventos al aire libre.
+        4. Para cada actividad, necesito: 
+           - Título atractivo.
+           - Resumen breve.
+           - Horarios específicos para HOY.
+           - Ubicación exacta (nombre del sitio).
+           - Coordenadas (lat, lng).
+           - Precio (o "Gratis").
+           - Enlace de compra/info si aplica.
+           - Edad recomendada.
+        5. Formato JSON estricto: [ { "title": "", "summary": "", "time": "", "location": "", "lat": NUM, "lng": NUM, "price": "", "link": "", "age": "" } ]`;
+
+        return await window.KidoaAI._callGemini(prompt);
+    },
+
     // Generador Dinámico de Mapa (Basado en Coordenadas)
     getDynamicLocations: async (coordinates = "41.6520, -4.7286") => {
         const prompt = `Actúa como guía turístico local familiar. Genera 8 sitios reales increíbles para ir con niños (parques, museos, ludotecas, restaurantes kid-friendly) en un radio cercano de las coordenadas GPS: ${coordinates}.

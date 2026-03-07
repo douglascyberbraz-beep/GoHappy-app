@@ -130,6 +130,20 @@ window.KidoaData = {
         }
     },
 
+    getTodayActivities: async (coords) => {
+        try {
+            if (window.GEMINI_KEY && !window.GEMINI_KEY.includes('PEGAR_AQUI')) {
+                return await window.KidoaAI.getTodayActivities(coords);
+            }
+        } catch (e) {
+            console.warn("AI getTodayActivities fallback:", e);
+        }
+        return [
+            { id: 1, title: "Tarde de Cuentacuentos", summary: "Disfruta de una tarde mágica con historias increíbles.", time: "17:30 - 19:00", location: "Biblioteca Municipal", lat: 41.6525, lng: -4.7245, price: "Gratis", age: "3-8 años" },
+            { id: 2, title: "Taller de Robótica LEGO", summary: "Construye y programa tus primeros robots.", time: "18:00 - 20:00", location: "Centro Joven", lat: 41.6420, lng: -4.7350, price: "12€", age: "8-12 años" }
+        ];
+    },
+
     // -- RANKING / CONTRIBUTORS --
     getContributors: async () => {
         try {
