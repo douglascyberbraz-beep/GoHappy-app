@@ -73,7 +73,14 @@ window.KidoaMap = {
             document.getElementById('map-viewport-v11').classList.add('navigator-view');
             window.KidoaMap.isNavModeActive = true;
 
-            // Start Continuous Tracking
+            // Start Continuous Tracking but prevent map jumping
+            window.KidoaMap.lastGeolocLat = null;
+            window.KidoaMap.lastGeolocLng = null;
+
+            // Try to immediately find the user first
+            window.KidoaMap.locateUser(true); // true = silent initial locate
+
+            // Start GPS watch for moving
             window.KidoaMap.startGPSWatch();
 
             // New Feature: Clic largo o clic para añadir punto
@@ -448,11 +455,24 @@ window.KidoaMap = {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
 
-                // Keep centering map on user in navigator mode
-                window.KidoaMap.instance.flyTo([lat, lng], 18, {
-                    animate: true,
-                    duration: 1.5
-                });
+                // Anti-Tremor Logic: Only fly to new center if moved significantly (> 5 meters roughly)
+                let shouldRecentre = true;
+                if (window.KidoaMap.lastGeolocLat && window.KidoaMap.lastGeolocLng) {
+                    const distInfo = window.KidoaMap.instance.distance([lat, lng], [window.KidoaMap.lastGeolocLat, window.KidoaMap.lastGeolocLng]);
+                    if (distInfo < 5) {
+                        shouldRecentre = false; // Too small of a movement, probably GPS bounce
+                    }
+                }
+
+                if (shouldRecentre) {
+                    // Keep centering map on user in navigator mode smoothly
+                    window.KidoaMap.instance.setView([lat, lng], 18, {
+                        animate: true,
+                        duration: 1.0
+                    });
+                    window.KidoaMap.lastGeolocLat = lat;
+                    window.KidoaMap.lastGeolocLng = lng;
+                }
 
                 window.KidoaMap.updateUserIcon(lat, lng);
             },
@@ -483,28 +503,31 @@ window.KidoaMap = {
         }
     },
 
-    locateUser: () => {
+    locateUser: (isInitial = false) => {
         if (!navigator.geolocation) {
-            alert("Tu navegador no soporta geolocalización.");
+            if (!isInitial) alert("Tu navegador no soporta geolocalización.");
             return;
         }
 
         const input = document.getElementById('map-search-input');
-        if (input) input.placeholder = "Buscando tu ubicación...";
+        if (input && !isInitial) input.placeholder = "Buscando tu ubicación...";
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
-                window.KidoaMap.instance.setView([lat, lng], 16);
+                window.KidoaMap.instance.setView([lat, lng], 18);
+
+                window.KidoaMap.lastGeolocLat = lat;
+                window.KidoaMap.lastGeolocLng = lng;
 
                 window.KidoaMap.updateUserIcon(lat, lng);
 
-                if (input) input.placeholder = "Pregunta lo que necesites...";
+                if (input && !isInitial) input.placeholder = "Pregunta lo que necesites...";
             },
             (error) => {
                 console.warn("Geolocalización falló:", error);
-                if (input) input.placeholder = "Error de GPS. Busca un lugar manual.";
+                if (input && !isInitial) input.placeholder = "Error de GPS. Busca un lugar manual.";
             },
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
