@@ -311,7 +311,8 @@ body {
     }
 }
 
-.leaflet-marker-icon {
+.leaflet-marker-icon,
+.kidoa-marker-3d-wrap {
     animation: magical-float 3s infinite ease-in-out;
 }
 

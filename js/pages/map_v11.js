@@ -1,20 +1,22 @@
-// Definitive Kidoa 3D Map Engine - v2.0.0 (MapLibre GL)
+// Definitive Kidoa 3D Map Engine - v2.1.0 (MapLibre GL / Premium)
 window.KidoaMap = {
     instance: null,
     isInitialized: false,
     markers: [],
     currentFilter: 'all',
     userMarker: null,
+    lastKnownCoords: "41.6520, -4.7286",
 
     render: async (container) => {
-        console.log("Rendering Kidoa 3D Map v2.0.0...");
+        console.log("Rendering Kidoa 3D Map v2.1.0...");
         container.style.display = 'block';
 
         if (!window.KidoaMap.isInitialized) {
             await window.KidoaMap.init(container);
         } else {
-            // Resize handler for MapLibre
             window.KidoaMap.instance.resize();
+            // Refresh markers in case of data updates
+            window.KidoaMap.loadMarkers();
         }
     },
 
@@ -22,29 +24,23 @@ window.KidoaMap = {
         if (window.KidoaMap.isInitialized && window.KidoaMap.instance) return;
 
         try {
-            // MapLibre Initialization
             window.KidoaMap.instance = new maplibregl.Map({
                 container: container,
-                style: 'https://demotiles.maplibre.org/style.json', // Basic style, can be swapped for Google-like tiles
-                center: [-4.7286, 41.6520], // [lng, lat]
+                style: 'https://demotiles.maplibre.org/style.json',
+                center: [-4.7286, 41.6520],
                 zoom: 15,
-                pitch: 45, // 3D Inclination
+                pitch: 45,
                 bearing: 0,
                 antialias: true
             });
 
-            // Add standard navigation controls (zoom only, we'll use custom for others)
-            // window.KidoaMap.instance.addControl(new maplibregl.NavigationControl(), 'top-right');
-
             window.KidoaMap.instance.on('load', async () => {
                 window.KidoaMap.isInitialized = true;
 
-                // Add Google-like Raster Layer if desired or stay with vector
+                // Add Google Raster Layer
                 window.KidoaMap.instance.addSource('google-tiles', {
                     'type': 'raster',
-                    'tiles': [
-                        'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
-                    ],
+                    'tiles': ['https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'],
                     'tileSize': 256
                 });
                 window.KidoaMap.instance.addLayer({
@@ -60,7 +56,6 @@ window.KidoaMap = {
                 window.KidoaMap.startGPSWatch();
             });
 
-            // Double Click for Pin
             window.KidoaMap.instance.on('dblclick', (e) => {
                 window.KidoaMap.showAddSiteModal(e.lngLat.lat, e.lngLat.lng);
             });
@@ -72,7 +67,6 @@ window.KidoaMap = {
     },
 
     injectUI: (container) => {
-        // Reuse overlay structure from v1 but ensure it doesn't duplicate
         if (document.querySelector('.map-search-container')) return;
 
         const overlay = document.createElement('div');
@@ -99,11 +93,10 @@ window.KidoaMap = {
         locateBtn.innerHTML = '🎯';
         container.appendChild(locateBtn);
 
-        // Compass Button for rotation
         const compassBtn = document.createElement('button');
         compassBtn.id = 'map-compass';
         compassBtn.className = 'fab-btn';
-        compassBtn.style.bottom = '160px'; // Above locate btn
+        compassBtn.style.bottom = '160px';
         compassBtn.style.right = '20px';
         compassBtn.innerHTML = '🧭';
         container.appendChild(compassBtn);
@@ -121,6 +114,8 @@ window.KidoaMap = {
             if (window.KidoaMap.userMarker) {
                 const lngLat = window.KidoaMap.userMarker.getLngLat();
                 window.KidoaMap.instance.flyTo({ center: lngLat, zoom: 18, pitch: 60, speed: 1.2 });
+            } else {
+                window.KidoaMap.locateUser();
             }
         });
 
@@ -135,12 +130,7 @@ window.KidoaMap = {
     },
 
     loadMarkers: async () => {
-        let coords = "41.6520, -4.7286";
-        if (window.KidoaMap.userMarker) {
-            const pos = window.KidoaMap.userMarker.getLngLat();
-            coords = `${pos.lat}, ${pos.lng}`;
-        }
-
+        let coords = window.KidoaMap.lastKnownCoords;
         const locations = await window.KidoaData.getLocations(coords);
         window.KidoaMap.clearMarkers();
 
@@ -150,21 +140,33 @@ window.KidoaMap = {
     },
 
     createMarker: (loc) => {
+        const isHighRated = loc.rating >= 4.5;
         const el = document.createElement('div');
-        el.className = 'kidoa-marker-3d';
+        el.className = `kidoa-marker-3d-wrap ${isHighRated ? 'highlight-poi' : ''}`;
         el.innerHTML = `
-            <div class="kidoa-marker-pin" style="background: linear-gradient(135deg, var(--primary-blue), #4cc9f0); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-                <img src="assets/logo_white.png" style="width: 25px; height: 25px; object-fit: contain;">
+            <div class="kidoa-marker-3d">
+                <div class="kidoa-marker-pin" style="background: ${isHighRated ? 'linear-gradient(135deg, var(--accent-pink), #ff758c)' : 'linear-gradient(135deg, var(--primary-blue), #4cc9f0)'};">
+                    <img src="assets/logo_white.png" style="width: 70%; height: 70%; object-fit: contain;">
+                </div>
             </div>
         `;
 
-        const popup = new maplibregl.Popup({ offset: 25 }).setHTML(`
-            <div class="popup-premium" style="min-width: 200px;">
-                <h3 style="margin:0; font-size: 1rem;">${loc.name}</h3>
-                <p style="font-size: 0.8rem; color: #666;">⭐ ${loc.rating} | ${loc.type}</p>
-                <button class="btn-primary" style="width:100%; padding:8px; margin-top:10px; font-size:12px;" onclick="window.KidoaMap.showAddSiteModal(${loc.lat}, ${loc.lng}, '${loc.name.replace(/'/g, "\\'")}')">Reseñar</button>
+        const popupHTML = `
+            <div class="popup-premium" style="min-width: 220px; border-radius: 20px; overflow: hidden;">
+                <div class="popup-img-container" style="position: relative; height: 100px; background: #eee;">
+                    ${loc.image ? `<img src="${loc.image}" style="width: 100%; height: 100%; object-fit: cover;">` : `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--primary-blue); color: white; font-size: 2rem;">🌟</div>`}
+                </div>
+                <div class="popup-body" style="padding: 12px; background: white;">
+                    <h3 style="margin: 0 0 5px 0; font-size: 1rem; font-weight: 800; color: var(--primary-navy);">${loc.name}</h3>
+                    <div style="font-size: 0.8rem; color: #666; margin-bottom: 10px;">⭐ ${loc.rating || 4.5} | ${loc.type}</div>
+                    <button class="btn-primary-gradient" style="padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 700; width: 100%; border:none; color:white; cursor:pointer;" onclick="window.KidoaMap.showAddSiteModal(${loc.lat}, ${loc.lng}, '${loc.name.replace(/'/g, "\\'")}')">
+                        📝 Escribir Reseña
+                    </button>
+                </div>
             </div>
-        `);
+        `;
+
+        const popup = new maplibregl.Popup({ offset: 40, className: 'premium-popup-3d' }).setHTML(popupHTML);
 
         const marker = new maplibregl.Marker({ element: el })
             .setLngLat([loc.lng, loc.lat])
@@ -181,24 +183,36 @@ window.KidoaMap = {
 
     filterMarkers: (type) => {
         window.KidoaMap.markers.forEach(m => {
-            if (type === 'all' || m.type === type) {
-                m.instance.addTo(window.KidoaMap.instance);
-            } else {
-                m.instance.remove();
-            }
+            if (type === 'all' || m.type === type) m.instance.addTo(window.KidoaMap.instance);
+            else m.instance.remove();
         });
     },
 
     handleSearch: async (query) => {
+        if (!query) return;
         const input = document.getElementById('map-search-input');
         input.placeholder = "✨ IA pensando...";
-        const results = await window.KidoaData.searchLocations(query);
-        if (results && results.length > 0) {
-            window.KidoaMap.clearMarkers();
-            results.forEach(loc => window.KidoaMap.createMarker(loc));
-            window.KidoaMap.instance.flyTo({ center: [results[0].lng, results[0].lat], zoom: 15 });
-        }
+        input.disabled = true;
+
+        try {
+            const results = await window.KidoaData.searchLocations(query, window.KidoaMap.lastKnownCoords);
+            if (results && results.length > 0) {
+                window.KidoaMap.clearMarkers();
+                results.forEach(loc => window.KidoaMap.createMarker(loc));
+                window.KidoaMap.instance.flyTo({ center: [results[0].lng, results[0].lat], zoom: 15, pitch: 45, speed: 1.0 });
+            } else {
+                // geocoding fallback
+                const resp = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=1`);
+                const data = await resp.json();
+                if (data.features && data.features.length > 0) {
+                    const c = data.features[0].geometry.coordinates;
+                    window.KidoaMap.instance.flyTo({ center: c, zoom: 16 });
+                }
+            }
+        } catch (e) { console.warn("Search error:", e); }
+
         input.placeholder = "Pregunta a Gemini...";
+        input.disabled = false;
         input.value = "";
     },
 
@@ -207,9 +221,8 @@ window.KidoaMap = {
         navigator.geolocation.watchPosition((pos) => {
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
+            window.KidoaMap.lastKnownCoords = `${lat}, ${lng}`;
             window.KidoaMap.updateUserIcon(lat, lng);
-
-            // Auto-rotate map based on heading if available
             if (pos.coords.heading !== null) {
                 window.KidoaMap.instance.easeTo({ bearing: pos.coords.heading, duration: 1000 });
             }
@@ -219,7 +232,7 @@ window.KidoaMap = {
     updateUserIcon: (lat, lng) => {
         if (!window.KidoaMap.userMarker) {
             const el = document.createElement('div');
-            el.innerHTML = `<div style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(76,201,240,0.8))">👨‍👩‍👧‍👦</div>`;
+            el.innerHTML = `<div class="user-marker-3d" style="font-size: 2.5rem; filter: drop-shadow(0 0 10px rgba(76,201,240,0.8)); cursor: pointer;">👨‍👩‍👧‍👦</div>`;
             window.KidoaMap.userMarker = new maplibregl.Marker({ element: el })
                 .setLngLat([lng, lat])
                 .addTo(window.KidoaMap.instance);
@@ -228,10 +241,62 @@ window.KidoaMap = {
         }
     },
 
+    locateUser: () => {
+        navigator.geolocation.getCurrentPosition((pos) => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            window.KidoaMap.instance.flyTo({ center: [lng, lat], zoom: 17, pitch: 60 });
+            window.KidoaMap.updateUserIcon(lat, lng);
+        });
+    },
+
     showAddSiteModal: (lat, lng, name = "") => {
-        // Use existing modal logic but adapted if needed (referencing window.KidoaMap.showAddSiteModal v1)
-        console.log("Add Site Modal", lat, lng, name);
-        // Implementing simple version for now
-        alert(`Abrir reseña para: ${name || 'Nueva ubicación'}`);
+        const user = window.KidoaAuth.checkAuth();
+        if (!user) {
+            alert("Inicia sesión para contribuir con la Tribu.");
+            window.KidoaAuth.renderAuthModal();
+            return;
+        }
+
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="auth-container slide-up-anim">
+                <div class="auth-card premium-glass" style="max-height: 85vh; overflow-y: auto;">
+                    <h3 style="color:var(--primary-navy);">${name ? `Reseñar ${name}` : 'Añadir Lugar 📍'}</h3>
+                    <p style="font-size:12px; color:#666; margin-bottom:15px;">Suma puntos y ayuda a otras familias.</p>
+                    
+                    ${name ? '' : '<input type="text" id="new-site-name" placeholder="Nombre (Ej: Parque Sol)..." class="review-input">'}
+                    
+                    <div class="star-rating" style="font-size: 2rem; margin: 10px 0;">
+                        <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
+                    </div>
+                    
+                    <textarea id="review-text" class="review-input" placeholder="¿Qué tal el sitio? (Misión, limpieza, sombra...)" style="height:80px;"></textarea>
+                    
+                    <button id="post-review-btn" class="btn-primary full-width">Publicar en Kidoa</button>
+                    <button class="btn-text full-width" style="margin-top:10px;" onclick="this.closest('.modal').remove()">Cancelar</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        let rating = 0;
+        modal.querySelectorAll('.star').forEach(s => {
+            s.onclick = () => {
+                rating = s.dataset.val;
+                modal.querySelectorAll('.star').forEach(x => x.style.color = x.dataset.val <= rating ? '#FFD700' : '#ccc');
+            };
+        });
+
+        document.getElementById('post-review-btn').onclick = () => {
+            const finalName = name || document.getElementById('new-site-name').value;
+            if (!finalName || rating === 0) return alert("Completa el nombre y la nota.");
+
+            window.KidoaPoints.addPoints('REVIEW');
+            window.KidoaMap.createMarker({ name: finalName, lat, lng, rating, type: 'new' });
+            alert("¡Gracias! Has ganado 100 puntos y ayudado a la comunidad. ✨");
+            modal.remove();
+        };
     }
 };
