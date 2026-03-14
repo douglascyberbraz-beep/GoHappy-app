@@ -25,9 +25,8 @@ export default function KidoaMap({ lastKnownCoords }: { lastKnownCoords: string 
         map.current.on('load', () => {
             if (!map.current) return;
             
-            // Custom Styling (Mirroring vanilla JS but in React)
-            map.current.setPaintProperty('water', 'fill-color', '#4CC9F0');
-            map.current.setPaintProperty('land', 'fill-color', '#F8FAFC');
+            // Basic styles for OpenFreeMap (Liberty)
+            // Layers vary by provider, we focus on general aesthetics
         });
 
         return () => {
