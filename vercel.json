@@ -1,7 +1,9 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/$1" }
+  "public": true,
+  "trailingSlash": false,
+  "routes": [
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }
