@@ -37,11 +37,14 @@ service cloud.firestore {
       allow update, delete: if authed();
 
       // Ubicación en vivo: SÓLO la lee la familia; sólo escribes la TUYA.
+      // (positions es la ÚNICA subcolección real bajo families — moments,
+      // quests y users son colecciones top-level. Por eso NO hay comodín
+      // recursivo aquí: si lo hubiera, en Firestore las reglas se combinan
+      // con OR y anularía esta privacidad de ubicación.)
       match /positions/{uid} {
         allow read:  if isFamilyMember(fid);
         allow write: if isOwner(uid);
       }
-      match /{sub=**} { allow read, write: if authed(); }
     }
 
     // ── Contenido de comunidad / familia (autenticado) ──
