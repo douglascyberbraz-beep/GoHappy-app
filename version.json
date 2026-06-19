@@ -1,5 +1,5 @@
 {
-  "version": "8.9.22",
-  "timestamp": "2026-06-04T21:30:00Z",
-  "note": "Como llegar: selector de app de navegacion (Google Maps/Apple Maps/Waze) con coords exactas + recordar navegador de confianza."
+  "version": "8.9.23",
+  "timestamp": "2026-06-04T22:00:00Z",
+  "note": "Seguridad: reglas Firestore endurecidas + premio de referido via Cloud Function segura."
 }

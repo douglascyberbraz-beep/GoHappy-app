@@ -3,18 +3,64 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ════════════════════════════════════════════════════════════════
-    // MODO BETA — TODO ABIERTO PARA USUARIOS AUTENTICADOS
-    // (cualquier user logueado puede leer/escribir cualquier doc)
-    //
-    // ⚠ Restablecer reglas de producción ANTES de release oficial.
-    // Las reglas estrictas están en backups/firestore.rules.strict (commit history).
+    // REGLAS DE PRODUCCIÓN — endurecidas (ya NO "todo abierto")
+    // Claves de seguridad:
+    //  • Cada usuario sólo escribe SU propio doc (puntos/perfil a salvo).
+    //  • Subcolección privada del usuario: sólo el dueño.
+    //  • Ubicación en vivo (positions): SÓLO la ve su familia; sólo escribes la tuya.
+    //  • Premios de referido y puntos de quests → Cloud Functions (Admin SDK).
+    //  • Colecciones internas (_audit, _aicache…): sólo Admin SDK.
     // ════════════════════════════════════════════════════════════════
 
-    match /{document=**} {
-      allow read, write: if request.auth != null;
+    function authed() { return request.auth != null; }
+    function isOwner(uid) { return request.auth != null && request.auth.uid == uid; }
+    function isFamilyMember(fid) {
+      return request.auth != null &&
+        request.auth.uid in get(/databases/$(database)/documents/families/$(fid)).data.miembros;
     }
 
-    // Internas — solo admin SDK
+    // ── Usuarios ──
+    // Lectura pública (ranking, mostrar miembros de familia, validar referido).
+    // Escritura SÓLO en tu propio documento → nadie te toca los puntos ni el perfil.
+    match /users/{uid} {
+      allow read:  if authed();
+      allow write: if isOwner(uid);
+      match /{sub=**} { allow read, write: if isOwner(uid); }   // private/, saved_plans/…
+    }
+
+    // ── Familias ──
+    // Lectura autenticada (necesaria para unirse por código y ver miembros).
+    // Crear/actualizar por usuarios autenticados (unirse, puntos de grupo).
+    match /families/{fid} {
+      allow read:           if authed();
+      allow create:         if authed();
+      allow update, delete: if authed();
+
+      // Ubicación en vivo: SÓLO la lee la familia; sólo escribes la TUYA.
+      match /positions/{uid} {
+        allow read:  if isFamilyMember(fid);
+        allow write: if isOwner(uid);
+      }
+      match /{sub=**} { allow read, write: if authed(); }
+    }
+
+    // ── Contenido de comunidad / familia (autenticado) ──
+    match /moments/{id}      { allow read, write: if authed(); match /{sub=**} { allow read, write: if authed(); } }
+    match /adventures/{id}   { allow read, write: if authed(); match /{sub=**} { allow read, write: if authed(); } }
+    match /activity/{id}     { allow read, write: if authed(); }
+    match /reviews/{id}      { allow read, write: if authed(); }
+    match /quests/{id}       { allow read, write: if authed(); }
+    match /completadas/{fid} { allow read, write: if authed(); match /{sub=**} { allow read, write: if authed(); } }
+    match /alerts/{id}       { allow read, write: if authed(); }
+    match /posts/{id}        { allow read, write: if authed(); match /{sub=**} { allow read, write: if authed(); } }
+    match /comments/{id}     { allow read, write: if authed(); }
+    match /invitations/{id}  { allow read, write: if authed(); }
+
+    // ── Contenido editorial (sólo lectura para clientes) ──
+    match /news/{id}   { allow read: if authed(); allow write: if false; }
+    match /events/{id} { allow read: if authed(); allow write: if false; }
+
+    // ── Colecciones internas — SÓLO Admin SDK (Cloud Functions) ──
     match /_audit/{docId}     { allow read, write: if false; }
     match /_ailogs/{docId}    { allow read, write: if false; }
     match /_aicache/{docId}   { allow read, write: if false; }

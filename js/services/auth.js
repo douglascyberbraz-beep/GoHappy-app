@@ -179,9 +179,21 @@ window.GoHappyAuth = {
             };
             await window.GoHappyDB.collection('users').doc(user.uid).set(profile);
 
-            // 4. FIX: Premiar al referidor si se usó su código
+            // 4. Premiar al referidor — vía Cloud Functions SEGURAS (Admin SDK,
+            //    anti-fraude). El cliente ya NO escribe en el doc de otro usuario,
+            //    lo que permite cerrar las reglas de Firestore a "solo tu doc".
             if (referralCode && referralCode.trim() !== '') {
-                await window.GoHappyAuth._rewardReferrer(referralCode.trim());
+                try {
+                    const fns = window.firebase && window.firebase.functions ? window.firebase.functions() : null;
+                    if (fns) {
+                        const validate = fns.httpsCallable('validateReferral');
+                        const res = await validate({ code: referralCode.trim() });
+                        if (res?.data?.valid && res.data.referrerId) {
+                            const reward = fns.httpsCallable('rewardReferrer');
+                            await reward({ referrerId: res.data.referrerId });
+                        }
+                    }
+                } catch (e) { console.warn('[Referral] reward via CF:', e?.message); }
             }
 
             return user;
