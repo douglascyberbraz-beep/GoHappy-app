@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gohappy-cache-v8.9.23';
+const CACHE_NAME = 'gohappy-cache-v8.9.24';
 const TILE_CACHE = 'gohappy-tiles-v1.3.0';
 
 const ASSETS = [
@@ -38,6 +38,8 @@ const ASSETS = [
     'js/services/safety.js',
     'js/services/families.js',
     'js/services/notifications.js',
+    'js/services/analytics.js',
+    'js/services/web_push.js',
     // Pages
     'js/pages/map_v11.js',
     'js/pages/today.js',
@@ -87,6 +89,46 @@ self.addEventListener('activate', (event) => {
                 );
             })
         ])
+    );
+});
+
+// ════════════════════════════════════════════════════════════════
+// WEB PUSH — recordatorio diario "Super Plan del día"
+// Recibe payloads (notification o data) enviados por la Cloud Function
+// programada. Funciona con el protocolo Web Push estándar; no requiere
+// importScripts de firebase en el SW. No-op si no llega payload.
+// ════════════════════════════════════════════════════════════════
+self.addEventListener('push', (event) => {
+    let payload = {};
+    try { payload = event.data ? event.data.json() : {}; } catch (e) {
+        try { payload = { notification: { body: event.data && event.data.text() } }; } catch (_) {}
+    }
+    const n = payload.notification || payload.data || payload || {};
+    const title = n.title || 'GoHappy Family';
+    const options = {
+        body: n.body || '✨ Tu Super Plan del día te espera',
+        icon: 'assets/logo.png',
+        badge: 'assets/logo.png',
+        tag: 'gohappy-daily',
+        renotify: true,
+        data: { page: (n.page || (payload.data && payload.data.page) || 'today') }
+    };
+    event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    const page = (event.notification.data && event.notification.data.page) || 'today';
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((wins) => {
+            for (const w of wins) {
+                if ('focus' in w) {
+                    w.postMessage({ type: 'navigate', page });
+                    return w.focus();
+                }
+            }
+            if (clients.openWindow) return clients.openWindow('./?page=' + encodeURIComponent(page));
+        })
     );
 });
 

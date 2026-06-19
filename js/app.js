@@ -6,8 +6,8 @@
 // la próxima vez que abran la app: localStorage, SW caches, IndexedDB.
 // Sólo se preserva la sesión activa (Firebase Auth). Cero datos demo.
 // ═══════════════════════════════════════════════════════════════════
-const APP_STATE_VERSION = 'v8.9.23';
-const APP_VERSION = '8.9.23';
+const APP_STATE_VERSION = 'v8.9.24';
+const APP_VERSION = '8.9.24';
 
 // ═══════════════════════════════════════════════════════════════════
 // AUTO-UPDATE AGRESIVO — Detecta nueva versión y fuerza reload
@@ -308,6 +308,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         try { window.GoHappyCookies.init(); } catch (e) { console.warn('cookies init:', e); }
     }
 
+    // Analytics GA4 (sólo recoge tras consentimiento) + Web Push del PWA
+    try { window.GoHappyAnalytics?.init(); } catch (e) {}
+    try { window.GoHappyWebPush?.init(); } catch (e) {}
+
+    // Navegación al tocar una notificación push (mensaje del Service Worker)
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', (ev) => {
+            if (ev.data?.type === 'navigate' && ev.data.page) {
+                try { loadPage(ev.data.page); } catch (e) {}
+            }
+        });
+    }
+    // Si se abrió desde una notificación con ?page=
+    try {
+        const pageParam = new URLSearchParams(location.search).get('page');
+        if (pageParam) setTimeout(() => { try { loadPage(pageParam); } catch (e) {} }, 1200);
+    } catch (e) {}
+
     // Desbloquear AudioContext en primer gesto del usuario
     document.addEventListener('touchstart', () => window.GoHappySound.unlock(), { once: true });
     document.addEventListener('click', () => window.GoHappySound.unlock(), { once: true });
@@ -498,6 +516,7 @@ async function loadPage(pageName) {
 
         appState.currentPage = pageName;
         updateNavStyles(pageName);
+        try { window.GoHappyAnalytics?.page(pageName); } catch (e) {}
 
         // 3. Renderizar destino
         if (pageName === 'map') {

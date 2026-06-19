@@ -54,6 +54,14 @@ window.GEMINI_KEY = null; // <-- explícitamente null: sin acceso directo
 // ─────────────────────────────────────────────────────────────────────────────
 window.TICKETMASTER_KEY = null;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// WEB PUSH (PWA) — Notificación diaria del "Super Plan del día"
+// Firebase Console → kindr-8d660 → Project Settings → Cloud Messaging
+//   → "Web Push certificates" → Generate key pair → pega la clave pública aquí.
+// Mientras sea null, web_push.js no pide permisos ni hace nada.
+// ─────────────────────────────────────────────────────────────────────────────
+window.WEB_PUSH_VAPID_KEY = null;
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FIREBASE APP CHECK — Anti-bot (configurable; activar tras registrar key)
@@ -86,6 +94,14 @@ if (window.firebase) {
         window.GoHappyFirebaseApp = firebase.app();
         window.GoHappyAuthReal    = firebase.auth();
         window.GoHappyDB          = firebase.firestore();
+
+        // Firebase Analytics (GA4) — la recolección real se gobierna en
+        // analytics.js según el consentimiento de cookies (GDPR).
+        try {
+            if (firebase.analytics) {
+                firebase.analytics(); // instancia base; collection disabled por defecto en analytics.js
+            }
+        } catch (e) { /* analytics SDK opcional */ }
 
         // PERSISTENCIA DESACTIVADA — causaba "client is offline" en muchos
         // navegadores (Safari iOS, Chrome incógnito, Firefox restringido).

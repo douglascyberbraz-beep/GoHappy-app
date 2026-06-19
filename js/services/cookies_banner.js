@@ -106,12 +106,14 @@ window.GoHappyCookies = {
 
         document.getElementById('gh-cookies-accept').onclick = () => {
             try { localStorage.setItem(window.GoHappyCookies.KEY, JSON.stringify({ accepted: true, ts: Date.now() })); } catch (e) {}
+            try { window.GoHappyAnalytics?.setConsent(true); } catch (e) {}
             banner.classList.remove('show');
             setTimeout(() => banner.remove(), 500);
         };
 
         document.getElementById('gh-cookies-more').onclick = () => {
             try { localStorage.setItem(window.GoHappyCookies.KEY, JSON.stringify({ accepted: true, ts: Date.now() })); } catch (e) {}
+            try { window.GoHappyAnalytics?.setConsent(true); } catch (e) {}
             banner.classList.remove('show');
             setTimeout(() => {
                 banner.remove();

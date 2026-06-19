@@ -1,5 +1,5 @@
 {
-  "version": "8.9.23",
-  "timestamp": "2026-06-04T22:00:00Z",
-  "note": "Seguridad: reglas Firestore endurecidas + premio de referido via Cloud Function segura."
+  "version": "8.9.24",
+  "timestamp": "2026-06-19T12:00:00Z",
+  "note": "Analytics GA4 con consentimiento + Web Push del PWA (scaffold) + Ticketmaster listo."
 }
