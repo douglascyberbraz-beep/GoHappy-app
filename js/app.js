@@ -6,8 +6,8 @@
 // la próxima vez que abran la app: localStorage, SW caches, IndexedDB.
 // Sólo se preserva la sesión activa (Firebase Auth). Cero datos demo.
 // ═══════════════════════════════════════════════════════════════════
-const APP_STATE_VERSION = 'v8.9.24';
-const APP_VERSION = '8.9.24';
+const APP_STATE_VERSION = 'v8.9.25';
+const APP_VERSION = '8.9.25';
 
 // ═══════════════════════════════════════════════════════════════════
 // AUTO-UPDATE AGRESIVO — Detecta nueva versión y fuerza reload
@@ -272,6 +272,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Family Context (Sprint 1: memoria compartida) — carga en background
     if (window.GoHappyContext) {
         window.GoHappyContext.load().catch(e => console.warn('[Context] load:', e?.message));
+    }
+
+    // Estado crítico cross-device (racha, planes, prefs) → Firestore (aditivo)
+    if (window.GoHappyState) {
+        window.GoHappyState.start().catch(e => console.warn('[StateSync] start:', e?.message));
     }
 
     // Proactive (Flujos E + F): sugerencias inteligentes al abrir
