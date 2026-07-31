@@ -6,8 +6,8 @@
 // la próxima vez que abran la app: localStorage, SW caches, IndexedDB.
 // Sólo se preserva la sesión activa (Firebase Auth). Cero datos demo.
 // ═══════════════════════════════════════════════════════════════════
-const APP_STATE_VERSION = 'v8.9.25';
-const APP_VERSION = '8.9.25';
+const APP_STATE_VERSION = 'v8.9.26';
+const APP_VERSION = '8.9.26';
 
 // ═══════════════════════════════════════════════════════════════════
 // AUTO-UPDATE AGRESIVO — Detecta nueva versión y fuerza reload
@@ -38,7 +38,9 @@ const APP_VERSION = '8.9.25';
         if (!r.ok) return;
         const remote = await r.json();
         const remoteV = String(remote.version || '0').trim();
-        if (remoteV && remoteV !== APP_VERSION) {
+        // Ignorar el valor especial 'offline' que devuelve el SW cuando no hay red
+        // (evita el bucle de reload cuando el dispositivo está sin conexión)
+        if (remoteV && remoteV !== 'offline' && remoteV !== APP_VERSION) {
             console.warn(`[GoHappy] Versión desactualizada (local=${APP_VERSION} vs server=${remoteV}) — auto-actualizando…`);
             // Borrar todas las caches del SW
             if ('caches' in self) {
@@ -535,6 +537,10 @@ async function loadPage(pageName) {
             }
             window.GoHappySound && window.GoHappySound.play('map');
         } else {
+            // FIX #10: Al salir del mapa, limpiar observers para evitar fugas de memoria
+            if (previousPage === 'map' && window.GoHappyMap?.destroy) {
+                try { window.GoHappyMap.destroy(); } catch (e) {}
+            }
             if (mapViewport) mapViewport.style.display = 'none';
             container.classList.remove('hidden');
 

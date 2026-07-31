@@ -5,11 +5,14 @@
 window.GoHappyFamilies = {
 
     // Generar código de invitación único de 6 caracteres alfanuméricos
+    // SEGURO: usa crypto.getRandomValues() — no predecible como Math.random()
     _generateCode: () => {
         const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Sin chars ambiguos (0,O,I,1)
         let code = '';
+        const arr = new Uint8Array(6);
+        crypto.getRandomValues(arr);
         for (let i = 0; i < 6; i++) {
-            code += chars.charAt(Math.floor(Math.random() * chars.length));
+            code += chars.charAt(arr[i] % chars.length);
         }
         return code;
     },
@@ -124,13 +127,13 @@ window.GoHappyFamilies = {
         const codigoLimpio = (code || '').trim().toUpperCase();
         if (codigoLimpio.length !== 6) throw new Error(window.L('El código debe tener exactamente 6 caracteres.', 'Code must be exactly 6 characters.'));
 
-        // Verificar que el usuario no tenga ya una familia
-        const userDoc = await window.GoHappyDB.collection('users').doc(user.uid).get();
-        if (userDoc.exists && userDoc.data().familyId) {
-            throw new Error('Ya perteneces a una familia. Sal de ella primero para unirte a otra.');
+        // Comprobación rápida previa en sesión local (optimización — no garantía)
+        // La comprobación real y atómica ocurre dentro de la transacción Firestore.
+        if (user.familyId) {
+            throw new Error(window.L('Ya perteneces a una familia. Sal de ella primero para unirte a otra.', 'You already belong to a family. Leave it first.'));
         }
 
-        // Buscar la familia por código
+        // Buscar la familia por código (fuera de transacción — query no transaccional, OK)
         const snap = await window.GoHappyDB.collection('families')
             .where('codigoInvitacion', '==', codigoLimpio)
             .limit(1)
@@ -142,35 +145,44 @@ window.GoHappyFamilies = {
         const familiaData = familiaDoc.data();
         const familyId = familiaDoc.id;
 
-        // Validar máximo de miembros (6)
-        const miembros = familiaData.miembros || [];
-        if (miembros.length >= 6) {
-            throw new Error(window.L('Esta familia ya tiene 6 miembros. No puede admitir más.', 'This family already has 6 members. No more can join.'));
-        }
-
-        // Verificar que no sea ya miembro
-        if (miembros.includes(user.uid)) {
-            throw new Error(window.L('¡Ya eres miembro de esta familia!', 'You are already a member of this family!'));
-        }
-
-        // Añadir al usuario como miembro (transacción para evitar race conditions)
+        // ═══════════════════════════════════════════════════════════════
+        // TRANSACCIÓN ATÓMICA — todas las validaciones críticas ocurren
+        // aquí para eliminar race conditions entre lecturas y escrituras.
+        //
+        // Lee SIMULTÁNEAMENTE el doc de familia Y el doc del usuario,
+        // y valida todo antes de hacer cualquier escritura.
+        // ═══════════════════════════════════════════════════════════════
         await window.GoHappyDB.runTransaction(async (t) => {
-            const ref = window.GoHappyDB.collection('families').doc(familyId);
-            const doc = await t.get(ref);
-            if (!doc.exists) throw new Error('La familia ya no existe.');
-            const currentMembers = doc.data().miembros || [];
-            if (currentMembers.length >= 6) throw new Error(window.L('La familia está llena (máx. 6 miembros).', 'Family is full (max 6 members).'));
-            t.update(ref, { miembros: [...currentMembers, user.uid] });
+            const familyRef = window.GoHappyDB.collection('families').doc(familyId);
+            const userRef   = window.GoHappyDB.collection('users').doc(user.uid);
+
+            // Leer ambos docs dentro de la transacción (atómico)
+            const [familyDoc, userDocTx] = await Promise.all([
+                t.get(familyRef),
+                t.get(userRef)
+            ]);
+
+            if (!familyDoc.exists) throw new Error(window.L('La familia ya no existe.', 'Family no longer exists.'));
+
+            // Validación atómica: el usuario no debe tener familia en el momento del commit
+            if (userDocTx.exists && userDocTx.data().familyId) {
+                throw new Error(window.L('Ya perteneces a una familia. Sal de ella primero.', 'You already belong to a family. Leave it first.'));
+            }
+
+            const currentMembers = familyDoc.data().miembros || [];
+            if (currentMembers.length >= 6) {
+                throw new Error(window.L('La familia está llena (máx. 6 miembros).', 'Family is full (max 6 members).'));
+            }
+            if (currentMembers.includes(user.uid)) {
+                throw new Error(window.L('¡Ya eres miembro de esta familia!', 'You are already a member of this family!'));
+            }
+
+            // Escribir ambos docs en la misma transacción (atómico)
+            t.update(familyRef, { miembros: [...currentMembers, user.uid] });
+            t.set(userRef, { familyId, rol: 'miembro', familyName: familiaData.nombre }, { merge: true });
         });
 
-        // Actualizar el perfil del usuario
-        await window.GoHappyDB.collection('users').doc(user.uid).set({
-            familyId,
-            rol: 'miembro',
-            familyName: familiaData.nombre
-        }, { merge: true });
-
-        // Actualizar sesión local
+        // Actualizar sesión local tras commit exitoso
         window.GoHappyAuth._currentUser = {
             ...window.GoHappyAuth._currentUser,
             familyId,

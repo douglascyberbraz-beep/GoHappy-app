@@ -86,6 +86,17 @@ window.GoHappyMyFamily = {
             );
             const memberDocs = (await Promise.all(memberDocsPromises)).filter(Boolean);
 
+            // Helper para sanitizar URLs de foto (prevenir CSS injection)
+            // Solo se permiten data:image/* y URLs http/https absolutas.
+            const safePhotoUrl = (url) => {
+                if (!url || typeof url !== 'string') return null;
+                if (url.startsWith('data:image/')) return url;
+                try {
+                    const u = new URL(url);
+                    return (u.protocol === 'https:' || u.protocol === 'http:') ? url : null;
+                } catch { return null; }
+            };
+
             // Cargar retos familiares (origen 'today_plan' o admin custom)
             const questsSnap = await window.GoHappyDB.collection('quests')
                 .where('familyId', '==', family.id)
@@ -122,9 +133,11 @@ window.GoHappyMyFamily = {
                     <div style="display:flex; flex-wrap:wrap; gap:10px;">
                         ${memberDocs.map(m => {
                             const pts = parseInt(m.points) || 0;
-                            const isPhoto = m.photo && (m.photo.startsWith('data:') || m.photo.startsWith('http'));
+                            // FIX XSS: validar URL de foto antes de inyectar en CSS
+                            const photoUrl = safePhotoUrl(m.photo);
+                            const isPhoto = !!photoUrl;
                             const inner = isPhoto
-                                ? `<div style="width:100%;height:100%;background-image:url('${m.photo}');background-size:cover;background-position:center;border-radius:50%;"></div>`
+                                ? `<div style="width:100%;height:100%;background-image:url('${encodeURI(photoUrl)}');background-size:cover;background-position:center;border-radius:50%;"></div>`
                                 : (m.photo || '👤');
                             const lvl = window.GoHappyPoints?.getLevelInfo?.(pts) || { ring:'linear-gradient(135deg,#A0E0B6,#65C18C)', shadow:'rgba(101,193,140,0.45)', name:'Novato' };
                             return `
@@ -188,7 +201,7 @@ window.GoHappyMyFamily = {
                 ${isAdmin ? `
                     <!-- Acciones admin -->
                     <button id="mf-delete-family" style="width:100%; margin-top:16px; padding:12px; background:rgba(239,68,68,0.08); color:#DC2626; border:0.5px solid rgba(239,68,68,0.30); border-radius:999px; font-weight:700; font-size:13px; cursor:pointer;">
-                        ${T('🚪 Salir de la familia', '🚪 Leave family')}
+                        ${T('🚪 Eliminar familia', '🚪 Delete family')}
                     </button>
                 ` : `
                     <button id="mf-leave-family" style="width:100%; margin-top:16px; padding:12px; background:rgba(239,68,68,0.08); color:#DC2626; border:0.5px solid rgba(239,68,68,0.30); border-radius:999px; font-weight:700; font-size:13px; cursor:pointer;">
@@ -245,7 +258,7 @@ window.GoHappyMyFamily = {
                 row.onclick = () => window.GoHappyMyFamily._completeReto(q, family, T);
             });
 
-            const leaveBtn = document.getElementById('mf-leave-family') || document.getElementById('mf-delete-family');
+            const leaveBtn = document.getElementById('mf-leave-family');
             if (leaveBtn) leaveBtn.onclick = async () => {
                 if (!confirm(T('¿Seguro que quieres salir? Perderás progreso compartido.', 'Sure you want to leave? Shared progress will be lost.'))) return;
                 try {
@@ -258,6 +271,11 @@ window.GoHappyMyFamily = {
                     window.GoHappyToast?.error(e?.message || T('Error al salir', 'Error leaving'));
                 }
             };
+
+            // Botón ADMIN: flujo seguro de eliminación de familia
+            const deleteBtn = document.getElementById('mf-delete-family');
+            if (deleteBtn) deleteBtn.onclick = () => window.GoHappyMyFamily._confirmDeleteFamily(family, T);
+
         } catch (e) {
             console.error('MyFamily render error:', e);
             document.getElementById('mf-content').innerHTML = `
@@ -420,6 +438,68 @@ window.GoHappyMyFamily = {
                 saveBtn.disabled = false;
                 saveBtn.textContent = '✨ ' + T('Crear reto', 'Create quest');
                 window.GoHappyToast?.error(T('No se pudo crear: ', 'Could not create: ') + (e?.message || ''));
+            }
+        };
+    },
+
+    // ─── Admin: eliminar familia con confirmación en dos pasos ───
+    _confirmDeleteFamily: (family, T) => {
+        const lang = window.GoHappyI18n?.lang || 'es';
+        const modal = document.createElement('div');
+        modal.className = 'modal entry-anim';
+        modal.style.cssText = 'z-index:9100;';
+        modal.innerHTML = `
+            <div class="auth-container" style="padding:20px;">
+                <div class="auth-card premium-glass" style="padding:28px 22px; border-radius:32px; max-width:400px; text-align:center;">
+                    <div style="font-size:48px; margin-bottom:12px;">⚠️</div>
+                    <h3 style="color:#DC2626; font-weight:900; margin-bottom:8px;">${T('Eliminar familia', 'Delete family')}</h3>
+                    <p style="font-size:13px; color:var(--text-secondary); margin-bottom:18px; line-height:1.5;">
+                        ${T('Esta acción es irreversible. Se eliminarán todos los datos compartidos.\nEscribe CONFIRMAR para continuar.', 'This action is irreversible. All shared data will be deleted.\nType CONFIRM to continue.')}
+                    </p>
+                    <input id="df-confirm-input" type="text" placeholder="${lang === 'en' ? 'CONFIRM' : 'CONFIRMAR'}" style="width:100%; padding:12px 14px; border:1.5px solid #DC2626; border-radius:14px; font-size:14px; text-align:center; font-weight:800; outline:none; box-sizing:border-box; margin-bottom:14px; text-transform:uppercase;">
+                    <button id="df-confirm-btn" style="width:100%; padding:13px; background:#DC2626; color:white; border:none; border-radius:14px; font-weight:800; cursor:pointer; margin-bottom:9px; font-size:14px;">🗑️ ${T('Eliminar permanentemente', 'Delete permanently')}</button>
+                    <button onclick="this.closest('.modal').remove()" style="width:100%; padding:10px; background:transparent; color:var(--text-secondary); border:none; font-weight:700; cursor:pointer; font-size:13px;">${T('Cancelar', 'Cancel')}</button>
+                </div>
+            </div>`;
+        document.body.appendChild(modal);
+
+        const confirmWord = lang === 'en' ? 'CONFIRM' : 'CONFIRMAR';
+        document.getElementById('df-confirm-btn').onclick = async () => {
+            const typed = (document.getElementById('df-confirm-input').value || '').trim().toUpperCase();
+            if (typed !== confirmWord) {
+                window.GoHappyToast?.warning(T(`Escribe "${confirmWord}" para confirmar`, `Type "${confirmWord}" to confirm`));
+                return;
+            }
+            modal.remove();
+            window.GoHappyToast?.info(T('Eliminando familia…', 'Deleting family…'), 3000);
+            try {
+                const user = window.GoHappyAuth?.checkAuth?.();
+                if (!user || user.rol !== 'admin') throw new Error(T('Solo el admin puede eliminar la familia.', 'Only the admin can delete the family.'));
+
+                // 1. Limpiar familyId de todos los miembros
+                const miembros = family.miembros || [];
+                const batch = window.GoHappyDB.batch();
+                miembros.forEach(uid => {
+                    const ref = window.GoHappyDB.collection('users').doc(uid);
+                    batch.set(ref, { familyId: null, rol: null, familyName: null }, { merge: true });
+                });
+                // 2. Eliminar el doc de la familia
+                batch.delete(window.GoHappyDB.collection('families').doc(family.id));
+                await batch.commit();
+
+                // 3. Actualizar sesión local
+                window.GoHappyAuth._currentUser = {
+                    ...window.GoHappyAuth._currentUser,
+                    familyId: null, rol: null, familyName: null
+                };
+                if (window.GoHappyAuth._saveLocalSession) window.GoHappyAuth._saveLocalSession(window.GoHappyAuth._currentUser);
+                else localStorage.setItem('GoHappy_local_user', JSON.stringify(window.GoHappyAuth._currentUser));
+
+                window.GoHappyToast?.success(T('Familia eliminada correctamente.', 'Family deleted successfully.'));
+                window.GoHappyApp?.loadPage?.('profile');
+            } catch (e) {
+                console.error('[MyFamily] deleteFamily error:', e);
+                window.GoHappyToast?.error(e?.message || T('Error al eliminar la familia.', 'Could not delete the family.'));
             }
         };
     }

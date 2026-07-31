@@ -1,5 +1,5 @@
 {
-  "version": "8.9.25",
-  "timestamp": "2026-06-19T12:30:00Z",
-  "note": "Estado critico (racha/planes/prefs) sincronizado a Firestore cross-device."
+  "version": "8.9.26",
+  "timestamp": "2026-07-31T13:30:00Z",
+  "note": "Fix Service Worker: los POST ya no pasan por el SW (el proxy de IA y las escrituras de Firestore ya no quedan enmascarados). Incluye fixes de seguridad y memoria pendientes."
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gohappy-cache-v8.9.25';
+const CACHE_NAME = 'gohappy-cache-v8.9.26';
 const TILE_CACHE = 'gohappy-tiles-v1.3.0';
 
 const ASSETS = [
@@ -136,16 +136,30 @@ self.addEventListener('notificationclick', (event) => {
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
 
+    // ─── FIX: sólo interceptamos GET ───────────────────────────────────────
+    // Las peticiones POST/PUT/DELETE (proxy de IA, escrituras de Firestore,
+    // Cloud Functions) deben ir a la red SIN pasar por el SW. Antes, un POST
+    // al proxy de IA (cuya URL termina en '/') caía en la rama de HTML de
+    // abajo y, si el proxy fallaba, se devolvía index.html con status 200:
+    // la app creía que la llamada había ido bien y fallaba al parsear el JSON,
+    // ocultando el error real. La caché sólo tiene sentido para GET.
+    if (event.request.method !== 'GET') return;
+
     // version.json: NUNCA cachear — debe ser fresh siempre para auto-update
+    // Fallback: devuelve 'offline' (no '0.0.0') para evitar bucles de reload
+    // cuando hay problemas de red intermitentes.
     if (url.pathname.endsWith('version.json')) {
         event.respondWith(fetch(event.request, { cache: 'no-store' }).catch(() =>
-            new Response(JSON.stringify({ version: '0.0.0' }), { headers: { 'Content-Type': 'application/json' } })
+            new Response(JSON.stringify({ version: 'offline' }), { headers: { 'Content-Type': 'application/json' } })
         ));
         return;
     }
 
     // HTML: NETWORK-FIRST (siempre intentar fresco para detectar updates rápido)
-    if (event.request.destination === 'document' || url.pathname.endsWith('.html') || url.pathname === '/' || url.pathname.endsWith('/')) {
+    // Sólo para NUESTRO origen: una URL externa acabada en '/' (p.ej. el proxy
+    // de IA) no es un documento HTML nuestro y no debe caer aquí.
+    if (url.origin === self.location.origin &&
+        (event.request.destination === 'document' || url.pathname.endsWith('.html') || url.pathname === '/' || url.pathname.endsWith('/'))) {
         event.respondWith(
             fetch(event.request).then(response => {
                 if (response && response.ok) {
@@ -176,12 +190,14 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Firebase / Gemini API: siempre red (datos en tiempo real)
+    // Firebase / Gemini API / Cloud Functions: siempre red (datos en tiempo real)
     if (url.hostname.includes('firebaseio.com') ||
         url.hostname.includes('googleapis.com') ||
         url.hostname.includes('generativelanguage.googleapis.com') ||
         url.hostname.includes('identitytoolkit.googleapis.com') ||
-        url.hostname.includes('firestore.googleapis.com')) {
+        url.hostname.includes('firestore.googleapis.com') ||
+        url.hostname.endsWith('.run.app') ||           // Cloud Functions v2 (geminiProxy)
+        url.hostname.includes('cloudfunctions.net')) {
         event.respondWith(fetch(event.request).catch(() => new Response('{}', { headers: { 'Content-Type': 'application/json' } })));
         return;
     }

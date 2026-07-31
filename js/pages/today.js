@@ -9,6 +9,26 @@ window.GoHappyToday = {
     _city: null,
     _coords: '41.6520, -4.7286',
 
+    // FIX #7: Normaliza coordenadas a string 'lat, lng' para mayor robustez.
+    // Acepta: string 'lat, lng', objeto {lat, lng}, objeto {latitude, longitude} (Geolocation API)
+    _normalizeCoords: (input) => {
+        if (!input) return '41.6520, -4.7286';
+        if (typeof input === 'string') {
+            // Validar formato: dos números separados por coma
+            const parts = input.split(',').map(s => parseFloat(s.trim()));
+            if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) return input;
+            return '41.6520, -4.7286';
+        }
+        if (typeof input === 'object') {
+            const lat = input.lat ?? input.latitude ?? null;
+            const lng = input.lng ?? input.longitude ?? null;
+            if (lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng)) {
+                return `${parseFloat(lat).toFixed(6)}, ${parseFloat(lng).toFixed(6)}`;
+            }
+        }
+        return '41.6520, -4.7286';
+    },
+
     // ─── Skeleton helper para evitar pantalla en blanco ───
     _skeletonCards: (count = 3) => {
         let html = '<div class="today-skel-wrap">';
@@ -289,8 +309,10 @@ window.GoHappyToday = {
     },
 
     render: async (container) => {
-        // Coords iniciales
-        window.GoHappyToday._coords = window.lastKnownCoords || '41.6520, -4.7286';
+        // Coords iniciales — normalizadas para soportar tanto string 'lat, lng' como objeto {lat, lng}
+        window.GoHappyToday._coords = window.GoHappyToday._normalizeCoords(
+            window.lastKnownCoords || '41.6520, -4.7286'
+        );
 
         const T = window.t || (k => k);
 

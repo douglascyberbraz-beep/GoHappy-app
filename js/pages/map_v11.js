@@ -1833,14 +1833,25 @@ window.GoHappyMap = {
         // Primera llamada RÁPIDA con caché (resultado en <1s)
         // Después una SEGUNDA llamada de alta precisión que mejora si la primera era imprecisa
         const onPos = (pos, isPrecise = false) => {
+            // FIX #5: Guard — la instancia puede no existir si el GPS responde
+            // antes de que MapLibre haya terminado de inicializarse (race condition)
+            if (!window.GoHappyMap.instance) {
+                console.warn('[Map] GPS fired before map init, skipping center update');
+                return;
+            }
             const lat = pos.coords.latitude, lng = pos.coords.longitude;
             const acc = pos.coords.accuracy;
             console.info('[Map] GPS', isPrecise ? '(precise)' : '(quick)', lat.toFixed(5), lng.toFixed(5), '±' + Math.round(acc) + 'm');
             const opts = animate
                 ? { center: [lng, lat], zoom: 16, pitch: 0, duration: 1800 }
                 : { center: [lng, lat] };
-            if (animate) window.GoHappyMap.instance.flyTo(opts);
-            else window.GoHappyMap.instance.setCenter([lng, lat]);
+            try {
+                if (animate) window.GoHappyMap.instance.flyTo(opts);
+                else window.GoHappyMap.instance.setCenter([lng, lat]);
+            } catch (e) {
+                console.warn('[Map] locateUser move error:', e?.message);
+                return;
+            }
             window.GoHappyMap.updateUserIcon(lat, lng);
             // ⚡ AUTO-CARGAR POIs reales alrededor en background (no bloquea)
             requestIdleCallback
@@ -2289,5 +2300,26 @@ window.GoHappyMap = {
                 window.GoHappyToast && window.GoHappyToast.error((lang === 'en' ? 'Save error: ' : 'Error: ') + (e?.message || 'unknown'));
             }
         };
+    },
+
+    // ─── CLEANUP: desconectar observers para evitar fugas de memoria ───
+    // Llamar al navegar fuera de la página del mapa (page teardown).
+    // Los observers se recrean la próxima vez que se inicialice el mapa.
+    destroy: () => {
+        try {
+            if (window.GoHappyMap._intersectObs) {
+                window.GoHappyMap._intersectObs.disconnect();
+                window.GoHappyMap._intersectObs = null;
+            }
+            if (window.GoHappyMap._resizeObs) {
+                window.GoHappyMap._resizeObs.disconnect();
+                window.GoHappyMap._resizeObs = null;
+            }
+            if (window.GoHappyMap._gpsWatchId != null) {
+                navigator.geolocation.clearWatch(window.GoHappyMap._gpsWatchId);
+                window.GoHappyMap._gpsWatchId = null;
+            }
+            console.info('[Map] Observers disconnected (destroy)');
+        } catch (e) { console.warn('[Map] destroy error:', e?.message); }
     }
 };

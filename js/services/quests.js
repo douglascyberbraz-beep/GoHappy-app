@@ -312,10 +312,19 @@ window.GoHappyQuests = {
 
         try {
             const realQuestId = questId;
-            const basePuntos = (questData && typeof questData === 'object' ? questData.puntos : null) || 50;
-            const bonus = typeof opts.bonus === 'number' ? opts.bonus : 1.0;
+            // ═══ BLINDAJE ANTI-INFLACIÓN ═══
+            // Aunque el servidor Cloud Function es la fuente de verdad cuando está
+            // disponible, en el flujo cliente clamp-amos los valores para que un
+            // usuario con DevTools no pueda registrar puntos arbitrarios.
+            const rawBase  = (questData && typeof questData === 'object' ? questData.puntos : null) || 50;
+            const basePuntos = Math.max(0, Math.min(parseInt(rawBase) || 50, 1000)); // máx 1000 pts/quest
+            const rawBonus = typeof opts.bonus === 'number' ? opts.bonus : 1.0;
+            const bonus = Math.max(0.1, Math.min(rawBonus, 1.5)); // máx bonus foto: 1.5x
             const puntos = Math.round(basePuntos * bonus);
             const verified = !!opts.verified;
+            // Sanitizar proofPhoto: solo aceptar data-URIs de imagen, no URLs arbitrarias
+            const proofPhoto = (opts.proofPhoto && typeof opts.proofPhoto === 'string' && opts.proofPhoto.startsWith('data:image/'))
+                ? opts.proofPhoto : null;
 
             // Verificar que no esté ya completada hoy
             const yaCompletada = await window.GoHappyQuests._yaCompletadaHoy(familyId, realQuestId, hoy);
@@ -348,6 +357,9 @@ window.GoHappyQuests = {
 
             // Flujo cliente: Registrar completación + actualizar puntos directamente
             // userId es OBLIGATORIO por las reglas de seguridad
+            // BLINDAJE: puntosGanados se clampea en cliente y lo mismo debe
+            // aplicarse en las reglas Firestore (ver firestore.rules).
+            const puntosRegistro = Math.max(0, Math.min(puntos, 1500)); // guard final
             await window.GoHappyDB
                 .collection('completadas').doc(familyId)
                 .collection('registros').add({
@@ -357,7 +369,7 @@ window.GoHappyQuests = {
                     completadoPorNick: user.nickname || 'Explorador',
                     fecha:             hoy,
                     timestamp:         firebase.firestore.FieldValue.serverTimestamp(),
-                    puntosGanados:     puntos
+                    puntosGanados:     puntosRegistro
                 });
 
             // Actualizar puntos del usuario (atomic increment, sin race conditions)
