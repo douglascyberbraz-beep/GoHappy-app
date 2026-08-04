@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gohappy-cache-v8.9.28';
+const CACHE_NAME = 'gohappy-cache-v8.9.29';
 const TILE_CACHE = 'gohappy-tiles-v1.3.0';
 
 const ASSETS = [
@@ -9,6 +9,7 @@ const ASSETS = [
     'manifest.json',
     'css/main.css',
     'css/premium.css',
+    'css/liquid-glass.css',
     'js/app.js',
     'js/config.js',
     'js/lib/qrcode.min.js',

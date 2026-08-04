@@ -1,5 +1,5 @@
 {
-  "version": "8.9.28",
-  "timestamp": "2026-08-04T16:58:52Z",
-  "note": "Fix: el boton de finalizar aventura no respondia (script inline en innerHTML nunca se ejecuta). Mas fixes de robustez."
+  "version": "8.9.29",
+  "timestamp": "2026-08-04T17:38:21Z",
+  "note": "Liquid Glass: borde-lente, especular y profundidad, respetando la paleta cobalto/cian."
 }
