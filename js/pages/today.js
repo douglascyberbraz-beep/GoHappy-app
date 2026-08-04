@@ -1437,7 +1437,7 @@ window.GoHappyToday = {
                     </div>
                     ${act.tip ? `<div class="event-tip"><span class="event-tip-icon">💡</span><span>${safe(act.tip)}</span></div>` : ''}
                     <div style="display:flex; gap:8px;">
-                        <button class="event-cta" data-act="${idx}" style="flex:2;">✨ Guardar plan</button>
+                        <button class="event-cta" data-act="${idx}" style="flex:2;">✨ ${window.GoHappyI18n?.lang === 'en' ? 'Save plan' : 'Guardar plan'}</button>
                         <button class="event-cta plan-map-btn" data-lat="${parseFloat(act.lat)||0}" data-lng="${parseFloat(act.lng)||0}" data-loc="${safe(act.location)}" style="flex:1; background:rgba(11,76,143,0.08); color:var(--cobalt); box-shadow:none;">🗺️</button>
                     </div>
                 </div>

@@ -6,13 +6,27 @@ window.GoHappySafePage = {
             sub: 'Safety alerts in your area',
             ai: '✨ GoHappy AI:',
             analyzing: 'Analysing your area...',
-            report: '⚠️ Report alert'
+            report: '⚠️ Report alert',
+            phTitle: 'Short title',
+            phPlace: '📍 Place (e.g. Central Park)',
+            phDesc: 'Description of the alert...',
+            send: 'Send alert',
+            cancel: 'Cancel',
+            clearTitle: 'All clear',
+            clearBody: 'There are no active safety alerts in your area right now.'
         } : {
             title: '🛡️ Safe',
             sub: 'Alertas de seguridad en tu zona',
             ai: '✨ GoHappy IA:',
             analyzing: 'Analizando tu zona...',
-            report: '⚠️ Reportar Alerta'
+            report: '⚠️ Reportar Alerta',
+            phTitle: 'Título breve',
+            phPlace: '📍 Lugar (ej: Parque Campo Grande)',
+            phDesc: 'Descripción del aviso...',
+            send: 'Enviar Alerta',
+            cancel: 'Cancelar',
+            clearTitle: 'Todo despejado',
+            clearBody: 'No hay alertas de seguridad activas en tu zona ahora mismo.'
         };
         container.innerHTML = `
             <div class="safe-page stagger-group">
@@ -50,12 +64,12 @@ window.GoHappySafePage = {
                                 <button class="type-btn" data-type="INFO">ℹ️ Info</button>
                             </div>
 
-                            <input type="text" id="alert-title" placeholder="Título breve" class="auth-input" style="margin-top: 12px;">
-                            <input type="text" id="alert-location" placeholder="📍 Lugar (ej: Parque Campo Grande)" class="auth-input">
-                            <textarea id="alert-desc" placeholder="Descripción del aviso..." class="auth-input" style="min-height: 80px; resize:none;"></textarea>
+                            <input type="text" id="alert-title" placeholder="${txt.phTitle}" class="auth-input" style="margin-top: 12px;">
+                            <input type="text" id="alert-location" placeholder="${txt.phPlace}" class="auth-input">
+                            <textarea id="alert-desc" placeholder="${txt.phDesc}" class="auth-input" style="min-height: 80px; resize:none;"></textarea>
 
-                            <button id="submit-alert" class="btn-primary full-width" style="margin-top: 12px;">Enviar Alerta</button>
-                            <button id="close-report" class="btn-text" style="margin-top: 8px;">Cancelar</button>
+                            <button id="submit-alert" class="btn-primary full-width" style="margin-top: 12px;">${txt.send}</button>
+                            <button id="close-report" class="btn-text" style="margin-top: 8px;">${txt.cancel}</button>
                         </div>
                     </div>
                 </div>
@@ -74,8 +88,8 @@ window.GoHappySafePage = {
             alertsList.innerHTML = `
                 <div class="center-text p-40" style="color:#aaa;">
                     <div style="font-size: 40px; margin-bottom: 15px;">🛡️</div>
-                    <h3 style="color: var(--primary-cobalt);">Todo despejado</h3>
-                    <p style="font-size: 14px;">No hay alertas de seguridad activas en tu zona ahora mismo.</p>
+                    <h3 style="color: var(--primary-cobalt);">${txt.clearTitle}</h3>
+                    <p style="font-size: 14px;">${txt.clearBody}</p>
                 </div>
             `;
         } else {
