@@ -1,5 +1,5 @@
 {
-  "version": "8.9.26",
-  "timestamp": "2026-07-31T13:30:00Z",
-  "note": "Fix Service Worker: los POST ya no pasan por el SW (el proxy de IA y las escrituras de Firestore ya no quedan enmascarados). Incluye fixes de seguridad y memoria pendientes."
+  "version": "8.9.27",
+  "timestamp": "2026-08-04T12:03:32Z",
+  "note": "Capacitor 8 (targetSdk 36, listo para Google Play) + barrido de traducciones al ingles."
 }

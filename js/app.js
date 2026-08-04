@@ -6,8 +6,8 @@
 // la próxima vez que abran la app: localStorage, SW caches, IndexedDB.
 // Sólo se preserva la sesión activa (Firebase Auth). Cero datos demo.
 // ═══════════════════════════════════════════════════════════════════
-const APP_STATE_VERSION = 'v8.9.26';
-const APP_VERSION = '8.9.26';
+const APP_STATE_VERSION = 'v8.9.27';
+const APP_VERSION = '8.9.27';
 
 // ═══════════════════════════════════════════════════════════════════
 // AUTO-UPDATE AGRESIVO — Detecta nueva versión y fuerza reload
@@ -610,8 +610,8 @@ async function loadPage(pageName) {
             container.innerHTML = `
                 <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:60vh; gap:16px; padding:30px; text-align:center; font-family:Inter,sans-serif;">
                     <span style="font-size:48px;">❌</span>
-                    <h3 style="color:#E74C3C; font-size:18px; font-weight:800; margin:0;">Error de carga</h3>
-                    <p style="font-size:14px; color:#64748b; margin:0;">${err.message || 'Error desconocido'}</p>
+                    <h3 style="color:#E74C3C; font-size:18px; font-weight:800; margin:0;">${window.GoHappyI18n?.lang === 'en' ? 'Loading error' : 'Error de carga'}</h3>
+                    <p style="font-size:14px; color:#64748b; margin:0;">${err.message || (window.GoHappyI18n?.lang === 'en' ? 'Unknown error' : 'Error desconocido')}</p>
                     <button onclick="window.GoHappyApp.loadPage('${pageName}')"
                         style="background:linear-gradient(135deg,#0B4C8F,#0B71FC);color:white;border:none;padding:14px 28px;border-radius:50px;font-weight:800;font-size:14px;cursor:pointer;margin-top:10px;">
                         🔄 Reintentar

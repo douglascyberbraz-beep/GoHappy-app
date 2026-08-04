@@ -644,7 +644,7 @@ window.GoHappyProfile = {
             if (loadingEl) loadingEl.style.display = 'none';
 
             if (!family) {
-                contentEl.innerHTML = `<p style="color:#94a3b8; font-size:13px; text-align:center;">Error al cargar los datos de la familia.</p>`;
+                contentEl.innerHTML = `<p style="color:#94a3b8; font-size:13px; text-align:center;">${window.GoHappyI18n?.lang === 'en' ? 'Could not load family data.' : 'Error al cargar los datos de la familia.'}</p>`;
                 return;
             }
 

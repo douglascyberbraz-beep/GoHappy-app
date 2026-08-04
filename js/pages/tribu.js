@@ -8,6 +8,7 @@ window.GoHappyTribu = {
         const sub = lang === 'en'
             ? 'Share and connect with families like yours'
             : 'Comparte y conecta con familias como la tuya';
+        const T = (es, en) => lang === 'en' ? en : es;
         container.innerHTML = `
             <div class="unified-hero">
                 ${window.GoHappyPremium ? window.GoHappyPremium.greetingHTML() : ''}
@@ -28,11 +29,11 @@ window.GoHappyTribu = {
             <div id="post-modal" class="modal hidden">
                 <div class="auth-container slide-up-anim">
                     <div class="auth-card">
-                        <h3>Nueva Publicación</h3>
-                        <textarea id="post-content" maxlength="160" placeholder="¿Qué quieres compartir? (Max 160 carácteres)" class="post-input"></textarea>
+                        <h3>${T('Nueva Publicación', 'New Post')}</h3>
+                        <textarea id="post-content" maxlength="160" placeholder="${T('¿Qué quieres compartir? (Máx. 160 caracteres)', 'What do you want to share? (Max 160 characters)')}" class="post-input"></textarea>
                         <div class="char-count">0/160</div>
-                        <button id="publish-btn" class="btn-primary full-width">Publicar</button>
-                        <button id="close-post-btn" class="btn-text" style="margin-top:10px;">Cancelar</button>
+                        <button id="publish-btn" class="btn-primary full-width">${T('Publicar', 'Publish')}</button>
+                        <button id="close-post-btn" class="btn-text" style="margin-top:10px;">${T('Cancelar', 'Cancel')}</button>
                     </div>
                 </div>
             </div>
@@ -182,7 +183,8 @@ window.GoHappyTribu = {
     renderPosts: (container, postList) => {
         container.innerHTML = '';
         if (postList.length === 0) {
-            container.innerHTML = '<p class="center-text p-20">No hay publicaciones aún. ¡Sé el primero!</p>';
+            const lg = window.GoHappyI18n?.lang || 'es';
+            container.innerHTML = `<p class="center-text p-20">${lg === 'en' ? 'No posts yet. Be the first!' : 'No hay publicaciones aún. ¡Sé el primero!'}</p>`;
             return;
         }
         const sec = window.GoHappySecurity;

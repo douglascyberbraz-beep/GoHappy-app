@@ -12,7 +12,7 @@ window.GoHappyMemories = {
                 <div class="unified-hero">
                     ${window.GoHappyPremium ? window.GoHappyPremium.greetingHTML() : ''}
                     <h2>📖 Memories</h2>
-                    <p>Tu diario familiar de aventuras</p>
+                    <p>${window.GoHappyI18n?.lang === 'en' ? 'Your family adventure diary' : 'Tu diario familiar de aventuras'}</p>
                 </div>
 
                 <!-- Monthly Summary Card -->
