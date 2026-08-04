@@ -460,6 +460,13 @@ window.GoHappyAdventures = {
         content.querySelectorAll('.adv-do-btn').forEach(btn => {
             btn.onclick = () => window.GoHappyAdventures._completeMission(adv, parseInt(btn.dataset.idx), user);
         });
+        // Finalizar aventura (botón de la tarjeta de celebración)
+        const finishBtn = document.getElementById('adv-finish');
+        if (finishBtn) finishBtn.onclick = () => {
+            finishBtn.disabled = true;
+            finishBtn.textContent = '⌛ ' + T('Guardando…', 'Saving…');
+            window.GoHappyAdventures._finalizeAdventure();
+        };
         // Abandonar
         const abandonBtn = document.getElementById('adv-abandon');
         if (abandonBtn) abandonBtn.onclick = async () => {
@@ -497,10 +504,11 @@ window.GoHappyAdventures = {
                     cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,0.18);
                 ">✨ ${T('Guardar y empezar otra', 'Save and start another')}</button>
             </div>
-            <script>
-                document.getElementById('adv-finish')?.addEventListener('click', () => window.GoHappyAdventures._finalizeAdventure());
-            </script>
         `;
+        // NOTA: el listener de #adv-finish se engancha en _renderActive.
+        // Antes había aquí un <script> inline, pero los <script> insertados
+        // vía innerHTML NUNCA se ejecutan (así lo define el estándar HTML),
+        // así que el botón se quedaba muerto y no se podía finalizar la aventura.
     },
 
     _finalizeAdventure: async () => {
@@ -537,6 +545,13 @@ window.GoHappyAdventures = {
         } catch (e) {
             console.error('Finalize:', e);
             window.GoHappyToast?.error(lang === 'en' ? 'Could not finalize' : 'No se pudo finalizar');
+            // Devolver el botón a su estado usable para poder reintentar,
+            // en vez de dejarlo bloqueado en "Guardando…" para siempre.
+            const btn = document.getElementById('adv-finish');
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = '✨ ' + (lang === 'en' ? 'Save and start another' : 'Guardar y empezar otra');
+            }
         }
     },
 
@@ -625,11 +640,13 @@ window.GoHappyAdventures = {
                 await window.GoHappyDB.collection('adventures').doc(adv.docId)
                     .update({ misiones: updated });
 
-                // Puntos al usuario
-                await window.GoHappyDB.collection('users').doc(user.uid).update({
+                // Puntos al usuario — set con merge, no update: si el doc del
+                // usuario aún no existe, update() falla y tumba toda la misión
+                // (la foto ya se habría guardado y el usuario vería un error).
+                await window.GoHappyDB.collection('users').doc(user.uid).set({
                     points: firebase.firestore.FieldValue.increment(mission.puntos),
                     weeklyPoints: firebase.firestore.FieldValue.increment(mission.puntos)
-                });
+                }, { merge: true });
 
                 window.GoHappySound?.play('quest');
                 window.GoHappyToast?.points(`✓ +${mission.puntos} pts`, 2200);

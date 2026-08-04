@@ -104,11 +104,16 @@ window.GoHappyNotifications = {
         const user = window.GoHappyAuth.checkAuth();
         if (user && !user.isGuest) {
             try {
-                await window.GoHappyDB.collection('users').doc(user.uid).update({
+                // set+merge en vez de update: si el doc del usuario aún no
+                // existe (registro recién hecho), update() falla y el token
+                // FCM no se guarda nunca → ese usuario jamás recibe push.
+                // Capacitor sólo existe en la app nativa: en la web daba
+                // TypeError y tumbaba el guardado entero.
+                await window.GoHappyDB.collection('users').doc(user.uid).set({
                     fcmToken: token,
-                    lastPlatform: window.Capacitor.getPlatform()
-                });
-            } catch (e) { console.warn('Error guardando FCM Token'); }
+                    lastPlatform: window.Capacitor?.getPlatform?.() || 'web'
+                }, { merge: true });
+            } catch (e) { console.warn('Error guardando FCM Token:', e?.message); }
         }
     }
 };

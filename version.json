@@ -1,5 +1,5 @@
 {
-  "version": "8.9.27",
-  "timestamp": "2026-08-04T12:03:32Z",
-  "note": "Capacitor 8 (targetSdk 36, listo para Google Play) + barrido de traducciones al ingles."
+  "version": "8.9.28",
+  "timestamp": "2026-08-04T16:58:52Z",
+  "note": "Fix: el boton de finalizar aventura no respondia (script inline en innerHTML nunca se ejecuta). Mas fixes de robustez."
 }

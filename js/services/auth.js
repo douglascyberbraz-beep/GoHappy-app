@@ -119,28 +119,12 @@ window.GoHappyAuth = {
         }
     },
 
-    // Buscar usuario por su referralCode y premiar con puntos (atomic increment)
-    _rewardReferrer: async (referralCode) => {
-        if (!referralCode) return;
-        try {
-            const snap = await window.GoHappyDB.collection('users')
-                .where('referralCode', '==', referralCode.toUpperCase())
-                .limit(1)
-                .get();
-            if (snap.empty) return;
-
-            const referrerId = snap.docs[0].id;
-            const refPoints = window.GoHappyPoints?.REWARDS?.REFERRAL || 500;
-
-            await window.GoHappyDB.collection('users').doc(referrerId).update({
-                points:       firebase.firestore.FieldValue.increment(refPoints),
-                weeklyPoints: firebase.firestore.FieldValue.increment(refPoints)
-            });
-            console.log(`✅ Referidor ${referrerId} recibió ${refPoints} pts`);
-        } catch (e) {
-            console.warn("_rewardReferrer error:", e);
-        }
-    },
+    // NOTA: aquí vivía _rewardReferrer, que premiaba al referidor escribiendo
+    // directamente en SU documento desde el cliente. Se ha eliminado porque:
+    //   1. Ya no se llamaba desde ningún sitio — el flujo real usa las Cloud
+    //      Functions seguras validateReferral + rewardReferrer (ver más abajo).
+    //   2. Las reglas de Firestore prohíben escribir en el doc de otro usuario,
+    //      así que siempre habría fallado (en silencio, dentro de su try/catch).
 
     login: async (email, pass) => {
         try {
