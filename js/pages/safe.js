@@ -31,7 +31,7 @@ window.GoHappySafePage = {
         container.innerHTML = `
             <div class="safe-page stagger-group">
                 <div class="unified-hero">
-                    ${window.GoHappyPremium ? window.GoHappyPremium.greetingHTML() : ''}
+                    <!-- El saludo vive solo en Today: repetido en 7 pantallas era ruido -->
                     <h2>${txt.title}</h2>
                     <p>${txt.sub}</p>
                 </div>

@@ -10,7 +10,7 @@ window.GoHappyMemories = {
         container.innerHTML = `
             <div class="memories-page">
                 <div class="unified-hero">
-                    ${window.GoHappyPremium ? window.GoHappyPremium.greetingHTML() : ''}
+                    <!-- El saludo vive solo en Today: repetido en 7 pantallas era ruido -->
                     <h2>📖 Memories</h2>
                     <p>${window.GoHappyI18n?.lang === 'en' ? 'Your family adventure diary' : 'Tu diario familiar de aventuras'}</p>
                 </div>

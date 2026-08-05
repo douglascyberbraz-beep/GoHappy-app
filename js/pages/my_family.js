@@ -50,7 +50,7 @@ window.GoHappyMyFamily = {
         container.innerHTML = `
             <div class="my-family-page" style="padding:14px 0 120px;">
                 <div class="unified-hero" style="padding:16px 16px 22px;">
-                    ${window.GoHappyPremium ? window.GoHappyPremium.greetingHTML() : ''}
+                    <!-- El saludo vive solo en Today: repetido en 7 pantallas era ruido -->
                     <h2 id="mf-title">👨‍👩‍👧 ${T('Mi Familia', 'My Family')}</h2>
                     <p id="mf-sub">${T('Cargando…', 'Loading…')}</p>
                 </div>
@@ -260,7 +260,13 @@ window.GoHappyMyFamily = {
 
             const leaveBtn = document.getElementById('mf-leave-family');
             if (leaveBtn) leaveBtn.onclick = async () => {
-                if (!confirm(T('¿Seguro que quieres salir? Perderás progreso compartido.', 'Sure you want to leave? Shared progress will be lost.'))) return;
+                const ok = await window.GoHappyPremium.confirm(
+                    T('Salir de la familia', 'Leave family'),
+                    T('Perderás el progreso compartido con tu familia. ¿Seguro?',
+                      'You will lose the progress shared with your family. Are you sure?'),
+                    T('Salir', 'Leave')
+                );
+                if (!ok) return;
                 try {
                     if (window.GoHappyFamilies?.leaveFamily) {
                         await window.GoHappyFamilies.leaveFamily();

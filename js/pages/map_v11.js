@@ -107,26 +107,20 @@ window.GoHappyMap = {
         return h >= 21 || h < 7;
     },
     _applyNightMode: () => {
-        // NUNCA aplicar filter CSS sobre #map-canvas — rompe el compositing
-        // WebGL y deja el mapa BLANCO en muchos navegadores. En su lugar
-        // usamos un overlay <div> encima del canvas con mix-blend-mode.
-        const viewport = document.getElementById('map-viewport-v11');
-        if (!viewport) return;
-        let overlay = document.getElementById('gh-night-overlay');
-        if (window.GoHappyMap._isNightMode()) {
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.id = 'gh-night-overlay';
-                overlay.style.cssText = `
-                    position:absolute; inset:0; z-index:2; pointer-events:none;
-                    background:linear-gradient(180deg, rgba(11,30,60,0.32), rgba(5,20,45,0.40));
-                    mix-blend-mode:multiply;
-                `;
-                viewport.appendChild(overlay);
-            }
-        } else if (overlay) {
-            overlay.remove();
-        }
+        // El modo noche se pinta AHORA en las propias capas del mapa
+        // (js/services/map_style.js, opción `noche`). Antes era un <div>
+        // oscuro con mix-blend-mode:multiply encima del canvas, que apagaba
+        // por igual agua, parques y edificios: de noche todo quedaba del
+        // mismo gris azulado. Recolorear las capas mantiene la distinción.
+        //
+        // Sigue en pie la regla vieja: NUNCA un `filter` CSS sobre
+        // #map-canvas — rompe el compositing WebGL y deja el mapa en blanco.
+        document.getElementById('gh-night-overlay')?.remove();   // limpia el de versiones previas
+        const map = window.GoHappyMap.instance;
+        if (!map || !window.GoHappyMapStyle) return;
+        try {
+            window.GoHappyMapStyle.apply(map, { noche: window.GoHappyMap._isNightMode() });
+        } catch (e) { console.warn('[Map] modo noche:', e?.message); }
     },
 
     // ─── AUTO-CARGA de POIs alrededor del usuario (Overpass API) ──
@@ -592,119 +586,21 @@ window.GoHappyMap = {
                 window.GoHappyMap.instance.triggerRepaint();
             } catch (e) {}
 
-            // ───── COLORES NAVEGADOR PREMIUM (estilo Waze/Google 2026) ─────
-            const layersColor = [
-                { id:'water',                color:'#7CC6EE', opacity:1 },
-                { id:'water-pattern',        color:'#7CC6EE', opacity:0.9 },
-                { id:'landuse-natural',      color:'#D8EAF6', opacity:1 },
-                { id:'landuse-park',         color:'#A6E8C9', opacity:1 },
-                { id:'land',                 color:'#E8F1FB', opacity:1 },
-                { id:'landuse-residential',  color:'#DCE7F4', opacity:1 },
-                { id:'landuse-commercial',   color:'#D8E0F0', opacity:1 },
-                { id:'landcover-grass',      color:'#B8E5D0', opacity:1 },
-                { id:'landcover-wood',       color:'#A8D8C0', opacity:1 },
-                { id:'landuse-industrial',   color:'#CFD9EA', opacity:1 },
-                { id:'landuse-cemetery',     color:'#C9E5D8', opacity:1 },
-                { id:'landuse-school',       color:'#DCE7F4', opacity:1 },
-                { id:'landuse-hospital',     color:'#E6DEEF', opacity:1 },
-                { id:'aeroway-area',         color:'#DCE7F4', opacity:1 }
-            ];
-            layersColor.forEach(l => {
-                try {
-                    if (window.GoHappyMap.instance.getLayer(l.id)) {
-                        window.GoHappyMap.instance.setPaintProperty(l.id, 'fill-color', l.color);
-                        window.GoHappyMap.instance.setPaintProperty(l.id, 'fill-opacity', l.opacity);
-                    }
-                } catch (e) {}
-            });
-
-            // ───── EDIFICIOS 3D EXTRUIDOS (gradient cobalt por altura) ─────
+            // ───── ESTILO DE MARCA "Navegador GoHappy" ─────
+            // Todo el pintado vive en js/services/map_style.js. Antes eran
+            // 113 líneas aquí mismo que apuntaban a capas inexistentes
+            // (guión vs guión bajo, p. ej. landuse-park en vez de
+            // landuse_park) y añadían una 2ª capa de edificios 3D encima
+            // de la que el estilo ya trae.
             try {
-                const buildLayer = window.GoHappyMap.instance.getLayer('building');
-                if (buildLayer) {
-                    // Capa base 2D plana cobalto suave
-                    window.GoHappyMap.instance.setPaintProperty('building', 'fill-color', '#9FBEDD');
-                    window.GoHappyMap.instance.setPaintProperty('building', 'fill-opacity', 0.5);
-
-                    // Capa 3D extrusión con TRANSPARENCIA (estilo Google 2026)
-                    window.GoHappyMap.instance.addLayer({
-                        id: 'gohappy-3d-buildings',
-                        source: buildLayer.source,
-                        'source-layer': buildLayer.sourceLayer,
-                        type: 'fill-extrusion',
-                        minzoom: 12,
-                        paint: {
-                            'fill-extrusion-color': [
-                                'interpolate', ['linear'],
-                                ['coalesce', ['get', 'render_height'], 10],
-                                0,   '#B8E0FA',
-                                20,  '#7DC4F0',
-                                50,  '#3A9CE0',
-                                100, '#0B71FC',
-                                200, '#0B4C8F'
-                            ],
-                            'fill-extrusion-height': [
-                                'interpolate', ['linear'], ['zoom'],
-                                12, 0,
-                                13.5, ['*', ['coalesce', ['get', 'render_height'], 18], 0.4],
-                                15, ['coalesce', ['get', 'render_height'], 18]
-                            ],
-                            'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0],
-                            'fill-extrusion-opacity': [
-                                'interpolate', ['linear'], ['zoom'],
-                                12, 0.35,
-                                14, 0.55,
-                                16, 0.65,
-                                18, 0.72
-                            ],
-                            'fill-extrusion-vertical-gradient': true
-                        }
+                if (window.GoHappyMapStyle) {
+                    window.GoHappyMapStyle.apply(window.GoHappyMap.instance, {
+                        noche: window.GoHappyMap._isNightMode()
                     });
+                } else {
+                    console.warn("[Map] map_style.js no cargado — mapa con estilo base");
                 }
-            } catch (e) { console.warn('[Map] 3D buildings:', e?.message); }
-
-            // ───── TINT cobalto sutil global ─────
-            try {
-                window.GoHappyMap.instance.addLayer({
-                    id: 'gh-brand-tint',
-                    type: 'background',
-                    paint: {
-                        'background-color': '#7DA8D4',
-                        'background-opacity': [
-                            'interpolate', ['linear'], ['zoom'],
-                            0,  0.18, 6, 0.12, 10, 0.05, 14, 0.02, 18, 0
-                        ]
-                    }
-                }, 'water');
-            } catch (e) {}
-
-            // ───── CARRETERAS estilo Waze (blancas con casing) ─────
-            try {
-                const allLayers = window.GoHappyMap.instance.getStyle().layers;
-                const roadLayers = allLayers.filter(l => /road|street|way|bridge|tunnel|highway/i.test(l.id)).map(l => l.id);
-                roadLayers.forEach(layer => {
-                    try {
-                        const lyr = window.GoHappyMap.instance.getLayer(layer);
-                        if (!lyr || lyr.type !== 'line') return;
-                        const isCasing  = /casing|outline|border/i.test(layer);
-                        const isPrimary = /primary|motorway|trunk|main/i.test(layer);
-                        if (isCasing)        window.GoHappyMap.instance.setPaintProperty(layer, 'line-color', '#D8E4F0');
-                        else if (isPrimary)  window.GoHappyMap.instance.setPaintProperty(layer, 'line-color', '#FFFFFF');
-                        else                 window.GoHappyMap.instance.setPaintProperty(layer, 'line-color', '#F4F8FC');
-                        window.GoHappyMap.instance.setPaintProperty(layer, 'line-opacity', 1);
-                    } catch (e) {}
-                });
-            } catch (e) {}
-
-            // ───── ILUMINACIÓN ambiental sol Waze ─────
-            try {
-                window.GoHappyMap.instance.setLight({
-                    anchor: 'viewport',
-                    color: '#FFF5E6',
-                    intensity: 0.35,
-                    position: [1.5, 90, 80]
-                });
-            } catch (e) {}
+            } catch (e) { console.warn("[Map] estilo:", e && e.message); }
 
             // ───── CLUSTERING NATIVO MapLibre ─────
             // Source GeoJSON con cluster:true → MapLibre agrupa puntos cercanos

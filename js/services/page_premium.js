@@ -193,6 +193,62 @@ window.GoHappyPremium = (() => {
         return html;
     }
 
+    /**
+     * Confirmación in-app, en hoja inferior estilo iOS.
+     *
+     * Sustituye al `confirm()` del navegador, que en el móvil abre el cuadro
+     * del sistema con el título "127.0.0.1 dice…" o el dominio: rompe la
+     * ilusión de app nativa justo en el momento más delicado (abandonar una
+     * aventura, salir de la familia).
+     *
+     * Vivía suelto dentro de profile.js y no lo usaba nadie. Aquí lo pueden
+     * usar todas las páginas.
+     *
+     * @returns {Promise<boolean>} true si el usuario confirma.
+     */
+    function confirmSheet(title, message, okText, cancelText) {
+        const isEn = lang() === 'en';
+        okText     = okText     || (isEn ? 'Confirm' : 'Confirmar');
+        cancelText = cancelText || (isEn ? 'Cancel'  : 'Cancelar');
+
+        return new Promise(resolve => {
+            const modal = document.createElement('div');
+            modal.className = 'modal entry-anim';
+            modal.style.zIndex = '10000';
+            const esc = s => String(s == null ? '' : s).replace(/[<>&"']/g,
+                c => ({ '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;' }[c]));
+            modal.innerHTML = `
+                <div class="auth-container" style="padding:0;">
+                    <div style="background:white; border-radius:24px 24px 0 0; padding:28px 28px calc(env(safe-area-inset-bottom,20px) + 24px); text-align:center;">
+                        <h3 style="color:var(--primary-cobalt); font-weight:700; margin-bottom:8px; font-size:1.2rem;">${esc(title)}</h3>
+                        <p style="color:#64748b; font-size:14px; margin-bottom:24px; line-height:1.5;">${esc(message)}</p>
+                        <div style="display:flex; gap:12px;">
+                            <button data-cd="no" style="flex:1; padding:14px; border-radius:14px; border:none; background:#f1f5f9; color:#64748b; font-weight:700; font-size:15px; cursor:pointer;">${esc(cancelText)}</button>
+                            <button data-cd="si" style="flex:1; padding:14px; border-radius:14px; border:none; background:#E74C3C; color:white; font-weight:700; font-size:15px; cursor:pointer; box-shadow:0 6px 18px rgba(231,76,60,0.3);">${esc(okText)}</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            let resuelto = false;
+            const cerrar = (valor) => {
+                if (resuelto) return;
+                resuelto = true;
+                document.removeEventListener('keydown', onEsc);
+                modal.remove();
+                resolve(valor);
+            };
+            const onEsc = (e) => { if (e.key === 'Escape') cerrar(false); };
+
+            modal.querySelector('[data-cd="si"]').onclick = () => cerrar(true);
+            modal.querySelector('[data-cd="no"]').onclick = () => cerrar(false);
+            // Tocar fuera de la hoja = cancelar, como en iOS
+            modal.onclick = (e) => { if (e.target === modal) cerrar(false); };
+            document.addEventListener('keydown', onEsc);
+        });
+    }
+
     // Auto-inject estilos en boot
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', ensureGlobalStyles);
@@ -205,6 +261,7 @@ window.GoHappyPremium = (() => {
         staggerIn,
         greetingHTML,
         skeleton,
+        confirm: confirmSheet,
         ensureGlobalStyles
     };
 })();

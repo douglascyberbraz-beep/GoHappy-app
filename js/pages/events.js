@@ -16,7 +16,7 @@ window.GoHappyEventsPage = {
             <div class="today-page">
                 <div class="today-hero-premium">
                     <div style="position:relative; z-index:2;">
-                        ${window.GoHappyPremium ? window.GoHappyPremium.greetingHTML() : ''}
+                        <!-- El saludo vive solo en Today: repetido en 7 pantallas era ruido -->
                         <h2 class="today-welcome-title" style="margin-top:2px;">🎫 ${T('Eventos', 'Events')}</h2>
                         <p class="today-welcome-subtitle" id="ev-city">${T('Planes y eventos reales cerca de ti', 'Real events near you')}</p>
                     </div>

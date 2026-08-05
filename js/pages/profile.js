@@ -608,29 +608,9 @@ window.GoHappyProfile = {
     },
 
 
-    // Confirmación in-app premium (reemplaza confirm() nativo)
-    _confirmDialog: (title, message, okText = 'Aceptar', cancelText = 'Cancelar') => {
-        return new Promise(resolve => {
-            const modal = document.createElement('div');
-            modal.className = 'modal entry-anim';
-            modal.style.zIndex = '10000';
-            modal.innerHTML = `
-                <div class="auth-container" style="padding:0;">
-                    <div style="background:white; border-radius:24px 24px 0 0; padding:28px 28px calc(env(safe-area-inset-bottom,20px) + 24px); text-align:center;">
-                        <h3 style="color:var(--primary-cobalt); font-weight:700; margin-bottom:8px; font-size:1.2rem;">${title}</h3>
-                        <p style="color:#64748b; font-size:14px; margin-bottom:24px; line-height:1.5;">${message}</p>
-                        <div style="display:flex; gap:12px;">
-                            <button id="cd-cancel" style="flex:1; padding:14px; border-radius:14px; border:none; background:#f1f5f9; color:#64748b; font-weight:700; font-size:15px; cursor:pointer;">${cancelText}</button>
-                            <button id="cd-ok" style="flex:1; padding:14px; border-radius:14px; border:none; background:#E74C3C; color:white; font-weight:800; font-size:15px; cursor:pointer; box-shadow:0 6px 18px rgba(231,76,60,0.3);">${okText}</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            modal.querySelector('#cd-ok').onclick = () => { modal.remove(); resolve(true); };
-            modal.querySelector('#cd-cancel').onclick = () => { modal.remove(); resolve(false); };
-        });
-    },
+    // _confirmDialog se movió a GoHappyPremium.confirm() (page_premium.js)
+    // para que lo puedan usar todas las páginas. Aquí ya no lo usaba nadie.
+
 
     // ───────────── Flujo D: ADN Familiar ─────────────
     _renderFamilyDNA: () => {

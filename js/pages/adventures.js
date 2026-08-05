@@ -470,7 +470,13 @@ window.GoHappyAdventures = {
         // Abandonar
         const abandonBtn = document.getElementById('adv-abandon');
         if (abandonBtn) abandonBtn.onclick = async () => {
-            if (!confirm(T('¿Seguro que quieres abandonar esta aventura?', 'Sure you want to abandon this adventure?'))) return;
+            const ok = await window.GoHappyPremium.confirm(
+                T('Abandonar aventura', 'Abandon adventure'),
+                T('Perderás el progreso de esta aventura. ¿Seguro?',
+                  'You will lose the progress of this adventure. Are you sure?'),
+                T('Abandonar', 'Abandon')
+            );
+            if (!ok) return;
             try {
                 await window.GoHappyDB.collection('adventures').doc(adv.docId)
                     .update({ estado: 'abandonada' });

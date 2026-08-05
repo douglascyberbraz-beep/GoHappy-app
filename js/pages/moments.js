@@ -44,7 +44,7 @@ window.GoHappyMoments = {
                 <div class="unified-hero">
                     <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; position:relative; z-index:2;">
                         <div style="flex:1;">
-                            ${window.GoHappyPremium ? window.GoHappyPremium.greetingHTML() : ''}
+                            <!-- El saludo vive solo en Today: repetido en 7 pantallas era ruido -->
                             <h2>${T('moments.title')}</h2>
                             <p>${T('moments.subtitle')}</p>
                         </div>

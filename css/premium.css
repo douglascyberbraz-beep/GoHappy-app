@@ -883,22 +883,33 @@ body .map-search-container {
     max-width: 420px !important;
     margin: 0 !important;
 }
-/* Los filtros llenan el contenedor centrado y centran sus chips */
+/* Los filtros llenan el contenedor centrado y centran sus chips.
+   Ya no hace falta forzar `position:absolute` aquí: eso era para
+   contrarrestar el bloque muerto de Leaflet que había en main.css, que
+   los sacaba a top:75px pegados a la izquierda. Borrado ese bloque, los
+   filtros son simplemente el segundo hijo de la columna. */
 .map-search-container .map-filters {
-    position: absolute !important;
-    left: 0 !important;
-    right: 0 !important;
-    transform: none !important;
-    width: 100% !important;
-    max-width: none !important;
-    justify-content: center !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    width: 100%;
+    max-width: none;
+    /* `safe center` en vez de `center`: si los chips no caben, un contenedor
+       con scroll y justify-content:center desborda por AMBOS lados y el
+       primero queda cortado y fuera de alcance (no se puede desplazar hacia
+       la izquierda). Con `safe` degrada a alineado a la izquierda y se
+       desplaza con el dedo. Medido antes del cambio: del primer chip sólo
+       se veían 22 px de 49. */
+    justify-content: safe center;
+    gap: 6px;
+    padding-left: 0;
+    padding-right: 0;
+    scroll-padding-inline: 4px;
 }
 .map-filters .filter-chip {
-    width: 46px !important;
-    height: 46px !important;
-    min-height: 46px !important;
+    /* 44px = mínimo táctil de Apple. Con 7 filtros y 6px de hueco suman
+       344px, que caben en los 351px del contenedor en una pantalla de
+       375px. Con los 46px de antes sumaban 357 y se salían. */
+    width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
     padding: 0 !important;
     border-radius: 50% !important;
     display: inline-flex !important;
@@ -1163,18 +1174,23 @@ input:focus, textarea:focus, .post-input:focus, .review-input:focus, .auth-input
 }
 
 /* ── 13. MAPA ESTILO WAZE 3D ────────────────────────────────────── */
-/* Search bar flotante arriba — respeta safe-area-top */
+/* Search bar flotante arriba — respeta safe-area-top.
+   Sin padding lateral: el contenedor ya viene con width:calc(100% - 24px),
+   así que el margen exterior está puesto. Los 16px de padding que había
+   aquí, más los 12px de los filtros, dejaban sólo 295px útiles de los 351
+   del contenedor — por eso los chips de los extremos quedaban cortados.
+   El aire interior lo pone la propia barra con su padding. */
 .map-search-container {
     background: transparent !important;
     top: calc(var(--safe-top) + 8px) !important;
-    padding: 0 16px !important;
+    padding: 0 !important;
 }
 
-/* Filtros chips bajo search */
+/* Filtros: son el segundo hijo de la columna, no van posicionados aparte.
+   El `top` absoluto de antes venía de cuando el contenedor no era flex. */
 .map-filters {
-    top: calc(var(--safe-top) + 70px) !important;
-    padding: 0 12px !important;
-    gap: 8px !important;
+    padding: 0 !important;
+    gap: 6px !important;
 }
 
 /* Botón locate respeta nav flotante */

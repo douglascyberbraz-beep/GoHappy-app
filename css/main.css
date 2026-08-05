@@ -500,73 +500,15 @@ body { background: #f8fafc; font-family: 'Inter', sans-serif; -webkit-font-smoot
     z-index: -1;
 }
 
-.map-search-container {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 15px 10px !important;
-    padding: 0 !important;
-    position: absolute;
-    top: 5px;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-}
+/* ── Estilos del mapa: bloque de la era Leaflet ELIMINADO ──
+   Aquí vivía una 2ª definición de .map-search-container, .map-filters y
+   .filter-chip, heredada de cuando el mapa era Leaflet. Con !important en
+   margin/padding/background peleaba contra la definición buena (más abajo,
+   ~línea 1575) y contra los parches de premium.css. Efecto visible: la fila
+   de filtros quedaba en position:absolute a top:75px con width:100vw, o sea
+   pegada a la izquierda, mientras la barra de búsqueda sí iba centrada.
+   La definición viva es la única que queda. */
 
-.map-search-container input::placeholder {
-    color: #94a3b8 !important;
-}
-
-.map-filters {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 5px 15px 15px 15px;
-    /* Added horizontal padding to prevent cut off */
-    width: 100vw;
-    max-width: 600px;
-    position: absolute;
-    top: 75px;
-    left: 0;
-    z-index: 999;
-    box-sizing: border-box;
-}
-
-.map-filters::-webkit-scrollbar {
-    display: none;
-}
-
-.filter-chip {
-    background: rgba(255, 255, 255, 0.9) !important;
-    color: var(--primary-cobalt) !important;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(0, 44, 119, 0.1) !important;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    white-space: nowrap;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-.filter-chip.active {
-    background: var(--primary-cobalt) !important;
-    color: white !important;
-}
-
-/* Branded Map Layer - Google-style */
-.GoHappy-map-tiles.google-nav-mode {
-    filter: saturate(1.15) contrast(1.02);
-    /* Slight pop to Google's standard colors */
-}
-
-/* Ensure common Leaflet elements stay crisp */
-.leaflet-container {
-    background: #eef2f7 !important;
-}
 
 /* Profile & Gamification */
 .profile-page {
