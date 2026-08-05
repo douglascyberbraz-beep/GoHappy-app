@@ -206,7 +206,7 @@ window.GoHappyTribu = {
                 <div class="tribu-header">
                     <div class="tribu-avatar" style="${post.isAI ? 'background: var(--primary-cobalt); box-shadow: 0 0 10px var(--accent-cyan);' : ''}">${safeAvatar}</div>
                     <div class="tribu-info">
-                        <span class="tribu-user" style="${post.isAI ? 'font-weight: 900; color: var(--primary-cobalt);' : ''}">${safeUser}${post.isAI ? ' ✨ <em style="font-size:11px;opacity:0.7">(Oficial)</em>' : ''}</span>
+                        <span class="tribu-user" style="${post.isAI ? 'font-weight:700; color: var(--primary-cobalt);' : ''}">${safeUser}${post.isAI ? ' ✨ <em style="font-size:11px;opacity:0.7">(Oficial)</em>' : ''}</span>
                         <span class="tribu-time">${safeTime}</span>
                     </div>
                 </div>

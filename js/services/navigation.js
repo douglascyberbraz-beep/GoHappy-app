@@ -60,7 +60,7 @@ window.GoHappyNav = {
         modal.innerHTML = `
             <div class="auth-container" style="padding:20px;">
                 <div class="auth-card premium-glass" style="padding:24px 20px; border-radius:30px; max-width:380px;">
-                    <h3 style="text-align:center; color:var(--primary-cobalt); font-weight:900; margin:0 0 4px; font-size:1.15rem;">🚘 ${L('¿Cómo quieres llegar?', 'How do you want to get there?')}</h3>
+                    <h3 style="text-align:center; color:var(--primary-cobalt); font-weight:700; margin:0 0 4px; font-size:1.15rem;">🚘 ${L('¿Cómo quieres llegar?', 'How do you want to get there?')}</h3>
                     <p style="text-align:center; font-size:12.5px; color:var(--text-secondary); margin:0 0 18px;">${(name || '').replace(/[<>]/g, '').slice(0, 50)}</p>
                     <div style="display:flex; flex-direction:column; gap:10px;">
                         ${apps.map(a => `

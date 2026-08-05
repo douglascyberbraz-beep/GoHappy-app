@@ -277,3 +277,82 @@
         background: rgba(255, 255, 255, 0.95) !important;
     }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   8. CALMA — quitar peso visual
+   
+   La app tenía 172 textos en peso 800/900 y 86 degradados. Cuando todo
+   grita, nada destaca. En iOS la jerarquía la marcan el TAMAÑO y el
+   ESPACIO, no el grosor: los titulares son grandes, no negrísimos.
+   
+   Aquí bajamos el grosor un escalón y apretamos el tracking. No tocamos
+   tamaños ni colores, así que la jerarquía se mantiene — solo deja de
+   chillar.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Titulares: fuertes pero no bloque macizo.
+   Nota de especificidad: main.css define los títulos por clase
+   (.today-welcome-title, .quest-title…). Una regla `h2` suelta pierde
+   contra ellas aunque lleve !important, porque entre declaraciones
+   !important manda la especificidad. Por eso el `[class]` doble: sube a
+   (0,2,1) y gana a cualquier regla de una o dos clases, sin tener que
+   editar las 67 reglas repartidas por main.css y premium.css. */
+h1[class][class], h2[class][class], h3[class][class], h4[class][class],
+[class][class] h1, [class][class] h2, [class][class] h3, [class][class] h4,
+h1, h2, h3, h4,
+[class*="-title"][class], [class*="-titulo"][class],
+.profile-name, .profile-name-main, .profile-name-premium {
+    font-weight: 700 !important;
+    letter-spacing: -0.022em;
+}
+
+/* Texto de interfaz: semibold es suficiente para leerse con autoridad */
+.nav-item .label,
+[class*="btn"][class],
+[class*="-label"][class], .q-label, .pts-label {
+    font-weight: 600 !important;
+    letter-spacing: -0.008em;
+}
+
+/* Cifras y datos: el tamaño ya las hace protagonistas */
+[class*="-val"][class], [class*="-value"][class] {
+    font-weight: 700 !important;
+    letter-spacing: -0.03em;
+}
+
+/* Texto secundario: que respire y no compita */
+[class*="-subtitle"][class], [class*="-sub"][class],
+[class*="-desc"][class],
+.main-sub, .section-sub, .sub {
+    font-weight: 500 !important;
+    opacity: 0.8;
+}
+
+/* Cuerpo de texto: interlineado cómodo de lectura */
+p, li, .card p, .card li {
+    line-height: 1.55;
+    letter-spacing: -0.003em;
+}
+
+/* ── Sombras: una escala coherente en vez de 124 valores sueltos ── */
+.card, .premium-glass, .lg {
+    box-shadow: var(--lg-specular), var(--lg-elev-2) !important;
+}
+
+/* ── Ritmo vertical: espaciados consistentes ── */
+.content-list { gap: 12px; }
+.stagger-group > * + * { margin-top: 12px; }
+
+/* ── El nav: iconos algo menores y etiquetas más discretas ── */
+.bottom-nav .nav-item .icon { font-size: 21px; }
+.bottom-nav .nav-item .label {
+    /* 10px es la medida de la barra de pestañas de iOS. Con menos, y encima
+       atenuado, deja de leerse: la discreción no puede costar legibilidad. */
+    font-size: 10px !important;
+    opacity: 0.7;
+    letter-spacing: 0;
+}
+.bottom-nav .nav-item.active .label { opacity: 1; }
+
+/* ── Menos animación de fondo: lo que se mueve solo, distrae ── */
+.stagger-group > * { animation-duration: 0.24s; }

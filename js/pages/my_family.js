@@ -120,7 +120,7 @@ window.GoHappyMyFamily = {
                 <div class="mf-card" style="background:linear-gradient(135deg,rgba(11,113,252,0.08),rgba(23,200,212,0.10)); border:0.5px solid rgba(11,113,252,0.20); border-radius:18px; padding:16px; margin-bottom:14px;">
                     <div style="font-size:11px; font-weight:800; color:var(--text-secondary); text-transform:uppercase; margin-bottom:6px;">🔑 ${T('Código de invitación', 'Invitation code')}</div>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <span style="font-family:'Courier New',monospace; font-size:24px; font-weight:900; color:var(--cobalt); letter-spacing:3px;">${safe(family.codigoInvitacion)}</span>
+                        <span style="font-family:'Courier New',monospace; font-size:24px; font-weight:700; color:var(--cobalt); letter-spacing:3px;">${safe(family.codigoInvitacion)}</span>
                         <button id="mf-copy-code" style="margin-left:auto; padding:8px 14px; background:var(--brand-bright); color:white; border:none; border-radius:999px; font-weight:700; font-size:12px; cursor:pointer;">📋 ${T('Copiar', 'Copy')}</button>
                     </div>
                 </div>
@@ -294,7 +294,7 @@ window.GoHappyMyFamily = {
             <div class="auth-container" style="padding:20px;">
                 <div class="auth-card premium-glass" style="padding:26px 22px; border-radius:32px; max-width:400px; text-align:center;">
                     <div style="font-size:46px;">${quest.icono || '⚔️'}</div>
-                    <h3 style="font-family:'Poppins',sans-serif; color:var(--primary-cobalt); font-weight:900; margin:8px 0 4px; font-size:1.15rem;">${T('¿Reto cumplido?', 'Quest done?')}</h3>
+                    <h3 style="font-family:'Poppins',sans-serif; color:var(--primary-cobalt); font-weight:700; margin:8px 0 4px; font-size:1.15rem;">${T('¿Reto cumplido?', 'Quest done?')}</h3>
                     <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">${(quest.titulo || '').slice(0,70)}</p>
                     <div style="background:linear-gradient(135deg,rgba(11,113,252,0.06),rgba(23,200,212,0.08)); border:0.5px solid rgba(11,113,252,0.18); border-radius:14px; padding:12px; margin-bottom:14px; font-size:12px; color:var(--text-secondary); line-height:1.4;">
                         📸 ${T('Con foto ganáis <strong>+50% bonus</strong>. Sin foto, los puntos completos del reto.', 'With a photo you get <strong>+50% bonus</strong>. Without, the full quest points.')}
@@ -364,7 +364,7 @@ window.GoHappyMyFamily = {
         modal.innerHTML = `
             <div class="auth-container" style="padding:20px;">
                 <div class="auth-card premium-glass" style="padding:28px 22px; border-radius:32px; max-width:420px;">
-                    <h3 style="color:var(--primary-cobalt); text-align:center; font-weight:900; margin-bottom:8px;">⚔️ ${T('Nuevo reto familiar', 'New family quest')}</h3>
+                    <h3 style="color:var(--primary-cobalt); text-align:center; font-weight:700; margin-bottom:8px;">⚔️ ${T('Nuevo reto familiar', 'New family quest')}</h3>
                     <p style="font-size:12px; color:var(--text-secondary); text-align:center; margin-bottom:20px;">${T('Crea un reto personalizado y la recompensa que vais a ganar', 'Create a custom quest and your reward')}</p>
 
                     <label style="font-size:11px; font-weight:800; color:var(--text-secondary); text-transform:uppercase;">${T('Título del reto', 'Quest title')}</label>
@@ -452,7 +452,7 @@ window.GoHappyMyFamily = {
             <div class="auth-container" style="padding:20px;">
                 <div class="auth-card premium-glass" style="padding:28px 22px; border-radius:32px; max-width:400px; text-align:center;">
                     <div style="font-size:48px; margin-bottom:12px;">⚠️</div>
-                    <h3 style="color:#DC2626; font-weight:900; margin-bottom:8px;">${T('Eliminar familia', 'Delete family')}</h3>
+                    <h3 style="color:#DC2626; font-weight:700; margin-bottom:8px;">${T('Eliminar familia', 'Delete family')}</h3>
                     <p style="font-size:13px; color:var(--text-secondary); margin-bottom:18px; line-height:1.5;">
                         ${T('Esta acción es irreversible. Se eliminarán todos los datos compartidos.\nEscribe CONFIRMAR para continuar.', 'This action is irreversible. All shared data will be deleted.\nType CONFIRM to continue.')}
                     </p>

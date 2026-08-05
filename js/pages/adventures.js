@@ -262,7 +262,7 @@ window.GoHappyAdventures = {
             ` : ''}
 
             <div style="text-align:center; padding:8px 4px 18px;">
-                <h3 style="font-family:'Poppins',sans-serif; color:var(--cobalt); font-weight:900; margin:0 0 6px; font-size:1.15rem;">${T('Elige tu próxima aventura', 'Choose your next adventure')}</h3>
+                <h3 style="font-family:'Poppins',sans-serif; color:var(--cobalt); font-weight:700; margin:0 0 6px; font-size:1.15rem;">${T('Elige tu próxima aventura', 'Choose your next adventure')}</h3>
                 <p style="color:var(--text-secondary); font-size:12.5px; margin:0;">${T('Una historia de 1 semana con misiones reales', 'A 1-week story with real missions')}</p>
             </div>
 
@@ -361,7 +361,7 @@ window.GoHappyAdventures = {
             await window.GoHappyDB.collection('adventures').add(docData);
 
             window.GoHappySound?.play('success');
-            window.GoHappyToast?.success(lang === 'en' ? '🚀 Adventure started!' : '🚀 ¡Aventura empezada!', 2500);
+            // Sin toast: la pantalla cambia entera a la aventura activa.
             // Recargar
             setTimeout(() => window.GoHappyAdventures.render(document.getElementById('main-content')), 600);
         } catch (e) {
@@ -394,7 +394,7 @@ window.GoHappyAdventures = {
                 <div style="display:flex; gap:14px; align-items:center; margin-bottom:10px;">
                     <div style="font-size:48px;">${adv.emoji}</div>
                     <div style="flex:1; min-width:0;">
-                        <h2 style="font-family:'Poppins',sans-serif; color:var(--cobalt); font-weight:900; margin:0; font-size:1.25rem;">${safe(adv.titulo)}</h2>
+                        <h2 style="font-family:'Poppins',sans-serif; color:var(--cobalt); font-weight:700; margin:0; font-size:1.25rem;">${safe(adv.titulo)}</h2>
                         <p style="font-size:12px; color:${adv.color}; font-weight:700; font-style:italic; margin:2px 0 0;">${safe(adv.tagline)}</p>
                     </div>
                 </div>
@@ -430,7 +430,7 @@ window.GoHappyAdventures = {
                                 background:${done ? '#27AE60' : 'rgba(11,76,143,0.08)'};
                                 color:${done ? 'white' : 'var(--cobalt)'};
                                 display:flex; align-items:center; justify-content:center;
-                                font-weight:900; font-size:14px;
+                                font-weight:700; font-size:14px;
                             ">${done ? '✓' : idx + 1}</div>
                             <div style="flex:1; min-width:0;">
                                 <div style="font-weight:800; font-size:13.5px; color:var(--cobalt); line-height:1.3; ${done?'text-decoration:line-through;':''}">${safe(m.titulo)}</div>
@@ -492,7 +492,7 @@ window.GoHappyAdventures = {
                 box-shadow:0 12px 30px ${adv.color}66;
             ">
                 <div style="font-size:60px; line-height:1; animation:float 3s ease-in-out infinite;">${adv.insignia.emoji}</div>
-                <h2 style="font-family:'Poppins',sans-serif; font-weight:900; margin:10px 0 4px; font-size:1.4rem;">¡${T('AVENTURA COMPLETADA', 'ADVENTURE COMPLETED')}!</h2>
+                <h2 style="font-family:'Poppins',sans-serif; font-weight:700; margin:10px 0 4px; font-size:1.4rem;">¡${T('AVENTURA COMPLETADA', 'ADVENTURE COMPLETED')}!</h2>
                 <p style="font-size:14px; opacity:0.95; margin:0 0 14px;">${adv.insignia.nombre}</p>
                 <div style="background:rgba(255,255,255,0.18); border-radius:14px; padding:12px; margin:14px 0;">
                     <div style="font-size:11px; opacity:0.9; text-transform:uppercase; font-weight:800; margin-bottom:4px;">+${totalPts} ${T('puntos ganados', 'points earned')}</div>
@@ -500,7 +500,7 @@ window.GoHappyAdventures = {
                 </div>
                 <button id="adv-finish" style="
                     margin-top:8px; padding:12px 28px; background:white; color:${adv.color};
-                    border:none; border-radius:999px; font-weight:900; font-size:14px;
+                    border:none; border-radius:999px; font-weight:700; font-size:14px;
                     cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,0.18);
                 ">✨ ${T('Guardar y empezar otra', 'Save and start another')}</button>
             </div>
@@ -570,7 +570,7 @@ window.GoHappyAdventures = {
                 <div class="auth-card premium-glass" style="padding:24px 20px; border-radius:28px; max-width:420px;">
                     <div style="text-align:center; margin-bottom:16px;">
                         <div style="font-size:36px;">${adv.emoji}</div>
-                        <h3 style="font-family:'Poppins',sans-serif; color:var(--cobalt); font-weight:900; margin:8px 0 4px; font-size:1.1rem;">${T('Misión', 'Mission')} ${missionIdx + 1}</h3>
+                        <h3 style="font-family:'Poppins',sans-serif; color:var(--cobalt); font-weight:700; margin:8px 0 4px; font-size:1.1rem;">${T('Misión', 'Mission')} ${missionIdx + 1}</h3>
                         <p style="font-size:13px; color:var(--text-primary); margin:0;">${mission.titulo}</p>
                     </div>
 

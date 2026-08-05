@@ -775,7 +775,7 @@ window.GoHappyMoments = {
         modal.className = 'modal entry-anim moment-preview-modal';
         modal.innerHTML = `
             <div class="auth-container">
-                <h3 style="font-family:'Poppins',sans-serif; font-weight:900; color:var(--cobalt); font-size:1.3rem; margin-bottom:6px; text-align:center;">${T('moments.preview.title')}</h3>
+                <h3 style="font-family:'Poppins',sans-serif; font-weight:700; color:var(--cobalt); font-size:1.3rem; margin-bottom:6px; text-align:center;">${T('moments.preview.title')}</h3>
                 <p style="font-size:13px; color:var(--text-secondary); text-align:center; margin-bottom:14px;">${T('moments.preview.sub')}</p>
                 <img class="preview-img" src="${imageData}" alt="preview">
                 <textarea class="moment-caption-input" id="mc-caption" placeholder="${T('moments.preview.caption')}" maxlength="200"></textarea>

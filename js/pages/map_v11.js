@@ -952,10 +952,7 @@ window.GoHappyMap = {
             const on = await window.GoHappyMap.toggleFamilyMode();
             familyBtn.style.background = on ? 'linear-gradient(135deg,#F59E0B,#FFD700)' : 'rgba(255,255,255,0.95)';
             familyBtn.style.color = on ? 'white' : 'var(--cobalt,#0B4C8F)';
-            window.GoHappyToast && window.GoHappyToast.info(
-                on ? (lang === 'en' ? '👨‍👩‍👧 Family live ON' : '👨‍👩‍👧 Familia activa') : (lang === 'en' ? 'Family live OFF' : 'Familia desactivada'),
-                2200
-            );
+            // Sin toast: el botón se ilumina en dorado al activarse.
         });
 
         // 🧭 Compass (resetea bearing a 0)
@@ -993,11 +990,11 @@ window.GoHappyMap = {
                     const ll = window.GoHappyMap.userMarker.getLngLat();
                     window.GoHappyMap.instance.easeTo({ center: ll, zoom: 17, pitch: 60, duration: 1200 });
                 }
-                window.GoHappyToast && window.GoHappyToast.info(lang === 'en' ? '🚶 Following you' : '🚶 Siguiéndote', 2000);
+                // Sin toast: el botón cambia de color y el mapa se centra.
+                // El propio cambio ya comunica el estado.
             } else {
                 followBtn.style.background = 'rgba(255,255,255,0.95)';
                 followBtn.style.color = 'var(--cobalt,#0B4C8F)';
-                window.GoHappyToast && window.GoHappyToast.info(lang === 'en' ? 'Follow off' : 'Modo libre', 1500);
             }
         });
 
@@ -1320,7 +1317,7 @@ window.GoHappyMap = {
             ">
                 <div style="transform:rotate(45deg); font-size:20px;">${icon}</div>
                 ${isFav ? `<div style="position:absolute; top:-8px; left:-8px; background:#F59E0B; color:white; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; transform:rotate(45deg); font-size:11px; border:2px solid white;">★</div>` : ''}
-                ${hasReview ? `<div class="tribe-insignia" style="position:absolute; top:-10px; right:-10px; background:#F39C12; color:white; font-size:9px; padding:2px 6px; border-radius:10px; font-weight:900; border:2px solid white; transform:rotate(45deg); white-space:nowrap;">⭐</div>` : ''}
+                ${hasReview ? `<div class="tribe-insignia" style="position:absolute; top:-10px; right:-10px; background:#F39C12; color:white; font-size:9px; padding:2px 6px; border-radius:10px; font-weight:700; border:2px solid white; transform:rotate(45deg); white-space:nowrap;">⭐</div>` : ''}
             </div>
         `;
 
@@ -1490,7 +1487,7 @@ window.GoHappyMap = {
 
             <!-- Body -->
             <div style="padding:18px 20px 8px;">
-                <h2 style="font-family:'Poppins',sans-serif; font-weight:900; font-size:1.45rem; color:var(--cobalt,#0B4C8F); margin:0 0 4px; line-height:1.2;">${safeName}</h2>
+                <h2 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:1.45rem; color:var(--cobalt,#0B4C8F); margin:0 0 4px; line-height:1.2;">${safeName}</h2>
                 <div style="display:flex; align-items:center; gap:6px; font-size:13px; color:#666; margin-bottom:14px;">
                     <span>⭐ ${parseFloat(loc.rating) || 4.5}</span>
                     <span style="opacity:0.4;">·</span>
@@ -1989,7 +1986,7 @@ window.GoHappyMap = {
         bar.innerHTML = `
             <div style="font-size:30px;">🚶</div>
             <div style="flex:1; min-width:0;">
-                <div style="font-weight:900; font-size:14px; color:var(--cobalt,#0B4C8F); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${destName || (lang === 'en' ? 'Destination' : 'Destino')}</div>
+                <div style="font-weight:700; font-size:14px; color:var(--cobalt,#0B4C8F); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${destName || (lang === 'en' ? 'Destination' : 'Destino')}</div>
                 <div style="font-size:12px; color:#64748b; margin-top:2px;">⏱️ ${minutes} min · 📏 ${distTxt}</div>
             </div>
             <button id="gh-route-close" style="background:rgba(11,76,143,0.08); color:var(--cobalt,#0B4C8F); border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:16px; font-weight:800;">✕</button>
@@ -2197,7 +2194,7 @@ window.GoHappyMap = {
         banner.innerHTML = `
             <div style="font-size:28px;">${icon}</div>
             <div style="flex:1; min-width:0;">
-                <div style="font-weight:900; font-size:13px; line-height:1.2;">${title}</div>
+                <div style="font-weight:700; font-size:13px; line-height:1.2;">${title}</div>
                 <div style="font-size:11.5px; opacity:0.92; margin-top:2px;">${body}</div>
             </div>
             <button id="gh-ctx-apply" style="background:white; color:var(--cobalt,#0B4C8F); border:none; padding:8px 13px; border-radius:999px; font-weight:800; font-size:11.5px; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,0.12); flex-shrink:0;">${lang === 'en' ? 'Show' : 'Ver'}</button>
@@ -2241,7 +2238,7 @@ window.GoHappyMap = {
                 <div class="auth-card premium-glass" style="max-height:85vh; overflow-y:auto; border-radius:30px; border:1px solid rgba(255,255,255,0.4); padding:25px;">
                     <div style="text-align:center; margin-bottom:20px;">
                         <span style="font-size:40px; display:block; margin-bottom:10px;">🌟</span>
-                        <h3 style="color:var(--primary-cobalt); font-weight:900; font-size:1.5rem; margin:0;">${name ? T('map.review.review', { name }) : T('map.review.modal.title')}</h3>
+                        <h3 style="color:var(--primary-cobalt); font-weight:700; font-size:1.5rem; margin:0;">${name ? T('map.review.review', { name }) : T('map.review.modal.title')}</h3>
                         <p style="font-size:13px; color:#64748b; margin-top:5px;">${T('map.review.help')}</p>
                     </div>
                     ${name ? '' : `<div style="margin-bottom:15px;"><label style="font-size:11px; font-weight:700; color:var(--primary-cobalt); text-transform:uppercase; margin-bottom:5px; display:block;">${lang === 'en' ? 'Place name' : 'Nombre del lugar'}</label><input type="text" id="new-site-name" placeholder="${lang === 'en' ? 'E.g. Park Hills' : 'Ej: Parque Los Pinos'}" class="review-input" style="width:100%; padding:14px; border-radius:12px; border:1px solid #eee; background:#f8fafc; box-sizing:border-box;"></div>`}

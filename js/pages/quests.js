@@ -84,7 +84,7 @@ window.GoHappyQuestsPage = {
                 .racha-info { display:flex; flex-direction:column; align-items:flex-start; }
                 .q-stats-floating-bar { display:flex; justify-content:space-around; align-items:center; }
                 .stat-item { text-align:center; }
-                .stat-val { display:block; font-size:1.3rem; font-weight:900; color:var(--cobalt); }
+                .stat-val { display:block; font-size:1.3rem; font-weight:700; color:var(--cobalt); }
                 .stat-val.done { color:#27AE60; }
                 .stat-val.pts { color:#F39C12; }
                 .stat-label { font-size:9px; color:var(--text-tertiary); font-weight:800; text-transform:uppercase; margin-top:3px; letter-spacing:0.3px; }
@@ -218,7 +218,7 @@ window.GoHappyQuestsPage = {
                 <div class="auth-card premium-glass" style="padding:28px 22px; border-radius:32px; max-width:420px;">
                     <div style="text-align:center; margin-bottom:18px;">
                         <div style="font-size:48px;">${questData?.icono || '⚔️'}</div>
-                        <h3 style="font-family:'Poppins',sans-serif; color:var(--primary-cobalt); font-weight:900; margin:8px 0 4px; font-size:1.2rem;">${T('¿Reto cumplido?', 'Quest done?')}</h3>
+                        <h3 style="font-family:'Poppins',sans-serif; color:var(--primary-cobalt); font-weight:700; margin:8px 0 4px; font-size:1.2rem;">${T('¿Reto cumplido?', 'Quest done?')}</h3>
                         <p style="font-size:13px; color:var(--text-secondary);">${(questData?.titulo || '').slice(0, 60)}</p>
                     </div>
 
@@ -290,7 +290,8 @@ window.GoHappyQuestsPage = {
     },
 
     _finalizeCompletar: async (questId, questData, user, opts) => {
-        window.GoHappyToast.info(window.t ? window.t('quests.completing') : "¡Completando misión! 🚀");
+        // Sin aviso de "completando": el sonido y el estado del botón ya lo dicen.
+        // El único aviso de este flujo es el de puntos, que sí aporta información.
         window.GoHappySound && window.GoHappySound.play('click');
 
         const res = await window.GoHappyQuests.completarQuest(questId, questData, opts);
@@ -314,10 +315,9 @@ window.GoHappyQuestsPage = {
 
             window.GoHappyQuestsPage.loadQuests();
 
-            // Non-blocking memory prompt via toast action
-            setTimeout(() => {
-                window.GoHappyToast.info(window.t ? window.t('quests.memory.prompt') : "📸 ¿Guardas un recuerdo de este momento?", 4000);
-            }, 1200);
+            // Antes aquí saltaba un tercer aviso preguntando "¿guardas un recuerdo?".
+            // Era una pregunta dentro de un toast, que no se puede pulsar: sólo molestaba.
+            // Si se quiere recuperar, va como botón en la propia tarjeta de la misión.
         } else {
             window.GoHappySound && window.GoHappySound.play('error');
             window.GoHappyToast.error(res.error || (window.t ? window.t('quests.complete.fail') : "No se pudo completar"));

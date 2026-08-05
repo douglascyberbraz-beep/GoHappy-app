@@ -164,7 +164,7 @@ window.GoHappyTour = (() => {
                 }
                 .gh-tour-tooltip-title {
                     font-family: 'Poppins', sans-serif;
-                    font-weight: 900;
+                    font-weight:700;
                     font-size: 20px;
                     color: var(--primary-cobalt, #0B4C8F);
                     margin: 0 0 8px;

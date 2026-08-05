@@ -61,7 +61,7 @@ window.GoHappyLegal = {
                 .legal-tab:active { transform:scale(0.94); }
                 .legal-content { padding:0 16px; }
                 .legal-doc { background:rgba(255,255,255,0.92); backdrop-filter:blur(30px) saturate(180%); border:0.5px solid rgba(255,255,255,0.95); border-radius:24px; padding:24px 22px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 28px rgba(11,76,143,0.08); }
-                .legal-doc h2 { font-family:'Poppins',sans-serif; font-size:1.4rem; font-weight:900; color:var(--cobalt); margin-bottom:4px; line-height:1.2; letter-spacing:-0.4px; }
+                .legal-doc h2 { font-family:'Poppins',sans-serif; font-size:1.4rem; font-weight:700; color:var(--cobalt); margin-bottom:4px; line-height:1.2; letter-spacing:-0.4px; }
                 .legal-doc .updated { font-size:11.5px; color:var(--text-tertiary); margin-bottom:18px; font-style:italic; }
                 .legal-doc h3 { font-family:'Poppins',sans-serif; font-size:1.05rem; font-weight:800; color:var(--cobalt); margin-top:22px; margin-bottom:8px; line-height:1.3; }
                 .legal-doc p { font-size:14px; color:var(--text-primary); line-height:1.6; margin-bottom:12px; }

@@ -41,7 +41,7 @@ window.GoHappyFamilyOnboarding = {
                     <!-- Header -->
                     <div style="text-align:center; margin-bottom:28px;">
                         <div style="font-size:60px; line-height:1; margin-bottom:16px;">👨‍👩‍👧‍👦</div>
-                        <h2 style="color:var(--primary-cobalt); font-size:1.7rem; font-weight:900; margin:0; letter-spacing:-0.5px;">
+                        <h2 style="color:var(--primary-cobalt); font-size:1.7rem; font-weight:700; margin:0; letter-spacing:-0.5px;">
                             ${T('fam.welcome').replace('{name}', user?.nickname || (lang === 'en' ? 'Explorer' : 'Explorador'))}
                         </h2>
                         <p style="color:#64748b; font-size:0.95rem; margin-top:8px; line-height:1.5;">
@@ -96,7 +96,7 @@ window.GoHappyFamilyOnboarding = {
                         </button>
                         <div style="text-align:center; margin-bottom:24px;">
                             <div style="font-size:48px;">🏠</div>
-                            <h3 style="color:var(--primary-cobalt); font-weight:900; margin:8px 0 4px;">${createTitle}</h3>
+                            <h3 style="color:var(--primary-cobalt); font-weight:700; margin:8px 0 4px;">${createTitle}</h3>
                             <p style="color:#64748b; font-size:13px;">${createQuestion}</p>
                         </div>
 
@@ -136,7 +136,7 @@ window.GoHappyFamilyOnboarding = {
                         </button>
                         <div style="text-align:center; margin-bottom:24px;">
                             <div style="font-size:48px;">🔗</div>
-                            <h3 style="color:var(--primary-cobalt); font-weight:900; margin:8px 0 4px;">${T('fam.join.btn')}</h3>
+                            <h3 style="color:var(--primary-cobalt); font-weight:700; margin:8px 0 4px;">${T('fam.join.btn')}</h3>
                             <p style="color:#64748b; font-size:13px;">${T('fam.code.title')}</p>
                         </div>
 
@@ -151,7 +151,7 @@ window.GoHappyFamilyOnboarding = {
                                     style="
                                         width:48px; height:56px; border-radius:14px;
                                         border:2px solid #e2e8f0; background:#f8fafc;
-                                        font-size:1.6rem; font-weight:900; text-align:center;
+                                        font-size:1.6rem; font-weight:700; text-align:center;
                                         color:var(--primary-cobalt); text-transform:uppercase;
                                         outline:none; box-shadow:0 2px 8px rgba(0,0,0,0.05);
                                         transition: border-color 0.2s;
@@ -179,7 +179,7 @@ window.GoHappyFamilyOnboarding = {
                     <!-- Vista 4: Éxito -->
                     <div id="ob-step-success" style="display:none; text-align:center; padding:20px 0;">
                         <div style="font-size:80px; margin-bottom:20px; animation: float 3s ease-in-out infinite;">🎉</div>
-                        <h2 style="color:var(--primary-cobalt); font-size:1.6rem; font-weight:900;" id="ob-success-title">${lang === 'en' ? 'Family created!' : '¡Familia creada!'}</h2>
+                        <h2 style="color:var(--primary-cobalt); font-size:1.6rem; font-weight:700;" id="ob-success-title">${lang === 'en' ? 'Family created!' : '¡Familia creada!'}</h2>
                         <p style="color:#64748b; font-size:0.95rem; margin:10px 0 25px;" id="ob-success-msg">${T('fam.success.welcome')}</p>
 
                         <div id="ob-code-display" style="
@@ -191,7 +191,7 @@ window.GoHappyFamilyOnboarding = {
                                 ${T('fam.success.code.label')}
                             </div>
                             <div id="ob-code-value" style="
-                                font-size:2.2rem; font-weight:900; color:var(--primary-cobalt);
+                                font-size:2.2rem; font-weight:700; color:var(--primary-cobalt);
                                 letter-spacing:8px; font-family:monospace;
                             "></div>
                             <p style="font-size:12px; color:#64748b; margin:10px 0 16px;">${T('fam.success.code.help')}</p>

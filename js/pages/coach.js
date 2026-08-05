@@ -201,7 +201,7 @@ REGLAS:
                 }
                 .care-welcome-icon { font-size: 56px; margin-bottom: 12px; }
                 .care-welcome h3 {
-                    font-family: 'Poppins', sans-serif; font-weight: 900;
+                    font-family: 'Poppins', sans-serif; font-weight:700;
                     color: var(--cobalt); font-size: 1.3rem; margin-bottom: 8px;
                 }
                 .care-welcome p {

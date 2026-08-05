@@ -126,7 +126,7 @@ window.GoHappyProfile = {
                         </div>
                         <div class="level-badge-premium" style="margin-top:10px;">${levelInfo.icon} ${levelInfo.name}</div>
                         <div style="margin-top:7px; text-align:center;">
-                            <span style="font-family:'Poppins',sans-serif; font-size:17px; font-weight:900; color:var(--primary-cobalt,#0B4C8F);">${user.points}</span>
+                            <span style="font-family:'Poppins',sans-serif; font-size:17px; font-weight:700; color:var(--primary-cobalt,#0B4C8F);">${user.points}</span>
                             <span style="font-size:11px; font-weight:700; color:var(--text-secondary); margin-left:3px;">${T('profile.points')}</span>
                         </div>
                     </div>
@@ -152,7 +152,7 @@ window.GoHappyProfile = {
                     <div style="position:absolute; top:-30px; right:-30px; width:120px; height:120px; background:radial-gradient(circle, rgba(23,200,212,0.20) 0%, transparent 70%); pointer-events:none;"></div>
                     <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; position:relative;">
                         <div style="width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,#0B71FC,#17C8D4); display:flex; align-items:center; justify-content:center; color:white; font-size:17px; box-shadow:0 6px 16px rgba(11,113,252,0.32);">🤖</div>
-                        <div style="font-family:'Poppins', sans-serif; font-weight:900; font-size:14px; color:var(--primary-cobalt,#0B4C8F);">${(window.GoHappyI18n?.lang === 'en') ? 'GoHappy AI · Your reflection' : 'GoHappy IA · Tu reflexión'}</div>
+                        <div style="font-family:'Poppins', sans-serif; font-weight:700; font-size:14px; color:var(--primary-cobalt,#0B4C8F);">${(window.GoHappyI18n?.lang === 'en') ? 'GoHappy AI · Your reflection' : 'GoHappy IA · Tu reflexión'}</div>
                     </div>
                     <p id="profile-reflection-text" style="font-size:14px; line-height:1.55; color:var(--text-primary, #1e293b); margin:0; font-weight:500;">
                         <span class="typing-dots"><span></span><span></span><span></span></span>
@@ -195,7 +195,7 @@ window.GoHappyProfile = {
                 <div id="family-dna-box" style="margin: 20px 16px; padding: 22px; border-radius: 28px; background: linear-gradient(135deg, rgba(11,113,252,0.08), rgba(23,200,212,0.10)); border: 0.5px solid rgba(11,76,143,0.15); backdrop-filter: blur(14px) saturate(180%); box-shadow: 0 6px 20px rgba(11,76,143,0.08); display:none;">
                     <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
                         <span style="font-size:24px;">🧬</span>
-                        <h3 style="color:var(--primary-cobalt); font-weight:900; margin:0; font-size:1rem;" id="dna-title">${(window.GoHappyI18n?.lang === 'en') ? 'Your family DNA' : 'Vuestro ADN familiar'}</h3>
+                        <h3 style="color:var(--primary-cobalt); font-weight:700; margin:0; font-size:1rem;" id="dna-title">${(window.GoHappyI18n?.lang === 'en') ? 'Your family DNA' : 'Vuestro ADN familiar'}</h3>
                     </div>
                     <div id="dna-tags" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;"></div>
                     <p id="dna-insight" style="font-size:13px; color:var(--text-primary); line-height:1.45; margin:0;"></p>
@@ -206,7 +206,7 @@ window.GoHappyProfile = {
                     <div style="position:absolute; top:-30px; right:-20px; width:130px; height:130px; background:radial-gradient(circle, rgba(255,255,255,0.22), transparent 70%); pointer-events:none;"></div>
                     <div style="font-size:50px; flex-shrink:0; line-height:1; position:relative;">👨‍👩‍👧</div>
                     <div style="flex:1; min-width:0; position:relative;">
-                        <div style="font-family:'Poppins',sans-serif; font-weight:900; font-size:23px; line-height:1.1; color:#fff; text-shadow:0 1px 8px rgba(0,0,0,0.12);">${(window.GoHappyI18n?.lang === 'en') ? 'My Family' : 'Mi Familia'}</div>
+                        <div style="font-family:'Poppins',sans-serif; font-weight:700; font-size:23px; line-height:1.1; color:#fff; text-shadow:0 1px 8px rgba(0,0,0,0.12);">${(window.GoHappyI18n?.lang === 'en') ? 'My Family' : 'Mi Familia'}</div>
                         <div style="font-size:13px; color:rgba(255,255,255,0.92); margin-top:4px; line-height:1.35;">${(window.GoHappyI18n?.lang === 'en') ? 'Protection, quests, photos & members' : 'Protección, retos, fotos y miembros'}</div>
                     </div>
                     <span style="font-size:26px; color:#fff; flex-shrink:0; position:relative;">→</span>
@@ -231,7 +231,7 @@ window.GoHappyProfile = {
                 <!-- Referido (QR) — ahora DEBAJO de Mi Familia -->
                 <div class="referral-premium-box premium-glass" style="margin: 6px 0 20px; padding: 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.4);">
                     <div style="text-align: center; margin-bottom: 20px;">
-                        <h3 style="color: var(--primary-cobalt); font-weight: 900; margin: 0;">${T('profile.referral.title')}</h3>
+                        <h3 style="color: var(--primary-cobalt); font-weight:700; margin: 0;">${T('profile.referral.title')}</h3>
                         <p style="font-size: 13px; color: #64748b; margin-top: 5px;">${T('profile.referral.sub')}</p>
                     </div>
 
@@ -239,7 +239,7 @@ window.GoHappyProfile = {
                         <div id="referral-qr" style="width: 100px; height: 100px; background: #f8fafc; border-radius: 12px; display: flex; align-items: center; justify-content: center;"></div>
                         <div style="flex: 1;">
                             <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">${T('profile.your.code')}</div>
-                            <div id="ref-code-display" style="font-size: 1.5rem; font-weight: 900; color: var(--primary-cobalt); letter-spacing: 1px;">${user.referralCode || 'GH-123'}</div>
+                            <div id="ref-code-display" style="font-size: 1.5rem; font-weight:700; color: var(--primary-cobalt); letter-spacing: 1px;">${user.referralCode || 'GH-123'}</div>
                             <button id="copy-ref-link" style="margin-top: 10px; background: var(--primary-cobalt); color: white; border: none; padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer;">${T('profile.copy.link')}</button>
                         </div>
                     </div>
@@ -372,7 +372,7 @@ window.GoHappyProfile = {
             modal.innerHTML = `
                 <div class="auth-container" style="padding: 20px;">
                     <div class="auth-card premium-glass" style="padding: 28px 22px; border-radius: 32px; max-width: 420px;">
-                        <h3 style="color:var(--primary-cobalt); text-align:center; font-weight:900; margin-bottom:16px;">${L('Cambiar Avatar', 'Change Avatar')}</h3>
+                        <h3 style="color:var(--primary-cobalt); text-align:center; font-weight:700; margin-bottom:16px;">${L('Cambiar Avatar', 'Change Avatar')}</h3>
 
                         <!-- Preview actual -->
                         <div style="display:flex; justify-content:center; margin-bottom:18px;">
@@ -562,8 +562,6 @@ window.GoHappyProfile = {
                 d.style.display = open ? 'none' : 'block';
                 if (!open) {
                     d.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    const lang = window.GoHappyI18n?.lang || 'es';
-                    window.GoHappyToast && window.GoHappyToast.info(lang === 'en' ? '📊 Progress & phases' : '📊 Progreso y fases', 1600);
                 }
             };
         }
@@ -660,13 +658,13 @@ window.GoHappyProfile = {
                     <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                         <div>
                             <div style="font-size:11px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:4px;">Familia</div>
-                            <div style="font-size:1.2rem; font-weight:900; color:var(--primary-cobalt);">${safeStr(family.nombre)}</div>
+                            <div style="font-size:1.2rem; font-weight:700; color:var(--primary-cobalt);">${safeStr(family.nombre)}</div>
                             <div style="font-size:11px; color:#64748b; margin-top:2px;">${esAdmin ? '👑 Administrador' : '👤 Miembro'}</div>
                         </div>
                         ${esAdmin ? `
                             <div style="text-align:right;">
                                 <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:6px;">Código de invitación</div>
-                                <div style="font-size:1.5rem; font-weight:900; color:var(--primary-cobalt); letter-spacing:6px; font-family:monospace;">${family.codigoInvitacion}</div>
+                                <div style="font-size:1.5rem; font-weight:700; color:var(--primary-cobalt); letter-spacing:6px; font-family:monospace;">${family.codigoInvitacion}</div>
                                 <button id="copy-family-code" style="margin-top:8px; background:var(--primary-cobalt); color:white; border:none; padding:6px 14px; border-radius:10px; font-size:11px; font-weight:700; cursor:pointer;">
                                     📋 Copiar
                                 </button>
@@ -792,7 +790,7 @@ window.GoHappyProfile = {
             modal.innerHTML = `
                 <div class="auth-container" style="padding:0;">
                     <div style="background:white; border-radius:24px 24px 0 0; padding:28px 28px calc(env(safe-area-inset-bottom,20px) + 24px); text-align:center;">
-                        <h3 style="color:var(--primary-cobalt); font-weight:900; margin-bottom:8px; font-size:1.2rem;">${title}</h3>
+                        <h3 style="color:var(--primary-cobalt); font-weight:700; margin-bottom:8px; font-size:1.2rem;">${title}</h3>
                         <p style="color:#64748b; font-size:14px; margin-bottom:24px; line-height:1.5;">${message}</p>
                         <div style="display:flex; gap:12px;">
                             <button id="cd-cancel" style="flex:1; padding:14px; border-radius:14px; border:none; background:#f1f5f9; color:#64748b; font-weight:700; font-size:15px; cursor:pointer;">${cancelText}</button>
