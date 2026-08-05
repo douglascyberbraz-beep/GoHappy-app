@@ -288,8 +288,18 @@ body { background: #f8fafc; font-family: 'Inter', sans-serif; -webkit-font-smoot
     display: flex; align-items: center; justify-content: center; font-size: 65px;
     box-shadow: 0 15px 40px rgba(11, 76, 143, 0.2);
 }
+/* La insignia va en el flujo normal, debajo del anillo del avatar.
+   Antes era `position:absolute` colgando del avatar: al alargarse los
+   nombres de nivel ("Explorador Novato") el texto partía en dos líneas y
+   se montaba encima del avatar por arriba y de los puntos por abajo. */
 .level-badge-premium {
-    position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+    /* `block` + `width:fit-content` + márgenes auto: ocupa su propia línea
+       bajo el avatar y queda centrada, sin estirar la píldora a todo el ancho.
+       Con `inline-block` se colocaba al lado del anillo, no debajo. */
+    display: block;
+    width: fit-content;
+    margin-left: auto; margin-right: auto;
+    white-space: nowrap;
     background: var(--primary-cobalt); color: white; padding: 6px 18px; border-radius: 20px;
     font-size: 12px; font-weight: 800; box-shadow: 0 5px 15px rgba(11, 76, 143, 0.3);
 }
