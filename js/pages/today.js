@@ -1168,6 +1168,10 @@ window.GoHappyToday = {
             const fallbackChain = []; // not used anymore
             const filter = usedFilter;
             const list = document.getElementById('events-list');
+            // Guarda: getRealEvents tarda; si el usuario cambió de pestaña, la
+            // lista ya no existe. Era el último 'Cannot set properties of null'
+            // que quedaba al cambiar rápido entre pestañas.
+            if (!list || !list.isConnected) return;
 
             if (!events || events.length === 0) {
                 list.innerHTML = `

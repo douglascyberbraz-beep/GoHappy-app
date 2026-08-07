@@ -6,8 +6,8 @@
 // la próxima vez que abran la app: localStorage, SW caches, IndexedDB.
 // Sólo se preserva la sesión activa (Firebase Auth). Cero datos demo.
 // ═══════════════════════════════════════════════════════════════════
-const APP_STATE_VERSION = 'v8.9.39';
-const APP_VERSION = '8.9.39';
+const APP_STATE_VERSION = 'v8.9.44';
+const APP_VERSION = '8.9.44';
 
 // ═══════════════════════════════════════════════════════════════════
 // AUTO-UPDATE AGRESIVO — Detecta nueva versión y fuerza reload
@@ -454,6 +454,18 @@ function updateNavStyles(pageName) {
 }
 
 // Router de páginas
+// ═══════════════════════════════════════════════════════════════════
+// ¿SIGUE EN PANTALLA ESTA PÁGINA?
+//
+// Los render() son async: piden datos a Firestore o a la IA y luego
+// escriben en el DOM. Si el usuario cambia de pestaña mientras esperan,
+// el contenido ya se ha reemplazado y los getElementById devuelven null.
+// Resultado: "Cannot read properties of null". Se ve al cambiar rápido
+// de pestaña — 7 errores en 36 cambios antes de esta guarda.
+//
+// Uso, justo después de cada await que preceda a tocar el DOM:
+//     if (!window.GoHappyApp.vigente('tribu')) return;
+// ═══════════════════════════════════════════════════════════════════
 const PAGE_RENDERERS = {
     'today':       () => window.GoHappyToday,
     'events':      () => window.GoHappyEventsPage,
@@ -587,7 +599,7 @@ async function loadPage(pageName) {
                             // Stagger entry: cards principales (hero + content-list children)
                             requestAnimationFrame(() => {
                                 const heros = container.querySelectorAll('.unified-hero, .ranking-hero-premium, .memories-page > *:first-child, .mf-card, .moments-feed > *, .ranking-row, .card-anim, .quest-card-smart, .adv-card, .alert-card');
-                                if (heros.length) window.GoHappyPremium.staggerIn(Array.from(heros).slice(0, 20), 45);
+                                if (heros.length) window.GoHappyPremium.staggerIn(Array.from(heros), 26, 6);
                             });
                         }
                     }).catch(err => {
@@ -632,6 +644,11 @@ async function loadPage(pageName) {
 window.GoHappyApp = {
     get currentPage() { return appState.currentPage; },
     loadPage,
+
+    // ¿sigue en pantalla esta página? (ver comentario largo junto a
+    // PAGE_RENDERERS). Va AQUÍ y no antes porque esta asignación
+    // reemplaza el objeto entero: definida arriba, se perdía.
+    vigente: (pagina) => appState.currentPage === pagina,
 
     navigate: (page, context = null) => {
         if (context) window._navContext = context;

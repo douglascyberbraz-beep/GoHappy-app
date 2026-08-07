@@ -82,6 +82,9 @@ window.GoHappySafePage = {
 
         // Load alerts first
         const alerts = await window.GoHappySafe.getAlerts();
+        // Mismo motivo que la guarda de abajo: tras el await la página puede
+        // haber cambiado y alertsList ser null.
+        if (!alertsList || !container.isConnected) return;
         alertsList.innerHTML = '';
 
         if (alerts.length === 0) {
@@ -169,14 +172,22 @@ window.GoHappySafePage = {
         });
 
         // Modal logic
+        //
+        // Guarda de montaje: render() es async y espera a getAlerts(). Si el
+        // usuario cambia de pestaña mientras tanto, el contenedor ya se ha
+        // reemplazado y estos getElementById devuelven null → reventaba con
+        // "Cannot read properties of null (reading 'addEventListener')".
+        // Salido este punto, la página ya no está en pantalla: no hay nada
+        // que enlazar.
         const modal = document.getElementById('report-modal');
+        if (!modal || !container.isConnected) return;
         let selectedType = 'CONSTRUCTION';
 
-        document.getElementById('report-alert-btn').addEventListener('click', () => {
+        document.getElementById('report-alert-btn')?.addEventListener('click', () => {
             modal.classList.remove('hidden');
         });
 
-        document.getElementById('close-report').addEventListener('click', () => {
+        document.getElementById('close-report')?.addEventListener('click', () => {
             modal.classList.add('hidden');
         });
 
@@ -190,7 +201,7 @@ window.GoHappySafePage = {
         });
 
         // Submit alert
-        document.getElementById('submit-alert').addEventListener('click', async () => {
+        document.getElementById('submit-alert')?.addEventListener('click', async () => {
             const title = document.getElementById('alert-title').value.trim();
             const location = document.getElementById('alert-location').value.trim();
             const desc = document.getElementById('alert-desc').value.trim();

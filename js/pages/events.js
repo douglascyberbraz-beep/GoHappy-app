@@ -34,6 +34,11 @@ window.GoHappyEventsPage = {
         } catch (e) { /* ignore */ }
 
         // Reutiliza el render de eventos premium de Today (tarjetas + citas + bindings)
-        await window.GoHappyToday._renderEventos(document.getElementById('events-page-content'));
+        // Guarda: tras el await el usuario puede haber cambiado de pestaña
+        // y estos elementos ya no existir.
+        if (!window.GoHappyApp.vigente('events')) return;
+        const cajaEventos = document.getElementById('events-page-content');
+        if (!cajaEventos) return;
+        await window.GoHappyToday._renderEventos(cajaEventos);
     }
 };

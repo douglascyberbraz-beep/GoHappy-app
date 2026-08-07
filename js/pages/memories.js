@@ -62,11 +62,15 @@ window.GoHappyMemories = {
         // Load activity data
         const activity = await window.GoHappyMemories._getActivity(user);
 
+        // Guarda: tras el await el usuario puede haber cambiado de pestaña
+        // y estos elementos ya no existir.
+        if (!window.GoHappyApp.vigente('memories')) return;
+
         // Update stats
-        document.getElementById('mem-places').textContent = activity.places;
-        document.getElementById('mem-photos').textContent = activity.photos;
-        document.getElementById('mem-points').textContent = activity.points;
-        document.getElementById('mem-quests').textContent = activity.quests;
+        (document.getElementById('mem-places')||{}).textContent = activity.places;
+        (document.getElementById('mem-photos')||{}).textContent = activity.photos;
+        (document.getElementById('mem-points')||{}).textContent = activity.points;
+        (document.getElementById('mem-quests')||{}).textContent = activity.quests;
 
         // Generate AI reflection
         // Reflexión IA movida a Perfil (más visible)
@@ -91,7 +95,7 @@ window.GoHappyMemories = {
         });
 
         // Share button
-        document.getElementById('share-memories').addEventListener('click', () => {
+        document.getElementById('share-memories')?.addEventListener('click', () => {
             const shareText = `🎉 Mi mes de ${currentMonth} en GoHappy:\n🗺️ ${activity.places} sitios visitados\n⭐ ${activity.points} puntos ganados\n⚔️ ${activity.quests} misiones completadas\n\n¡Únete! GoHappy.app`;
 
             if (navigator.share) {
@@ -190,6 +194,7 @@ window.GoHappyMemories = {
             const prompt = `Genera una reflexión motivadora y emocional de 2-3 frases para una familia que en ${month} ha visitado ${activity.places} sitios, compartido ${activity.photos} fotos, completado ${activity.quests} misiones y ganado ${activity.points} puntos en una app de planes familiares. Sé cálido y específico. No uses emojis. Máximo 150 caracteres.`;
 
             const text = await window.GoHappyAI._callGemini(prompt, false);
+            if (!reflectionEl.isConnected) return;
             reflectionEl.textContent = text || window.GoHappyMemories._getDefaultReflection(activity, month);
         } catch (e) {
             reflectionEl.textContent = window.GoHappyMemories._getDefaultReflection(activity, month);

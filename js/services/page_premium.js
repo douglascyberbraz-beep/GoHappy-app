@@ -92,15 +92,37 @@ window.GoHappyPremium = (() => {
      * Anima entrada escalonada de hijos.
      * @param {HTMLElement|NodeList|Array} target
      */
-    function staggerIn(target, delayStep = 50) {
+    /**
+     * Entrada escalonada de una lista de elementos.
+     *
+     * Antes: 20 elementos × 45ms de retardo + 0,5s de transición = el último
+     * terminaba de entrar 1,35 SEGUNDOS después del cambio de pestaña. La
+     * página se pintaba en 30ms, pero se seguían viendo tarjetas volando
+     * durante más de un segundo: eso es lo que hacía que no se sintiera
+     * nativa. iOS escalona lo que se ve de un vistazo, no la lista entera.
+     *
+     * Ahora: sólo los primeros `max` (lo que cabe en pantalla), paso corto,
+     * y recorrido menor. El resto aparece ya puesto — nadie lo ve entrar
+     * porque está por debajo del pliegue.
+     */
+    function staggerIn(target, delayStep = 26, max = 6) {
         const items = target.length !== undefined ? Array.from(target) : Array.from(target.children);
+
+        // Respeta a quien pide menos movimiento en el sistema
+        const quieto = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (quieto) { items.forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; }); return; }
+
         items.forEach((el, i) => {
+            if (i >= max) { el.style.opacity = '1'; el.style.transform = 'none'; return; }
             el.style.opacity = '0';
-            el.style.transform = 'translateY(14px)';
-            el.style.transition = 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+            el.style.transform = 'translateY(8px)';
+            el.style.transition = 'opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1)';
             setTimeout(() => {
                 el.style.opacity = '1';
                 el.style.transform = 'translateY(0)';
+                // Limpiar el inline al acabar: si se queda, la tarjeta arrastra
+                // una transición que interfiere con los hover y los toques.
+                setTimeout(() => { el.style.transition = ''; el.style.transform = ''; }, 300);
             }, i * delayStep);
         });
     }

@@ -284,7 +284,7 @@ window.GoHappyProfile = {
             window.GoHappyPremium.attachPullToRefresh(container, () => window.GoHappyProfile.render(container));
             setTimeout(() => {
                 const cards = container.querySelectorAll('.action-card-glass, .gamification-card-premium, .profile-hero-premium, .profile-reflection-card');
-                if (cards.length) window.GoHappyPremium.staggerIn(cards, 60);
+                if (cards.length) window.GoHappyPremium.staggerIn(cards, 26, 6);
             }, 50);
         }
 

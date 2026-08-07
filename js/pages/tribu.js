@@ -49,6 +49,10 @@ window.GoHappyTribu = {
         // Direct load community
         await window.GoHappyTribu.loadComunidad(contentContainer);
 
+        // Guarda: tras el await el usuario puede haber cambiado de pestaña
+        // y estos elementos ya no existir.
+        if (!window.GoHappyApp.vigente('tribu')) return;
+
         // Modal Logic (only for Comunidad)
         const modal = document.getElementById('post-modal');
         const contentInput = document.getElementById('post-content');
@@ -58,11 +62,11 @@ window.GoHappyTribu = {
             contentInput.focus();
         });
 
-        document.getElementById('close-post-btn').addEventListener('click', () => {
+        document.getElementById('close-post-btn')?.addEventListener('click', () => {
             modal.classList.add('hidden');
         });
 
-        document.getElementById('publish-btn').addEventListener('click', async () => {
+        document.getElementById('publish-btn')?.addEventListener('click', async () => {
             const text = contentInput.value.trim();
             const user = window.GoHappyAuth.checkAuth();
             const fbUser = window.GoHappyAuthReal?.currentUser;

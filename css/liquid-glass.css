@@ -24,23 +24,27 @@
     --lg-brightness: 1.06;
 
     /* Tintes: base blanca con una gota del cian de marca */
+    /* Base crema con una gota del cielo de Bluey. Antes acababa en
+       rgba(224,247,250) —cian frío— y sobre el fondo crema se veía como
+       una mancha azulada. */
     --lg-tint: linear-gradient(150deg,
-        rgba(255, 255, 255, 0.72) 0%,
-        rgba(255, 255, 255, 0.52) 45%,
-        rgba(224, 247, 250, 0.55) 100%);
-    --lg-tint-solid: rgba(255, 255, 255, 0.60);
+        rgba(255, 253, 250, 0.78) 0%,
+        rgba(255, 251, 245, 0.56) 45%,
+        rgba(232, 243, 250, 0.58) 100%);
+    --lg-tint-solid: rgba(255, 253, 250, 0.62);
 
     /* Borde-lente: el rim que hace que se lea como cristal y no como niebla */
     --lg-rim: linear-gradient(145deg,
         rgba(255, 255, 255, 0.98) 0%,
-        rgba(255, 255, 255, 0.30) 30%,
-        rgba(8, 254, 254, 0.28) 62%,
-        rgba(255, 255, 255, 0.85) 100%);
+        rgba(255, 255, 255, 0.32) 30%,
+        rgba(169, 216, 230, 0.34) 62%,
+        rgba(255, 250, 242, 0.88) 100%);
 
     /* Elevación en el cobalto de marca, no en negro: mantiene el aire azul */
-    --lg-elev-1: 0 4px 16px rgba(11, 76, 143, 0.10);
-    --lg-elev-2: 0 12px 34px rgba(11, 76, 143, 0.14);
-    --lg-elev-3: 0 24px 60px rgba(11, 76, 143, 0.20);
+    /* Sombra cálida: en negro o azul frío sobre crema se ve gris sucio */
+    --lg-elev-1: 0 3px 12px rgba(120, 90, 70, 0.09);
+    --lg-elev-2: 0 10px 28px rgba(120, 90, 70, 0.12);
+    --lg-elev-3: 0 22px 54px rgba(120, 90, 70, 0.17);
 
     /* Especular: luz arriba, rebote abajo */
     --lg-specular:
@@ -58,9 +62,18 @@
    1. EL MATERIAL — clase base y borde-lente
    ══════════════════════════════════════════════════════════════════ */
 
+/* ── QUIÉN ES UNA TARJETA ─────────────────────────────────────────
+   Antes esto apuntaba a `.card` y `.lg`. Comprobado en las 10 páginas:
+   NINGÚN elemento de la app lleva esas clases — son nombres que se me
+   colaron del proyecto de peluquería. O sea que la mitad de esta capa
+   estaba estilizando el vacío y sólo .premium-glass (4 elementos)
+   recibía el material. Esta lista sale de medir qué elementos son de
+   verdad tarjetas: bloque con fondo, esquinas ≥12px y tamaño de tarjeta. */
+
+/* Flotantes: SÍ llevan desenfoque, porque hay contenido detrás */
 .premium-glass,
-.card,
-.lg {
+.q-stats-floating-bar,
+.safe-report-bar {
     position: relative;
     background: var(--lg-tint) !important;
     backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-saturate)) brightness(var(--lg-brightness));
@@ -71,12 +84,41 @@
     isolation: isolate;
 }
 
+/* Tarjetas normales: sombra y canto, SIN desenfoque.
+   Un backdrop-filter sobre un fondo crema liso no se ve, pero obliga a la
+   GPU a componer una capa aparte por cada tarjeta. Quitarlo es gratis en
+   apariencia y se nota al hacer scroll en el móvil. */
+.quest-card-smart,
+.pdd-card, .pdd-setup,
+.plan-card-premium,
+.profile-reflection-card,
+.referral-premium-box,
+.moments-prompt-card,
+.memory-summary-card,
+.alert-card,
+.tribu-card,
+.mf-card,
+.adv-card,
+.timeline-content {
+    position: relative;
+    border-radius: var(--lg-r-md);
+    box-shadow: var(--lg-specular), var(--lg-elev-1) !important;
+}
+
 /* El borde-lente. Truco: un pseudo-elemento de 1px con máscara XOR,
    que deja SOLO el contorno pintado con un degradado. Es lo que da
    la sensación de canto de cristal en lugar de línea plana. */
 .premium-glass::after,
-.card::after,
-.lg::after {
+.q-stats-floating-bar::after,
+.safe-report-bar::after,
+.quest-card-smart::after,
+.plan-card-premium::after,
+.profile-reflection-card::after,
+.referral-premium-box::after,
+.alert-card::after,
+.tribu-card::after,
+.mf-card::after,
+.adv-card::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -93,7 +135,7 @@
 
 /* Brillo especular superior: un arco de luz que sugiere curvatura */
 .premium-glass::before,
-.lg::before {
+.q-stats-floating-bar::before {
     content: '';
     position: absolute;
     top: 0; left: 8%; right: 8%;
@@ -109,8 +151,8 @@
 
 /* El contenido flota POR ENCIMA del material */
 .premium-glass > *,
-.card > *,
-.lg > * { position: relative; z-index: 2; }
+.q-stats-floating-bar > *,
+.safe-report-bar > * { position: relative; z-index: 2; }
 
 /* ══════════════════════════════════════════════════════════════════
    2. NAVEGACIÓN — la pieza más visible de todas
@@ -124,7 +166,7 @@
     border-top: none !important;
     box-shadow:
         inset 0 1.5px 0 rgba(255, 255, 255, 0.95),
-        0 -8px 30px rgba(11, 76, 143, 0.10) !important;
+        0 -8px 28px rgba(120, 90, 70, 0.10) !important;
 }
 
 /* El item activo se convierte en su propia lente */
@@ -139,11 +181,11 @@
     inset: 2px 6px;
     border-radius: var(--lg-r-sm);
     background: linear-gradient(160deg,
-        rgba(8, 254, 254, 0.20),
-        rgba(11, 76, 143, 0.10));
+        rgba(169, 216, 230, 0.34),
+        rgba(47, 107, 158, 0.12));
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.85),
-        0 2px 10px rgba(8, 254, 254, 0.18);
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 2px 10px rgba(107, 184, 196, 0.20);
     z-index: -1;
     animation: lgLensIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -197,7 +239,7 @@
    ══════════════════════════════════════════════════════════════════ */
 
 .modal {
-    background: rgba(11, 76, 143, 0.20) !important;
+    background: rgba(36, 64, 92, 0.22) !important;
     backdrop-filter: blur(14px) saturate(120%);
     -webkit-backdrop-filter: blur(14px) saturate(120%);
 }
@@ -220,7 +262,7 @@
     -webkit-backdrop-filter: blur(12px) saturate(140%);
     border: 1px solid rgba(255, 255, 255, 0.75) !important;
     border-radius: var(--lg-r-sm) !important;
-    box-shadow: inset 0 2px 5px rgba(11, 76, 143, 0.07);
+    box-shadow: inset 0 2px 5px rgba(120, 90, 70, 0.08);
     transition: box-shadow 0.25s ease, background 0.25s ease;
 }
 
@@ -229,8 +271,8 @@
 .post-input:focus {
     background: rgba(255, 255, 255, 0.78) !important;
     box-shadow:
-        inset 0 2px 5px rgba(11, 76, 143, 0.05),
-        0 0 0 3.5px rgba(8, 254, 254, 0.22);
+        inset 0 2px 5px rgba(120, 90, 70, 0.06),
+        0 0 0 3.5px rgba(107, 184, 196, 0.28);
     outline: none;
 }
 
@@ -238,13 +280,13 @@
    6. PROFUNDIDAD AL TOCAR — el cristal responde
    ══════════════════════════════════════════════════════════════════ */
 
-.card:active,
+.quest-card-smart:active, .plan-card-premium:active, .adv-card:active,
 .premium-glass:active {
     transform: scale(0.988);
     box-shadow: var(--lg-specular), var(--lg-elev-1) !important;
 }
 
-.card { transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+.quest-card-smart, .plan-card-premium, .adv-card, .alert-card { transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
                     box-shadow 0.28s ease; }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -255,25 +297,25 @@
    ══════════════════════════════════════════════════════════════════ */
 
 @media (prefers-reduced-transparency: reduce) {
-    .premium-glass, .card, .lg, .bottom-nav,
+    .premium-glass, .quest-card-smart, .plan-card-premium, .bottom-nav,
     .auth-input, .input-field, .post-input, .modal {
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
         background: rgba(255, 255, 255, 0.96) !important;
     }
-    .modal { background: rgba(11, 76, 143, 0.45) !important; }
+    .modal { background: rgba(36, 64, 92, 0.45) !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .bottom-nav .nav-item.active::before,
     .bottom-nav .nav-btn.active::before { animation: none; }
     .btn-primary::after, .btn-primary-gradient::after { transition: none; }
-    .card, .btn-primary, .btn-primary-gradient { transition: none; }
+    .quest-card-smart, .plan-card-premium, .adv-card, .btn-primary { transition: none; }
 }
 
 /* Sin soporte de backdrop-filter (navegadores viejos): superficie sólida */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .premium-glass, .card, .lg, .bottom-nav {
+    .premium-glass, .q-stats-floating-bar, .bottom-nav {
         background: rgba(255, 255, 255, 0.95) !important;
     }
 }
@@ -323,7 +365,7 @@ h1, h2, h3, h4,
 /* Texto secundario: que respire y no compita */
 [class*="-subtitle"][class], [class*="-sub"][class],
 [class*="-desc"][class],
-.main-sub, .section-sub, .sub {
+.today-welcome-subtitle, .q-subtitle, .profile-email-sub, .ranking-subtitle, .safe-subtitle {
     font-weight: 500 !important;
     /* Sin opacidad: --gh-ink-2 ya está un escalón por debajo de la tinta
        principal. Atenuarlo encima bajaba el contraste de 6,1:1 a 4,03:1 y
@@ -333,18 +375,20 @@ h1, h2, h3, h4,
 }
 
 /* Cuerpo de texto: interlineado cómodo de lectura */
-p, li, .card p, .card li {
+p, li, .premium-glass p, .premium-glass li {
     line-height: 1.55;
     letter-spacing: -0.003em;
 }
 
 /* ── Sombras: una escala coherente en vez de 124 valores sueltos ── */
-.card, .premium-glass, .lg {
+.premium-glass, .quest-card-smart, .pdd-card, .plan-card-premium,
+.profile-reflection-card, .referral-premium-box, .alert-card, .tribu-card,
+.mf-card, .adv-card, .memory-summary-card {
     box-shadow: var(--lg-specular), var(--lg-elev-2) !important;
 }
 
 /* ── Ritmo vertical: espaciados consistentes ── */
-.content-list { gap: 12px; }
+.moments-feed, .stagger-list { gap: 12px; }
 .stagger-group > * + * { margin-top: 12px; }
 
 /* ── El nav ──────────────────────────────────────────────────────
