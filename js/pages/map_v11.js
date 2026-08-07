@@ -101,6 +101,27 @@ window.GoHappyMap = {
         return km.toFixed(1) + ' km';
     },
 
+    // ─── ALTURA REAL de la barra de navegación ───────────────────
+    // Se mide del DOM en lugar de fiarse de --nav-total, que da 80px
+    // cuando la barra ocupa 90 (main.css dice 85px de alto y premium.css
+    // 68; gana premium, pero el relleno de zona segura la estira). Esa
+    // diferencia era la que dejaba el botón de reseña pegado al nav.
+    _navAlto: () => {
+        try {
+            const nav = document.getElementById('bottom-nav');
+            if (nav) {
+                const r = nav.getBoundingClientRect();
+                // Lo que hace falta NO es el alto de la barra sino cuánto
+                // ocupa contando desde el borde inferior de la pantalla: la
+                // barra flota y deja un hueco debajo. Midiendo sólo su alto
+                // el botón quedaba a 2px del nav.
+                const ocupa = Math.round(window.innerHeight - r.top);
+                if (ocupa > 20) return ocupa;
+            }
+        } catch (e) {}
+        return 110;   // respaldo prudente
+    },
+
     // ─── MODO NOCTURNO automático según hora local ───────────────
     _isNightMode: () => {
         const h = new Date().getHours();
@@ -805,10 +826,13 @@ window.GoHappyMap = {
         // ════════ STACK PREMIUM de FABs (derecha inferior) ════════
         const fabStack = document.createElement('div');
         fabStack.className = 'gh-map-fab-stack';
-        // bottom = altura de la barra de navegación + margen → la reseña (+) nunca se corta
+        // El ancla de abajo se mide contra la barra de navegación REAL, no
+        // contra --nav-total: esa variable calcula 80px mientras la barra
+        // mide 90, y dejaba sólo 8px de aire. Con `_navAlto()` el margen es
+        // siempre el mismo en cualquier móvil.
         fabStack.style.cssText = `
-            position:absolute; right:14px; bottom:calc(var(--nav-total, 110px) + 18px); z-index:6;
-            display:flex; flex-direction:column; gap:10px; align-items:center;
+            position:absolute; right:14px; bottom:${window.GoHappyMap._navAlto() + 16}px; z-index:6;
+            display:flex; flex-direction:column; gap:10px; align-items:flex-end;
         `;
         container.appendChild(fabStack);
 
@@ -838,7 +862,7 @@ window.GoHappyMap = {
         const heatBtn = makeFab('gh-fab-heat', '🌡️', lang === 'en' ? 'Heatmap' : 'Mapa de calor');
         heatBtn.addEventListener('click', async () => {
             const on = await window.GoHappyMap.toggleHeatmap();
-            heatBtn.style.background = on ? 'linear-gradient(135deg,var(--gh-warning),var(--gh-danger))' : 'rgba(255,255,255,0.95)';
+            heatBtn.style.background = on ? 'linear-gradient(135deg,var(--gh-warning),var(--gh-danger))' : (heatBtn.dataset.plano ? 'transparent' : 'rgba(255,255,255,0.95)');
             heatBtn.style.color = on ? 'white' : 'var(--cobalt,var(--gh-primary))';
         });
 
@@ -846,7 +870,7 @@ window.GoHappyMap = {
         const familyBtn = makeFab('gh-fab-family', '👨‍👩‍👧', lang === 'en' ? 'Family live' : 'Familia activa');
         familyBtn.addEventListener('click', async () => {
             const on = await window.GoHappyMap.toggleFamilyMode();
-            familyBtn.style.background = on ? 'linear-gradient(135deg,var(--gh-warning),var(--gh-gold))' : 'rgba(255,255,255,0.95)';
+            familyBtn.style.background = on ? 'linear-gradient(135deg,var(--gh-warning),var(--gh-gold))' : (familyBtn.dataset.plano ? 'transparent' : 'rgba(255,255,255,0.95)');
             familyBtn.style.color = on ? 'white' : 'var(--cobalt,var(--gh-primary))';
             // Sin toast: el botón se ilumina en dorado al activarse.
         });
@@ -889,7 +913,7 @@ window.GoHappyMap = {
                 // Sin toast: el botón cambia de color y el mapa se centra.
                 // El propio cambio ya comunica el estado.
             } else {
-                followBtn.style.background = 'rgba(255,255,255,0.95)';
+                followBtn.style.background = followBtn.dataset.plano ? 'transparent' : 'rgba(255,255,255,0.95)';
                 followBtn.style.color = 'var(--cobalt,var(--gh-primary))';
             }
         });
@@ -904,39 +928,75 @@ window.GoHappyMap = {
         addBtn.style.color = 'white';
         addBtn.style.boxShadow = '0 10px 28px rgba(11,113,252,0.4), inset 0 1px 0 rgba(255,255,255,0.4)';
 
-        // ── LIMPIO: solo 3 FABs visibles; el resto en un grupo plegable ──
-        // Grupo plegable de herramientas secundarias (oculto por defecto)
+        // ══ HERRAMIENTAS: se abren HACIA LA IZQUIERDA, no hacia arriba ══
+        //
+        // Antes las 5 herramientas se apilaban en vertical sobre los otros 3
+        // botones: 448px de columna en la derecha de la pantalla. En un móvil
+        // de 667px eso dejaba 6px hasta el buscador, y con las zonas seguras
+        // de un iPhone real se solapaba. Además tapaba media pantalla de mapa.
+        //
+        // En horizontal ocupan 3 filas (≈160px) y usan el ancho, que sobra.
+        const TOOL = 42;
         const toolsWrap = document.createElement('div');
         toolsWrap.id = 'gh-fab-tools';
         toolsWrap.style.cssText = `
-            display:none; flex-direction:column; gap:10px; align-items:center;
-            animation:gh-tools-in 0.28s cubic-bezier(0.16,1,0.3,1);
+            display:none; flex-direction:row; gap:8px; align-items:center;
+            padding:6px 8px; border-radius:999px;
+            background:rgba(255,255,255,0.82);
+            backdrop-filter:blur(24px) saturate(180%);
+            -webkit-backdrop-filter:blur(24px) saturate(180%);
+            box-shadow:0 8px 24px rgba(120,90,70,0.16), inset 0 1px 0 rgba(255,255,255,0.95);
+            animation:gh-tools-in 0.26s cubic-bezier(0.16,1,0.3,1);
+            transform-origin:right center;
         `;
         if (!document.getElementById('gh-tools-style')) {
             const s = document.createElement('style');
             s.id = 'gh-tools-style';
-            s.textContent = `@keyframes gh-tools-in { from{opacity:0; transform:translateY(12px) scale(0.9);} to{opacity:1; transform:none;} }`;
+            s.textContent = `@keyframes gh-tools-in { from{opacity:0; transform:translateX(20px) scale(0.9);} to{opacity:1; transform:none;} }`;
             document.head.appendChild(s);
         }
-        toolsWrap.appendChild(familyBtn);
-        toolsWrap.appendChild(heatBtn);
-        toolsWrap.appendChild(toggle3D);
-        toolsWrap.appendChild(followBtn);
-        toolsWrap.appendChild(compassBtn);
+        // Dentro de la píldora los botones van sin cristal propio: el cristal
+        // es la píldora. Si cada uno lleva el suyo se ve sucio y recargado.
+        [familyBtn, heatBtn, toggle3D, followBtn, compassBtn].forEach(b => {
+            b.style.width = TOOL + 'px';
+            b.style.height = TOOL + 'px';
+            b.style.fontSize = '18px';
+            b.style.background = 'transparent';
+            b.style.backdropFilter = 'none';
+            b.style.webkitBackdropFilter = 'none';
+            b.style.boxShadow = 'none';
+            b.dataset.plano = '1';           // los toggles saben no reponer el cristal
+            toolsWrap.appendChild(b);
+        });
 
         // Botón que despliega/oculta las herramientas
         const toolsToggle = makeFab('gh-fab-tools-toggle', '🧰', lang === 'en' ? 'More tools' : 'Más herramientas');
         let toolsOpen = false;
-        toolsToggle.addEventListener('click', () => {
+        const cerrarTools = () => {
+            toolsOpen = false;
+            toolsWrap.style.display = 'none';
+            toolsToggle.innerHTML = '🧰';
+            toolsToggle.style.background = 'rgba(255,255,255,0.95)';
+        };
+        toolsToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
             toolsOpen = !toolsOpen;
             toolsWrap.style.display = toolsOpen ? 'flex' : 'none';
             toolsToggle.innerHTML = toolsOpen ? '✕' : '🧰';
-            toolsToggle.style.background = toolsOpen ? 'rgba(11,76,143,0.10)' : 'rgba(255,255,255,0.95)';
+            toolsToggle.style.background = toolsOpen ? 'rgba(47,107,158,0.12)' : 'rgba(255,255,255,0.95)';
         });
+        // Tocar el mapa cierra la barra: no se queda abierta estorbando
+        window.GoHappyMap.instance.on('click', cerrarTools);
+        window.GoHappyMap.instance.on('dragstart', cerrarTools);
 
-        // Orden visual (arriba → abajo): [herramientas plegables], 🧰, 🎯, ➕
-        fabStack.appendChild(toolsWrap);
-        fabStack.appendChild(toolsToggle);
+        // Fila superior: [herramientas ←] [🧰]
+        const filaTools = document.createElement('div');
+        filaTools.style.cssText = 'display:flex; flex-direction:row; align-items:center; gap:10px; justify-content:flex-end;';
+        filaTools.appendChild(toolsWrap);
+        filaTools.appendChild(toolsToggle);
+
+        // Orden visual (arriba → abajo): [herramientas] 🧰 · 🎯 · ➕
+        fabStack.appendChild(filaTools);
         fabStack.appendChild(locateBtn);
         fabStack.appendChild(addBtn);
 
