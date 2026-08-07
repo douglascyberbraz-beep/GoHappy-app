@@ -23,36 +23,40 @@
 window.GoHappyMapStyle = (() => {
 
     // ─── Paleta ───────────────────────────────────────────────────
+    // Los mismos pasteles cálidos de palette.css: el mapa ocupa la pantalla
+    // entera, así que si se queda en grises fríos rompe con el resto de la
+    // app. Aquí van en hex porque MapLibre no entiende var() — para
+    // resolver un token desde JS está la función token() de más abajo.
     const C = {
-        // Suelo: neutro, deja respirar al resto
-        fondo:        '#F4F6F9',
-        residencial:  '#ECEFF4',
-        // Verdes: parques y vegetación, claramente verdes
-        parque:       '#C7E9D2',
-        bosque:       '#B5E0C3',
-        hierba:       '#D2EEDB',
-        humedal:      '#C8E4DE',
-        // Agua: cian de marca
-        agua:         '#8FD4E8',
-        // Equipamientos: cada uno con su tinte propio, suave
-        colegio:      '#EDE6F5',
-        hospital:     '#F6E4E8',
-        cementerio:   '#DCE9DE',
-        deporte:      '#CFE8D8',
-        arena:        '#F2E8D4',
-        hielo:        '#EAF2F7',
-        aeropuerto:   '#E8EAF0',
-        // Vías: blancas con borde azul-gris (el look de navegador)
-        viaPrincipal: '#FFFFFF',
-        viaSecundaria:'#FDFDFE',
-        viaMenor:     '#F8FAFC',
-        borde:        '#D5DEE9',
-        peatonal:     '#E4EAF1',
+        // Suelo: arena muy clara, emparentada con la crema de la app
+        fondo:        '#F8F2E9',
+        residencial:  '#F1E9DE',
+        // Verdes de Bluey: el parque tiene que leerse como parque
+        parque:       '#C3E0B4',
+        bosque:       '#AFD5A0',
+        hierba:       '#D6EBC9',
+        humedal:      '#C6DFD2',
+        // Agua: el azul cielo de la serie
+        agua:         '#A9D8E6',
+        // Equipamientos: un tinte propio cada uno, tomado de los acentos
+        colegio:      '#E6DCF0',   // lila
+        hospital:     '#F6DEDC',   // coral
+        cementerio:   '#DEE8D6',
+        deporte:      '#CFE5C2',
+        arena:        '#F3E3C8',
+        hielo:        '#EDF3F5',
+        aeropuerto:   '#EBE6DE',
+        // Vías: crema muy claro con borde cálido (el look de navegador)
+        viaPrincipal: '#FFFDF9',
+        viaSecundaria:'#FDFAF4',
+        viaMenor:     '#F9F4EC',
+        borde:        '#E4D8C9',
+        peatonal:     '#EDE4D8',
         // Edificios
-        edificioBase: '#DDE5EF',
-        // Texto
-        texto:        '#3C4A5C',
-        textoHalo:    'rgba(255,255,255,0.92)'
+        edificioBase: '#E5DDD2',
+        // Texto: la tinta de la app
+        texto:        '#24405C',
+        textoHalo:    'rgba(255,253,250,0.94)'
     };
 
     // Rellenos: id real de la capa → color
@@ -153,7 +157,7 @@ window.GoHappyMapStyle = (() => {
             _set(map, id, 'fill-opacity', 1);
         });
         // El contorno del parque marcaba un borde duro: lo suavizamos
-        _set(map, 'park_outline', 'line-color', noche ? '#2E4438' : '#AFDCBE');
+        _set(map, 'park_outline', 'line-color', noche ? '#2E4438' : '#A9D19A');
         _set(map, 'park_outline', 'line-opacity', 0.5);
 
         // ── Vías ──
@@ -195,11 +199,11 @@ window.GoHappyMapStyle = (() => {
                 // De cian claro a cobalto de marca según la altura: da
                 // lectura de relieve sin recurrir a sombras duras.
                 'interpolate', ['linear'], alto,
-                0,   '#DCEAF6',
-                15,  '#B9D8EE',
-                40,  '#7FB6DF',
-                90,  '#3E8FCB',
-                200, '#0B71FC'
+                0,   '#EFE7DB',
+                15,  '#D6DFE4',
+                40,  '#A8C6D8',
+                90,  '#6FA0C2',
+                200, '#3A76A8'
             ]);
             _set(map, 'building-3d', 'fill-extrusion-height', [
                 'interpolate', ['linear'], ['zoom'],
@@ -218,7 +222,7 @@ window.GoHappyMapStyle = (() => {
         try {
             map.setLight({
                 anchor: 'viewport',
-                color: noche ? '#8FA8C4' : '#FFFFFF',
+                color: noche ? '#8FA8C4' : '#FFF8EE',
                 intensity: noche ? 0.2 : 0.42,
                 position: [1.4, 200, 40]
             });
@@ -232,8 +236,8 @@ window.GoHappyMapStyle = (() => {
                     'fog-color': '#16202E', 'fog-ground-blend': 0.6,
                     'horizon-fog-blend': 0.5, 'sky-horizon-blend': 0.7, 'atmosphere-blend': 0.8
                 } : {
-                    'sky-color': '#9FD3F5', 'horizon-color': '#E4F1FB',
-                    'fog-color': '#F4F6F9', 'fog-ground-blend': 0.55,
+                    'sky-color': '#A9D8E6', 'horizon-color': '#FBEFE0',
+                    'fog-color': '#F8F2E9', 'fog-ground-blend': 0.55,
                     'horizon-fog-blend': 0.4, 'sky-horizon-blend': 0.8, 'atmosphere-blend': 0.75
                 });
             }
@@ -259,5 +263,22 @@ window.GoHappyMapStyle = (() => {
         console.warn('[MapStyle] Capas no encontradas (' + _fallos.length + '):', [...new Set(_fallos)].join(', '));
     }
 
-    return { apply, PALETA: C, _fallos: () => [...new Set(_fallos)] };
+    /**
+     * Resuelve un token de palette.css a su color real.
+     *
+     * MapLibre, el generador de QR y el canvas NO entienden `var(--x)`:
+     * necesitan un color de verdad. Esto permite que esas partes sigan
+     * bebiendo de la misma paleta en vez de tener sus hex duplicados.
+     *
+     *   token('--gh-aqua')  →  '#6BB8C4'
+     */
+    function token(nombre, respaldo = '#2F6B9E') {
+        try {
+            const v = getComputedStyle(document.documentElement)
+                .getPropertyValue(nombre).trim();
+            return v || respaldo;
+        } catch (e) { return respaldo; }
+    }
+
+    return { apply, token, PALETA: C, _fallos: () => [...new Set(_fallos)] };
 })();

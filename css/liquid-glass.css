@@ -325,7 +325,11 @@ h1, h2, h3, h4,
 [class*="-desc"][class],
 .main-sub, .section-sub, .sub {
     font-weight: 500 !important;
-    opacity: 0.8;
+    /* Sin opacidad: --gh-ink-2 ya está un escalón por debajo de la tinta
+       principal. Atenuarlo encima bajaba el contraste de 6,1:1 a 4,03:1 y
+       lo dejaba por debajo del mínimo. Jerarquía con color y peso, no
+       apagando el texto. */
+    opacity: 1;
 }
 
 /* Cuerpo de texto: interlineado cómodo de lectura */
@@ -343,16 +347,24 @@ p, li, .card p, .card li {
 .content-list { gap: 12px; }
 .stagger-group > * + * { margin-top: 12px; }
 
-/* ── El nav: iconos algo menores y etiquetas más discretas ── */
-.bottom-nav .nav-item .icon { font-size: 21px; }
+/* ── El nav ──────────────────────────────────────────────────────
+   La discreción se consigue con COLOR, no con transparencia.
+   premium.css pone .nav-item a opacity .55 y aquí la etiqueta estaba a
+   .7: se multiplican y quedaba en .39 real. Medido: 1,75:1 sobre el
+   cristal, o sea ilegible. Y aunque fuese sólo .7 seguiría en 3,1:1,
+   por debajo del 4,5 que pide un texto de 10px.
+   Con el gris secundario a opacidad plena: 6,1:1. */
+.bottom-nav .nav-item { opacity: 1 !important; }
+.bottom-nav .nav-item .icon { font-size: 21px; opacity: 0.55; }
+.bottom-nav .nav-item.active .icon { opacity: 1; }
 .bottom-nav .nav-item .label {
-    /* 10px es la medida de la barra de pestañas de iOS. Con menos, y encima
-       atenuado, deja de leerse: la discreción no puede costar legibilidad. */
+    /* 10px es la medida de la barra de pestañas de iOS */
     font-size: 10px !important;
-    opacity: 0.7;
+    color: var(--gh-ink-2) !important;
+    opacity: 1;
     letter-spacing: 0;
 }
-.bottom-nav .nav-item.active .label { opacity: 1; }
+.bottom-nav .nav-item.active .label { color: var(--gh-primary) !important; }
 
 /* ── Menos animación de fondo: lo que se mueve solo, distrae ── */
 .stagger-group > * { animation-duration: 0.24s; }

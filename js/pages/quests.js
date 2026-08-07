@@ -80,13 +80,13 @@ window.GoHappyQuestsPage = {
                 .quests-page { width:100%; box-sizing:border-box; overflow-x:hidden; min-height: 100vh; }
                 .q-header-content { display:flex; justify-content:space-between; align-items:center; gap:12px; position:relative; z-index:2; }
                 .q-title-group { flex:1; min-width:0; }
-                .racha-icon { font-size:22px; filter: drop-shadow(0 0 6px #F39C12); }
+                .racha-icon { font-size:22px; filter: drop-shadow(0 0 6px var(--gh-warning)); }
                 .racha-info { display:flex; flex-direction:column; align-items:flex-start; }
                 .q-stats-floating-bar { display:flex; justify-content:space-around; align-items:center; }
                 .stat-item { text-align:center; }
                 .stat-val { display:block; font-size:1.3rem; font-weight:700; color:var(--cobalt); }
-                .stat-val.done { color:#27AE60; }
-                .stat-val.pts { color:#F39C12; }
+                .stat-val.done { color:var(--gh-success-ink); }
+                .stat-val.pts { color:var(--gh-warning-ink); }
                 .stat-label { font-size:9px; color:var(--text-tertiary); font-weight:800; text-transform:uppercase; margin-top:3px; letter-spacing:0.3px; }
                 .stat-divider { width:1px; height:28px; background:rgba(11,76,143,0.1); }
                 .q-filters-container { display:flex; gap:8px; padding:20px 16px 8px; overflow-x:auto; scrollbar-width:none; }
@@ -108,7 +108,7 @@ window.GoHappyQuestsPage = {
                     flex-shrink:0;
                 }
                 .quest-card-smart.done .q-check-circle {
-                    background:#27AE60; border-color:#27AE60; color:white;
+                    background:var(--gh-success); border-color:var(--gh-success); color:white;
                     box-shadow: 0 4px 12px rgba(39,174,96,0.3);
                 }
             `;

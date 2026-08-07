@@ -1,0 +1,117 @@
+/* ════════════════════════════════════════════════════════════════════
+   GoHappy — Paleta
+   Inspirada en la dirección de arte de Bluey: pasteles cálidos, crema en
+   vez de blanco puro, y variedad de tono con saturación baja.
+
+   ─── Por qué existe este archivo ───
+   El proyecto tenía 153 colores distintos y 331 escritos a mano dentro de
+   las plantillas de JS, sin pasar por ninguna variable. Para decir "hecho"
+   convivían 6 verdes; para "aviso", 4 naranjas; para "error", 3 rojos.
+   Por eso las páginas no concordaban entre sí: cada una elegía el suyo.
+   Aquí está la ÚNICA fuente de verdad. Cambiar la piel entera de la app
+   es editar este archivo.
+
+   ─── Por qué pastel funciona con Liquid Glass ───
+   El cristal es desenfoque + translucidez. Al desenfocar un color muy
+   saturado el resultado se enturbia y el borde del cristal pierde
+   definición. Un pastel, al desenfocarse, mantiene el tono. No es sólo
+   estética: los pasteles son mejor material para el cristal.
+
+   ─── Regla de contraste ───
+   Los pasteles son RELLENO, nunca fondo de texto blanco. Cada color de
+   relleno trae su pareja `-ink`, ya comprobada por encima de 4.5:1 sobre
+   ese relleno. Texto pastel sobre fondo pastel no se lee.
+   ════════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* ── Tinta ───────────────────────────────────────────────────────
+       El azul de marca, un punto más profundo para que también funcione
+       sobre crema. Mantiene el vínculo con GoHappy y con CitaGo. */
+    /* Los tres niveles están medidos sobre la crema #FDF7EF. Sobre un
+       fondo claro los grises tienen que ser más oscuros de lo que
+       intuitivamente parece: el #93A3B4 que probé primero daba 2,6:1 y
+       las etiquetas de 11px no se leían. La jerarquía la dan también el
+       tamaño y el grosor, no sólo el color. */
+    --gh-ink:            #24405C;   /* principal   · 9,4:1 */
+    --gh-ink-2:          #4A5D70;   /* secundario  · 6,1:1 */
+    --gh-ink-3:          #5E7183;   /* terciario   · 4,6:1 (mínimo AA) */
+
+    /* ── Acción / marca ──────────────────────────────────────────── */
+    --gh-primary:        #2F6B9E;   /* 5,7:1 con blanco · 5,3:1 sobre crema */
+    --gh-primary-bright: #3A76A8;   /* 4,8:1 con blanco */
+    --gh-primary-soft:   #C5DCEE;   /* relleno suave de marca */
+    --gh-aqua:           #6BB8C4;   /* el cian, desplazado a cálido */
+    --gh-aqua-deep:      #3E8894;   /* versión legible del cian */
+    --gh-aqua-soft:      #C6E6EA;
+
+    /* ── Superficies ─────────────────────────────────────────────────
+       Crema en lugar de blanco puro: es lo que da el aire de Bluey y
+       quita la dureza del blanco de oficina bajo el cristal. */
+    --gh-bg:             #FDF7EF;   /* fondo de la app */
+    --gh-surface:        #FFFDFA;   /* tarjetas */
+    --gh-surface-2:      #F7EFE5;   /* relleno sutil, campos */
+    --gh-surface-3:      #F0E5D8;   /* relleno más marcado */
+    --gh-line:           #E8DCCF;   /* separadores y bordes */
+    --gh-white:          #FFFFFF;   /* blanco real: sólo texto sobre color */
+
+    /* ── Semánticos: relleno pastel + tinta legible encima ────────── */
+    --gh-success:        #A8CE9C;
+    --gh-success-soft:   #DDEDD6;
+    --gh-success-ink:    #2F5B36;
+
+    --gh-warning:        #F0C48A;
+    --gh-warning-soft:   #FBEBD3;
+    --gh-warning-ink:    #7A5220;
+
+    --gh-danger:         #EFB2AE;
+    --gh-danger-soft:    #FBE1DF;
+    --gh-danger-ink:     #8A3A34;
+
+    --gh-gold:           #F2D08A;
+    --gh-gold-ink:       #6B4E10;
+
+    /* ── Acentos por categoría (Bluey) ───────────────────────────── */
+    --gh-sky:            #B8D9EE;   --gh-sky-ink:    #2A5570;
+    --gh-grass:          #A8CE9C;   --gh-grass-ink:  #2F5B36;
+    --gh-sun:            #F0C48A;   --gh-sun-ink:    #7A5220;
+    --gh-bingo:          #E29A6B;   --gh-bingo-ink:  #7C4520;   /* terracota */
+    --gh-coral:          #EFB2AE;   --gh-coral-ink:  #7E3630;
+    --gh-lilac:          #D8C6E8;   --gh-lilac-ink:  #553A70;
+
+    /* ── Degradados ──────────────────────────────────────────────────
+       Suaves y cálidos: un degradado saturado bajo blur se vuelve barro. */
+    --gh-grad-primary:   linear-gradient(135deg, #3A76A8 0%, #6BB8C4 100%);
+    --gh-grad-warm:      linear-gradient(135deg, #F0C48A 0%, #E29A6B 100%);
+    --gh-grad-soft:      linear-gradient(135deg, rgba(58,118,168,0.08) 0%, rgba(107,184,196,0.10) 100%);
+    --gh-grad-sky:       linear-gradient(160deg, #FDF3E6 0%, #F3E6F2 55%, #E4F0F7 100%);
+
+    /* ── Sombras: cálidas, no azul frío ──────────────────────────── */
+    --gh-shadow-1:       0 2px 8px rgba(120, 90, 70, 0.07);
+    --gh-shadow-2:       0 8px 24px rgba(120, 90, 70, 0.10);
+    --gh-shadow-3:       0 16px 40px rgba(120, 90, 70, 0.13);
+
+    /* ── Puentes con los nombres antiguos ────────────────────────────
+       main.css y premium.css usan --primary-cobalt, --cobalt, --cyan…
+       en 592 sitios. Reapuntarlos aquí cambia la app entera sin tocar
+       esos archivos, y evita una migración masiva propensa a errores. */
+    --primary-cobalt:    var(--gh-primary);
+    --cobalt:            var(--gh-primary);
+    --cobalt-bright:     var(--gh-primary-bright);
+    --cyan:              var(--gh-aqua);
+    --cyan-bright:       var(--gh-aqua-deep);
+    --cyan-pastel:       var(--gh-aqua-soft);
+    --accent-cyan:       var(--gh-aqua);
+    --accent-pink:       var(--gh-bingo);
+    --accent-yellow:     var(--gh-gold);
+    --accent-gray:       var(--gh-surface-2);
+    --text-dark:         var(--gh-ink);
+    --text-primary:      var(--gh-ink);
+    --text-secondary:    var(--gh-ink-2);
+    --text-tertiary:     var(--gh-ink-3);
+    --bg-app:            var(--gh-bg);
+    --bg-sky:            var(--gh-sky);
+    --white:             var(--gh-surface);
+    --brand-bright:      var(--gh-grad-primary);
+    --brand-gradient:    var(--gh-grad-primary);
+    --brand-soft:        var(--gh-grad-soft);
+}

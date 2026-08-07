@@ -241,7 +241,7 @@ window.GoHappyToday = {
             window.GoHappyToday._markPlanPending(best);
             window.GoHappyToday._persistSavedPlan(best); // 📌 a "Mis planes guardados"
             saveBtn.textContent = lang === 'en' ? '✅ Saved' : '✅ Guardado';
-            saveBtn.style.background = '#27AE60';
+            saveBtn.style.background = 'var(--gh-success)';
             window.GoHappyToast && window.GoHappyToast.points(
                 lang === 'en' ? `Plan saved! +50 pts 🎉` : `¡Plan guardado! +50 pts 🎉`);
         };
@@ -356,7 +356,7 @@ window.GoHappyToday = {
             <div class="today-page">
                 <!-- Pull-to-refresh indicator -->
                 <div id="today-ptr" style="position:absolute; top:0; left:0; right:0; height:60px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:8px; transform:translateY(-60px); transition:transform 0.3s; z-index:3; pointer-events:none;">
-                    <div style="background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-radius:999px; padding:8px 18px; box-shadow:0 8px 22px rgba(11,76,143,0.15); display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--primary-cobalt,#0B4C8F);">
+                    <div style="background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-radius:999px; padding:8px 18px; box-shadow:0 8px 22px rgba(11,76,143,0.15); display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--primary-cobalt,var(--gh-primary));">
                         <span id="today-ptr-icon" style="font-size:16px; transition:transform 0.3s;">⬇️</span>
                         <span id="today-ptr-text">${lang0 === 'en' ? 'Pull to refresh' : 'Tira para refrescar'}</span>
                     </div>
@@ -366,7 +366,7 @@ window.GoHappyToday = {
                     <div style="position:relative; z-index:2; display:flex; align-items:flex-start; gap:16px;">
                         <div style="flex:1; min-width:0;">
                             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:2px;">
-                                <div style="font-size:13px; font-weight:700; color:var(--text-secondary); opacity:0.85;">${greeting}, <span style="color:var(--primary-cobalt,#0B4C8F);">${userName}</span> ✨</div>
+                                <div style="font-size:13px; font-weight:700; color:var(--text-secondary);">${greeting}, <span style="color:var(--primary-cobalt,var(--gh-primary));">${userName}</span> ✨</div>
                                 ${streakChip}
                             </div>
                             <h2 class="today-welcome-title" style="margin-top:2px;">${T('today.title')}</h2>
@@ -375,7 +375,7 @@ window.GoHappyToday = {
                         <!-- Weather widget -->
                         <div id="today-weather" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:62px; padding:8px 6px; background:rgba(255,255,255,0.6); backdrop-filter:blur(14px); border-radius:14px; border:0.5px solid rgba(255,255,255,0.6); box-shadow:0 4px 14px rgba(11,76,143,0.08); flex-shrink:0;">
                             <span id="today-weather-icon" style="font-size:22px; line-height:1;">⛅</span>
-                            <span id="today-weather-temp" style="font-size:13px; font-weight:700; color:var(--primary-cobalt,#0B4C8F); margin-top:2px;">--°</span>
+                            <span id="today-weather-temp" style="font-size:13px; font-weight:700; color:var(--primary-cobalt,var(--gh-primary)); margin-top:2px;">--°</span>
                         </div>
                     </div>
                 </div>
@@ -404,8 +404,8 @@ window.GoHappyToday = {
                 /* ─── 🔥 Chip de racha diaria ─── */
                 .today-streak-chip {
                     display:inline-flex; align-items:center; gap:3px;
-                    background:linear-gradient(135deg,#FF8A50,#FF6B9D);
-                    color:#fff; font-size:11px; font-weight:700;
+                    background:linear-gradient(135deg,var(--gh-bingo),var(--gh-coral));
+                    color:var(--gh-surface); font-size:11px; font-weight:700;
                     padding:3px 10px; border-radius:999px;
                     box-shadow:0 3px 10px rgba(255,107,157,0.32);
                     letter-spacing:0.2px; white-space:nowrap;
@@ -419,7 +419,7 @@ window.GoHappyToday = {
                     background:linear-gradient(135deg, rgba(11,113,252,0.97), rgba(23,200,212,0.95));
                     border-radius:24px; padding:18px 18px 16px;
                     box-shadow:0 14px 34px rgba(11,76,143,0.28);
-                    color:#fff;
+                    color:var(--gh-surface);
                     animation:pddIn .55s cubic-bezier(.16,1,.3,1) both;
                 }
                 @keyframes pddIn { from{opacity:0; transform:translateY(16px) scale(.98);} to{opacity:1; transform:none;} }
@@ -445,7 +445,7 @@ window.GoHappyToday = {
                 /* 🔁 Tarjeta de feedback "¿qué tal estuvo?" */
                 .pdd-feedback { background:linear-gradient(135deg, rgba(124,107,255,0.96), rgba(11,113,252,0.95)); }
                 .pdd-stars { display:flex; gap:6px; margin:6px 0 14px; }
-                .pdd-star { font-size:32px; line-height:1; cursor:pointer; color:#FFD54A;
+                .pdd-star { font-size:32px; line-height:1; cursor:pointer; color:var(--gh-gold-ink);
                     transition:transform .15s cubic-bezier(.34,1.56,.64,1); user-select:none; }
                 .pdd-star:active { transform:scale(0.85); }
                 .pdd-skip { background:transparent; border:none; color:rgba(255,255,255,0.85);
@@ -453,8 +453,8 @@ window.GoHappyToday = {
                 /* Badge "Súper plan" en la primera card de la lista de Planes */
                 .superplan-badge {
                     display:inline-flex; align-items:center; gap:4px;
-                    background:linear-gradient(135deg,#FF8A50,#FF6B9D);
-                    color:#fff; font-size:10px; font-weight:700; letter-spacing:0.4px;
+                    background:linear-gradient(135deg,var(--gh-bingo),var(--gh-coral));
+                    color:var(--gh-surface); font-size:10px; font-weight:700; letter-spacing:0.4px;
                     padding:3px 9px; border-radius:999px; text-transform:uppercase;
                     box-shadow:0 3px 10px rgba(255,107,157,0.3);
                 }
@@ -468,12 +468,12 @@ window.GoHappyToday = {
                     border:0.5px solid rgba(255,255,255,0.3);
                     padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800;
                 }
-                .pdd-pill.free { background:rgba(255,255,255,0.95); color:#1a8a4a; }
-                .pdd-pill.paid { background:rgba(255,255,255,0.95); color:#b5651d; }
+                .pdd-pill.free { background:rgba(255,255,255,0.95); color:var(--gh-success-ink); }
+                .pdd-pill.paid { background:rgba(255,255,255,0.95); color:var(--gh-bingo-ink); }
                 .pdd-loc { font-size:12.5px; margin-bottom:14px; opacity:0.96; }
                 .pdd-actions { display:flex; gap:8px; }
                 .pdd-cta {
-                    flex:1; background:#fff; color:var(--primary-cobalt,#0B4C8F);
+                    flex:1; background:var(--gh-surface); color:var(--primary-cobalt,var(--gh-primary));
                     border:none; border-radius:14px; padding:13px 16px;
                     font-size:14px; font-weight:700; cursor:pointer;
                     box-shadow:0 6px 16px rgba(0,0,0,0.16);
@@ -483,7 +483,7 @@ window.GoHappyToday = {
                 .pdd-map {
                     width:48px; flex-shrink:0; background:rgba(255,255,255,0.22);
                     border:0.5px solid rgba(255,255,255,0.3); border-radius:14px;
-                    font-size:20px; cursor:pointer; color:#fff;
+                    font-size:20px; cursor:pointer; color:var(--gh-surface);
                     transition:transform .2s cubic-bezier(.34,1.56,.64,1);
                 }
                 .pdd-map:active { transform:scale(.92); }
@@ -526,7 +526,7 @@ window.GoHappyToday = {
                 .evc-top-text { flex: 1; min-width: 0; }
                 .evc-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; flex-wrap: wrap; }
                 .evc-day {
-                    background: var(--brand-bright, linear-gradient(135deg,#0B71FC,#17C8D4));
+                    background: var(--brand-bright, linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua)));
                     color: white;
                     padding: 3px 10px;
                     border-radius: 999px;
@@ -598,7 +598,7 @@ window.GoHappyToday = {
                     border-radius: 12px;
                     padding: 9px 12px;
                     font-size: 12px;
-                    color: #8B5C00;
+                    color: var(--gh-warning-ink);
                     line-height: 1.4;
                     margin-bottom: 12px;
                     word-wrap: break-word;
@@ -627,7 +627,7 @@ window.GoHappyToday = {
                 .evc-btn:active { transform: scale(0.96); }
                 .evc-btn-primary {
                     flex: 1.5;
-                    background: var(--brand-bright, linear-gradient(135deg,#0B71FC,#17C8D4));
+                    background: var(--brand-bright, linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua)));
                     color: white;
                     box-shadow: 0 5px 14px rgba(11,113,252,0.26);
                 }
@@ -836,7 +836,7 @@ window.GoHappyToday = {
                     flex-wrap: wrap;
                 }
                 .event-day-badge {
-                    background: linear-gradient(135deg, #0B71FC, #17C8D4);
+                    background: linear-gradient(135deg, var(--gh-primary-bright), var(--gh-aqua));
                     color: white;
                     padding: 4px 12px;
                     border-radius: 999px;
@@ -912,7 +912,7 @@ window.GoHappyToday = {
                     border-radius: 14px;
                     padding: 10px 12px;
                     font-size: 12px;
-                    color: #8B6914;
+                    color: var(--gh-warning-ink);
                     margin-bottom: 14px;
                     display: flex; gap: 8px; align-items: flex-start;
                 }
@@ -971,7 +971,7 @@ window.GoHappyToday = {
                 .week-day-pill {
                     flex-shrink: 0;
                     width: 52px; height: 52px;
-                    background: linear-gradient(135deg, #0B71FC, #17C8D4);
+                    background: linear-gradient(135deg, var(--gh-primary-bright), var(--gh-aqua));
                     color: white;
                     border-radius: 16px;
                     display: flex; flex-direction: column;
@@ -1417,7 +1417,7 @@ window.GoHappyToday = {
                         ${superBadge}
                         <span class="event-day-badge">${safe(act.typeLabel || 'Plan')}</span>
                         <span class="event-time">🕐 ${safe(act.time || 'Flexible')}</span>
-                        <span class="event-cat-tag" style="background:${isFree?'rgba(39,174,96,0.1)':'rgba(230,126,34,0.1)'}; color:${isFree?'#27AE60':'#E67E22'};">${safe(act.price || 'Gratis')}</span>
+                        <span class="event-cat-tag" style="background:${isFree?'rgba(39,174,96,0.1)':'rgba(230,126,34,0.1)'}; color:${isFree?'var(--gh-success)':'var(--gh-warning)'};">${safe(act.price || 'Gratis')}</span>
                     </div>
                     <h3 class="event-title">${safe(act.title || 'Plan')}</h3>
                     <p class="event-desc">${safe(act.summary || '')}</p>
@@ -1463,7 +1463,7 @@ window.GoHappyToday = {
                     } catch (e) {}
                 }
                 btn.textContent = window.t ? window.t('today.plan.saved') : '✅ Plan guardado';
-                btn.style.background = '#27AE60';
+                btn.style.background = 'var(--gh-success)';
                 const lang = window.GoHappyI18n?.lang || 'es';
                 const msg = lang === 'en' ? `Plan "${act.title}" saved! +50 pts 🎉` : `¡Plan "${act.title}" guardado! +50 pts 🎉`;
                 window.GoHappyToast.points(msg);

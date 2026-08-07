@@ -86,7 +86,7 @@ window.GoHappySafePage = {
 
         if (alerts.length === 0) {
             alertsList.innerHTML = `
-                <div class="center-text p-40" style="color:#aaa;">
+                <div class="center-text p-40" style="color:var(--gh-ink-3);">
                     <div style="font-size: 40px; margin-bottom: 15px;">🛡️</div>
                     <h3 style="color: var(--primary-cobalt);">${txt.clearTitle}</h3>
                     <p style="font-size: 14px;">${txt.clearBody}</p>
@@ -99,21 +99,21 @@ window.GoHappySafePage = {
                 card.className = 'alert-card entry-anim';
                 card.style.borderLeftColor = typeInfo.color;
                 card.innerHTML = `
-                    <div class="alert-icon" style="background:${typeInfo.color}15; color:${typeInfo.color}; font-size:1.5rem; width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <div class="alert-icon" style="background:${typeInfo.soft}; color:${typeInfo.ink}; font-size:1.5rem; width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
                         ${typeInfo.icon}
                     </div>
                     <div class="alert-card-body" style="flex:1; min-width:0;">
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                            <span style="color:${typeInfo.color}; font-size:11px; font-weight:800; text-transform:uppercase;">${typeInfo.label}</span>
-                            <span style="color:#94a3b8; font-size:11px;">${alert.timeAgo || 'Reciente'}</span>
+                            <span style="color:${typeInfo.ink}; font-size:11px; font-weight:800; text-transform:uppercase;">${typeInfo.label}</span>
+                            <span style="color:var(--gh-ink-3); font-size:11px;">${alert.timeAgo || 'Reciente'}</span>
                         </div>
                         <h4 style="margin:4px 0 2px; color:var(--primary-cobalt); font-size:15px; font-weight:800;">${alert.title}</h4>
-                        <p style="font-size:12px; color:#64748b;">📍 ${alert.location}</p>
-                        <p style="font-size:13px; color:#475569; margin-top:6px; line-height:1.4;">${alert.description}</p>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:10px; border-top:1px solid #f1f5f9;">
-                            <span style="font-size:11px; color:#94a3b8;">👤 ${alert.reportedBy || 'Anónimo'}</span>
+                        <p style="font-size:12px; color:var(--gh-ink-2);">📍 ${alert.location}</p>
+                        <p style="font-size:13px; color:var(--gh-ink-2); margin-top:6px; line-height:1.4;">${alert.description}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:10px; border-top:1px solid var(--gh-surface-2);">
+                            <span style="font-size:11px; color:var(--gh-ink-3);">👤 ${alert.reportedBy || 'Anónimo'}</span>
                             <div style="display:flex; align-items:center; gap:8px;">
-                                <span style="font-size:12px; color:#64748b;">👍 ${alert.votes || 0}</span>
+                                <span style="font-size:12px; color:var(--gh-ink-2);">👍 ${alert.votes || 0}</span>
                                 <button class="btn-vote" data-alert="${alert.id}" style="background:rgba(11,76,143,0.08); color:var(--primary-cobalt); border:none; padding:5px 12px; border-radius:14px; font-size:11px; font-weight:800; cursor:pointer;">Confirmar</button>
                             </div>
                         </div>

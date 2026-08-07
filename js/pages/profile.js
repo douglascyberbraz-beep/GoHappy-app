@@ -15,18 +15,18 @@ window.GoHappyProfile = {
         box.innerHTML = `
             <div style="background:rgba(255,255,255,0.85); border:0.5px solid rgba(255,255,255,0.95); border-radius:20px; padding:16px; box-shadow:0 4px 14px rgba(11,76,143,0.08);">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-                    <h3 style="font-size:14px; font-weight:800; color:var(--primary-cobalt,#0B4C8F); margin:0;">📌 ${lang === 'en' ? 'My saved plans' : 'Mis planes guardados'}</h3>
+                    <h3 style="font-size:14px; font-weight:800; color:var(--primary-cobalt,var(--gh-primary)); margin:0;">📌 ${lang === 'en' ? 'My saved plans' : 'Mis planes guardados'}</h3>
                     <span style="font-size:11px; color:var(--text-secondary);">${plans.length}</span>
                 </div>
                 <div style="display:flex; flex-direction:column; gap:8px;">
                     ${plans.slice(0, 8).map((p, i) => `
                         <div class="psp-row" data-i="${i}" style="display:flex; gap:10px; align-items:center; padding:10px; background:rgba(11,76,143,0.04); border-radius:12px;">
                             <div style="flex:1; min-width:0;">
-                                <div style="font-weight:800; font-size:13px; color:var(--cobalt,#0B4C8F); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${safe(p.title)}</div>
+                                <div style="font-weight:800; font-size:13px; color:var(--cobalt,var(--gh-primary)); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${safe(p.title)}</div>
                                 <div style="font-size:11px; color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">📍 ${safe(p.location)}${p.time ? ' · 🕐 ' + safe(p.time) : ''}</div>
                             </div>
-                            ${(p.lat && p.lng) ? `<button class="psp-map" data-i="${i}" title="${lang === 'en' ? 'Open in maps' : 'Abrir en mapa'}" style="flex-shrink:0; width:36px; height:36px; border-radius:10px; border:none; background:rgba(11,113,252,0.10); color:var(--cobalt,#0B4C8F); font-size:16px; cursor:pointer;">🗺️</button>` : ''}
-                            <button class="psp-del" data-i="${i}" title="${lang === 'en' ? 'Remove' : 'Quitar'}" style="flex-shrink:0; width:36px; height:36px; border-radius:10px; border:none; background:rgba(239,68,68,0.08); color:#DC2626; font-size:14px; cursor:pointer;">✕</button>
+                            ${(p.lat && p.lng) ? `<button class="psp-map" data-i="${i}" title="${lang === 'en' ? 'Open in maps' : 'Abrir en mapa'}" style="flex-shrink:0; width:36px; height:36px; border-radius:10px; border:none; background:rgba(11,113,252,0.10); color:var(--cobalt,var(--gh-primary)); font-size:16px; cursor:pointer;">🗺️</button>` : ''}
+                            <button class="psp-del" data-i="${i}" title="${lang === 'en' ? 'Remove' : 'Quitar'}" style="flex-shrink:0; width:36px; height:36px; border-radius:10px; border:none; background:rgba(239,68,68,0.08); color:var(--gh-danger-ink); font-size:14px; cursor:pointer;">✕</button>
                         </div>
                     `).join('')}
                 </div>
@@ -93,9 +93,9 @@ window.GoHappyProfile = {
                 <div class="p-20 center-text entry-anim" style="padding-top: calc(var(--safe-top, 44px) + 60px);">
                     <div style="font-size: 5rem; margin-bottom: 30px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));">🕶️</div>
                     <h3 style="color: var(--primary-cobalt); font-size: 20px; font-weight: 800;">${T('profile.guest.title')}</h3>
-                    <p style="color: #666; margin-top: 10px;">${T('profile.guest.sub')}</p>
+                    <p style="color: var(--gh-ink-2); margin-top: 10px;">${T('profile.guest.sub')}</p>
                     <button id="login-from-profile" class="btn-primary" style="margin-top: 30px; padding: 15px 40px; font-size: 16px;">${T('profile.guest.btn')}</button>
-                    <p style="font-size: 12px; color: #aaa; margin-top: 20px;">${T('profile.guest.foot')}</p>
+                    <p style="font-size: 12px; color: var(--gh-ink-3); margin-top: 20px;">${T('profile.guest.foot')}</p>
                 </div>
             `;
             document.getElementById('login-from-profile').addEventListener('click', () => {
@@ -126,7 +126,7 @@ window.GoHappyProfile = {
                         </div>
                         <div class="level-badge-premium" style="margin-top:10px;">${levelInfo.icon} ${levelInfo.name}</div>
                         <div style="margin-top:7px; text-align:center;">
-                            <span style="font-family:'Poppins',sans-serif; font-size:17px; font-weight:700; color:var(--primary-cobalt,#0B4C8F);">${user.points}</span>
+                            <span style="font-family:'Poppins',sans-serif; font-size:17px; font-weight:700; color:var(--primary-cobalt,var(--gh-primary));">${user.points}</span>
                             <span style="font-size:11px; font-weight:700; color:var(--text-secondary); margin-left:3px;">${T('profile.points')}</span>
                         </div>
                     </div>
@@ -153,10 +153,10 @@ window.GoHappyProfile = {
                 ">
                     <div style="position:absolute; top:-30px; right:-30px; width:120px; height:120px; background:radial-gradient(circle, rgba(23,200,212,0.20) 0%, transparent 70%); pointer-events:none;"></div>
                     <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; position:relative;">
-                        <div style="width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,#0B71FC,#17C8D4); display:flex; align-items:center; justify-content:center; color:white; font-size:17px; box-shadow:0 6px 16px rgba(11,113,252,0.32);">🤖</div>
-                        <div style="font-family:'Poppins', sans-serif; font-weight:700; font-size:14px; color:var(--primary-cobalt,#0B4C8F);">${(window.GoHappyI18n?.lang === 'en') ? 'GoHappy AI · Your reflection' : 'GoHappy IA · Tu reflexión'}</div>
+                        <div style="width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua)); display:flex; align-items:center; justify-content:center; color:white; font-size:17px; box-shadow:0 6px 16px rgba(11,113,252,0.32);">🤖</div>
+                        <div style="font-family:'Poppins', sans-serif; font-weight:700; font-size:14px; color:var(--primary-cobalt,var(--gh-primary));">${(window.GoHappyI18n?.lang === 'en') ? 'GoHappy AI · Your reflection' : 'GoHappy IA · Tu reflexión'}</div>
                     </div>
-                    <p id="profile-reflection-text" style="font-size:14px; line-height:1.55; color:var(--text-primary, #1e293b); margin:0; font-weight:500;">
+                    <p id="profile-reflection-text" style="font-size:14px; line-height:1.55; color:var(--text-primary, var(--gh-ink)); margin:0; font-weight:500;">
                         <span class="typing-dots"><span></span><span></span><span></span></span>
                     </p>
                 </div>
@@ -204,29 +204,29 @@ window.GoHappyProfile = {
                 </div>
 
                 <!-- ⭐ Mi Familia: acceso DESTACADO (degradado de marca, grande) — encima del QR -->
-                <button class="profile-quick-card" data-goto-page="my_family" style="width:calc(100% - 32px); margin:4px 16px 16px; padding:24px; border:none; cursor:pointer; text-align:left; display:flex; align-items:center; gap:18px; border-radius:28px; background:linear-gradient(135deg,#0B71FC 0%,#17C8D4 100%); box-shadow:0 14px 34px rgba(11,113,252,0.30); color:#fff; position:relative; overflow:hidden; transition:transform 0.2s;">
+                <button class="profile-quick-card" data-goto-page="my_family" style="width:calc(100% - 32px); margin:4px 16px 16px; padding:24px; border:none; cursor:pointer; text-align:left; display:flex; align-items:center; gap:18px; border-radius:28px; background:linear-gradient(135deg,var(--gh-primary-bright) 0%,var(--gh-aqua) 100%); box-shadow:0 14px 34px rgba(11,113,252,0.30); color:var(--gh-surface); position:relative; overflow:hidden; transition:transform 0.2s;">
                     <div style="position:absolute; top:-30px; right:-20px; width:130px; height:130px; background:radial-gradient(circle, rgba(255,255,255,0.22), transparent 70%); pointer-events:none;"></div>
                     <div style="font-size:50px; flex-shrink:0; line-height:1; position:relative;">👨‍👩‍👧</div>
                     <div style="flex:1; min-width:0; position:relative;">
-                        <div style="font-family:'Poppins',sans-serif; font-weight:700; font-size:23px; line-height:1.1; color:#fff; text-shadow:0 1px 8px rgba(0,0,0,0.12);">${(window.GoHappyI18n?.lang === 'en') ? 'My Family' : 'Mi Familia'}</div>
+                        <div style="font-family:'Poppins',sans-serif; font-weight:700; font-size:23px; line-height:1.1; color:var(--gh-surface); text-shadow:0 1px 8px rgba(0,0,0,0.12);">${(window.GoHappyI18n?.lang === 'en') ? 'My Family' : 'Mi Familia'}</div>
                         <div style="font-size:13px; color:rgba(255,255,255,0.92); margin-top:4px; line-height:1.35;">${(window.GoHappyI18n?.lang === 'en') ? 'Protection, quests, photos & members' : 'Protección, retos, fotos y miembros'}</div>
                     </div>
-                    <span style="font-size:26px; color:#fff; flex-shrink:0; position:relative;">→</span>
+                    <span style="font-size:26px; color:var(--gh-surface); flex-shrink:0; position:relative;">→</span>
                 </button>
 
                 <!-- Otras 3 funciones en formato circular debajo -->
                 <div style="display:flex; justify-content:space-around; align-items:flex-start; gap:8px; margin:2px 16px 18px;">
                     <button class="profile-quick-card" data-goto-page="memories" style="background:none; border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; padding:4px;">
                         <div style="width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,0.92); border:0.5px solid rgba(11,76,143,0.12); box-shadow:0 4px 14px rgba(11,76,143,0.10); display:flex; align-items:center; justify-content:center; font-size:27px;">📸</div>
-                        <span style="font-size:11.5px; font-weight:700; color:var(--primary-cobalt,#0B4C8F);">${(window.GoHappyI18n?.lang === 'en') ? 'Memories' : 'Recuerdos'}</span>
+                        <span style="font-size:11.5px; font-weight:700; color:var(--primary-cobalt,var(--gh-primary));">${(window.GoHappyI18n?.lang === 'en') ? 'Memories' : 'Recuerdos'}</span>
                     </button>
                     <button class="profile-quick-card" data-goto-page="tribu" style="background:none; border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; padding:4px;">
                         <div style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,rgba(168,85,247,0.12),rgba(236,72,153,0.16)); border:0.5px solid rgba(168,85,247,0.22); box-shadow:0 4px 14px rgba(168,85,247,0.12); display:flex; align-items:center; justify-content:center; font-size:27px;">🏘️</div>
-                        <span style="font-size:11.5px; font-weight:700; color:#7C3AED;">${(window.GoHappyI18n?.lang === 'en') ? 'Community' : 'Comunidad'}</span>
+                        <span style="font-size:11.5px; font-weight:700; color:var(--gh-lilac-ink);">${(window.GoHappyI18n?.lang === 'en') ? 'Community' : 'Comunidad'}</span>
                     </button>
                     <button class="profile-quick-card" data-goto-page="safe" style="background:none; border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; padding:4px;">
                         <div style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,rgba(239,68,68,0.10),rgba(245,158,11,0.16)); border:0.5px solid rgba(239,68,68,0.22); box-shadow:0 4px 14px rgba(239,68,68,0.10); display:flex; align-items:center; justify-content:center; font-size:27px;">🛡️</div>
-                        <span style="font-size:11.5px; font-weight:700; color:#DC2626;">${(window.GoHappyI18n?.lang === 'en') ? 'Alerts' : 'Alertas'}</span>
+                        <span style="font-size:11.5px; font-weight:700; color:var(--gh-danger-ink);">${(window.GoHappyI18n?.lang === 'en') ? 'Alerts' : 'Alertas'}</span>
                     </button>
                 </div>
 
@@ -234,13 +234,13 @@ window.GoHappyProfile = {
                 <div class="referral-premium-box premium-glass" style="margin: 6px 0 20px; padding: 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.4);">
                     <div style="text-align: center; margin-bottom: 20px;">
                         <h3 style="color: var(--primary-cobalt); font-weight:700; margin: 0;">${T('profile.referral.title')}</h3>
-                        <p style="font-size: 13px; color: #64748b; margin-top: 5px;">${T('profile.referral.sub')}</p>
+                        <p style="font-size: 13px; color: var(--gh-ink-2); margin-top: 5px;">${T('profile.referral.sub')}</p>
                     </div>
 
                     <div style="display: flex; gap: 20px; align-items: center; background: white; padding: 15px; border-radius: 20px; box-shadow: var(--shadow-soft);">
-                        <div id="referral-qr" style="width: 100px; height: 100px; background: #f8fafc; border-radius: 12px; display: flex; align-items: center; justify-content: center;"></div>
+                        <div id="referral-qr" style="width: 100px; height: 100px; background: var(--gh-surface-2); border-radius: 12px; display: flex; align-items: center; justify-content: center;"></div>
                         <div style="flex: 1;">
-                            <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">${T('profile.your.code')}</div>
+                            <div style="font-size: 10px; font-weight: 800; color: var(--gh-ink-3); text-transform: uppercase;">${T('profile.your.code')}</div>
                             <div id="ref-code-display" style="font-size: 1.5rem; font-weight:700; color: var(--primary-cobalt); letter-spacing: 1px;">${user.referralCode || 'GH-123'}</div>
                             <button id="copy-ref-link" style="margin-top: 10px; background: var(--primary-cobalt); color: white; border: none; padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer;">${T('profile.copy.link')}</button>
                         </div>
@@ -378,14 +378,14 @@ window.GoHappyProfile = {
 
                         <!-- Preview actual -->
                         <div style="display:flex; justify-content:center; margin-bottom:18px;">
-                            <div id="av-preview" style="width:88px; height:88px; border-radius:50%; background:linear-gradient(135deg,#0B4C8F,#17C8D4); display:flex; align-items:center; justify-content:center; font-size:42px; color:white; background-size:cover; background-position:center; box-shadow:0 8px 22px rgba(11,76,143,0.20); overflow:hidden;">
+                            <div id="av-preview" style="width:88px; height:88px; border-radius:50%; background:linear-gradient(135deg,var(--gh-primary),var(--gh-aqua)); display:flex; align-items:center; justify-content:center; font-size:42px; color:white; background-size:cover; background-position:center; box-shadow:0 8px 22px rgba(11,76,143,0.20); overflow:hidden;">
                                 ${isPhotoUrl ? '' : (user.photo || '👤')}
                             </div>
                         </div>
 
                         <!-- Botón subir foto real -->
                         <input type="file" id="av-file" accept="image/*" style="display:none;">
-                        <button id="av-pick-photo" style="width:100%; padding:14px; border:none; border-radius:14px; background:linear-gradient(135deg,#0B71FC,#17C8D4); color:white; font-weight:800; font-size:14px; cursor:pointer; margin-bottom:14px; box-shadow:0 6px 16px rgba(11,113,252,0.28);">
+                        <button id="av-pick-photo" style="width:100%; padding:14px; border:none; border-radius:14px; background:linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua)); color:white; font-weight:800; font-size:14px; cursor:pointer; margin-bottom:14px; box-shadow:0 6px 16px rgba(11,113,252,0.28);">
                             📷 ${L('Subir foto desde galería', 'Upload photo from gallery')}
                         </button>
 
@@ -599,8 +599,8 @@ window.GoHappyProfile = {
                     text: buildInviteLink(user.referralCode),
                     width: 100,
                     height: 100,
-                    colorDark: "#0B71FC",
-                    colorLight: "#ffffff",
+                    colorDark: window.GoHappyMapStyle.token('--gh-primary-bright'),
+                    colorLight: window.GoHappyMapStyle.token('--gh-surface'),
                     correctLevel: QRCode.CorrectLevel.M
                 });
             }

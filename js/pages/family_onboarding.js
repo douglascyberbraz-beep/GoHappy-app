@@ -44,7 +44,7 @@ window.GoHappyFamilyOnboarding = {
                         <h2 style="color:var(--primary-cobalt); font-size:1.7rem; font-weight:700; margin:0; letter-spacing:-0.5px;">
                             ${T('fam.welcome').replace('{name}', user?.nickname || (lang === 'en' ? 'Explorer' : 'Explorador'))}
                         </h2>
-                        <p style="color:#64748b; font-size:0.95rem; margin-top:8px; line-height:1.5;">
+                        <p style="color:var(--gh-ink-2); font-size:0.95rem; margin-top:8px; line-height:1.5;">
                             ${T('fam.intro')}<br>
                             <strong style="color:var(--primary-cobalt);">${T('fam.create.join')}</strong>
                         </p>
@@ -54,7 +54,7 @@ window.GoHappyFamilyOnboarding = {
                     <div id="ob-step-choice">
                         <button id="ob-btn-create" style="
                             width:100%; padding:20px; border-radius:24px; border:2px solid var(--primary-cobalt);
-                            background:linear-gradient(135deg,#0B71FC,#0B4C8F); color:white;
+                            background:linear-gradient(135deg,var(--gh-primary-bright),var(--gh-primary)); color:white;
                             font-size:1rem; font-weight:800; cursor:pointer; margin-bottom:14px;
                             display:flex; align-items:center; gap:14px; text-align:left;
                             box-shadow: 0 8px 25px rgba(11,113,252,0.3); transition: transform 0.15s;
@@ -76,13 +76,13 @@ window.GoHappyFamilyOnboarding = {
                             <span style="font-size:2rem;">🔗</span>
                             <div>
                                 <div style="font-size:1.05rem;">${T('fam.join.btn')}</div>
-                                <div style="font-size:12px; color:#64748b; font-weight:500; margin-top:2px;">${T('fam.join.sub')}</div>
+                                <div style="font-size:12px; color:var(--gh-ink-2); font-weight:500; margin-top:2px;">${T('fam.join.sub')}</div>
                             </div>
                         </button>
 
                         <button id="ob-btn-skip" style="
                             width:100%; padding:12px; background:none; border:none;
-                            color:#94a3b8; font-size:13px; font-weight:600; cursor:pointer;
+                            color:var(--gh-ink-3); font-size:13px; font-weight:600; cursor:pointer;
                             text-decoration:underline; margin-top:4px;
                         ">
                             ${T('fam.skip')}
@@ -91,28 +91,28 @@ window.GoHappyFamilyOnboarding = {
 
                     <!-- Vista 2: Crear familia -->
                     <div id="ob-step-create" style="display:none;">
-                        <button id="ob-back-create" style="background:none;border:none;color:#94a3b8;font-size:13px;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;gap:6px;">
+                        <button id="ob-back-create" style="background:none;border:none;color:var(--gh-ink-3);font-size:13px;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;gap:6px;">
                             ${backLabel}
                         </button>
                         <div style="text-align:center; margin-bottom:24px;">
                             <div style="font-size:48px;">🏠</div>
                             <h3 style="color:var(--primary-cobalt); font-weight:700; margin:8px 0 4px;">${createTitle}</h3>
-                            <p style="color:#64748b; font-size:13px;">${createQuestion}</p>
+                            <p style="color:var(--gh-ink-2); font-size:13px;">${createQuestion}</p>
                         </div>
 
-                        <div id="ob-create-error" style="display:none; background:rgba(231,76,60,0.1); color:#E74C3C; padding:12px 16px; border-radius:14px; font-size:13px; font-weight:600; margin-bottom:14px;"></div>
+                        <div id="ob-create-error" style="display:none; background:rgba(231,76,60,0.1); color:var(--gh-danger-ink); padding:12px 16px; border-radius:14px; font-size:13px; font-weight:600; margin-bottom:14px;"></div>
 
                         <input
                             type="text" id="ob-family-name"
                             placeholder="${T('fam.name.placeholder')}"
                             maxlength="40"
-                            style="width:100%; padding:16px; border-radius:16px; border:2px solid #e2e8f0; background:#f8fafc; font-size:1rem; font-weight:600; outline:none; color:#1e293b; box-sizing:border-box;"
+                            style="width:100%; padding:16px; border-radius:16px; border:2px solid var(--gh-line); background:var(--gh-surface-2); font-size:1rem; font-weight:600; outline:none; color:var(--gh-ink); box-sizing:border-box;"
                         >
-                        <p style="font-size:11px; color:#94a3b8; margin:6px 0 20px 4px;">${T('fam.name.help')}</p>
+                        <p style="font-size:11px; color:var(--gh-ink-3); margin:6px 0 20px 4px;">${T('fam.name.help')}</p>
 
                         <div style="background:rgba(11,113,252,0.05); border-radius:16px; padding:16px; margin-bottom:20px; border:1px solid rgba(11,113,252,0.1);">
                             <div style="font-size:12px; font-weight:800; color:var(--primary-cobalt); text-transform:uppercase; margin-bottom:6px;">${T('fam.create.benefits')}</div>
-                            <ul style="font-size:13px; color:#475569; padding-left:18px; margin:0; line-height:1.8;">
+                            <ul style="font-size:13px; color:var(--gh-ink-2); padding-left:18px; margin:0; line-height:1.8;">
                                 <li>${T('fam.benefit.code')}</li>
                                 <li>${T('fam.benefit.invite')}</li>
                                 <li>${T('fam.benefit.share')}</li>
@@ -121,7 +121,7 @@ window.GoHappyFamilyOnboarding = {
 
                         <button id="ob-confirm-create" style="
                             width:100%; height:56px; border-radius:18px; border:none;
-                            background:var(--brand-bright, linear-gradient(135deg,#0B71FC,#0B4C8F)); color:white;
+                            background:var(--brand-bright, linear-gradient(135deg,var(--gh-primary-bright),var(--gh-primary))); color:white;
                             font-size:1.05rem; font-weight:800; cursor:pointer;
                             box-shadow:0 8px 25px rgba(11,113,252,0.3);
                         ">
@@ -131,16 +131,16 @@ window.GoHappyFamilyOnboarding = {
 
                     <!-- Vista 3: Unirse a familia -->
                     <div id="ob-step-join" style="display:none;">
-                        <button id="ob-back-join" style="background:none;border:none;color:#94a3b8;font-size:13px;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;gap:6px;">
+                        <button id="ob-back-join" style="background:none;border:none;color:var(--gh-ink-3);font-size:13px;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;gap:6px;">
                             ${backLabel}
                         </button>
                         <div style="text-align:center; margin-bottom:24px;">
                             <div style="font-size:48px;">🔗</div>
                             <h3 style="color:var(--primary-cobalt); font-weight:700; margin:8px 0 4px;">${T('fam.join.btn')}</h3>
-                            <p style="color:#64748b; font-size:13px;">${T('fam.code.title')}</p>
+                            <p style="color:var(--gh-ink-2); font-size:13px;">${T('fam.code.title')}</p>
                         </div>
 
-                        <div id="ob-join-error" style="display:none; background:rgba(231,76,60,0.1); color:#E74C3C; padding:12px 16px; border-radius:14px; font-size:13px; font-weight:600; margin-bottom:14px;"></div>
+                        <div id="ob-join-error" style="display:none; background:rgba(231,76,60,0.1); color:var(--gh-danger-ink); padding:12px 16px; border-radius:14px; font-size:13px; font-weight:600; margin-bottom:14px;"></div>
 
                         <!-- Inputs individuales para cada carácter del código -->
                         <div style="display:flex; gap:10px; justify-content:center; margin-bottom:20px;">
@@ -150,7 +150,7 @@ window.GoHappyFamilyOnboarding = {
                                     class="ob-code-input"
                                     style="
                                         width:48px; height:56px; border-radius:14px;
-                                        border:2px solid #e2e8f0; background:#f8fafc;
+                                        border:2px solid var(--gh-line); background:var(--gh-surface-2);
                                         font-size:1.6rem; font-weight:700; text-align:center;
                                         color:var(--primary-cobalt); text-transform:uppercase;
                                         outline:none; box-shadow:0 2px 8px rgba(0,0,0,0.05);
@@ -161,14 +161,14 @@ window.GoHappyFamilyOnboarding = {
                         </div>
 
                         <div style="background:rgba(39,174,96,0.05); border-radius:16px; padding:14px; margin-bottom:20px; border:1px solid rgba(39,174,96,0.15);">
-                            <p style="font-size:12px; color:#27AE60; font-weight:700; margin:0;">
+                            <p style="font-size:12px; color:var(--gh-success-ink); font-weight:700; margin:0;">
                                 ${T('fam.code.help')}
                             </p>
                         </div>
 
                         <button id="ob-confirm-join" style="
                             width:100%; height:56px; border-radius:18px; border:none;
-                            background:linear-gradient(135deg,#27AE60,#1a8a46); color:white;
+                            background:linear-gradient(135deg,var(--gh-success),var(--gh-success-ink)); color:white;
                             font-size:1.05rem; font-weight:800; cursor:pointer;
                             box-shadow:0 8px 25px rgba(39,174,96,0.3);
                         ">
@@ -180,21 +180,21 @@ window.GoHappyFamilyOnboarding = {
                     <div id="ob-step-success" style="display:none; text-align:center; padding:20px 0;">
                         <div style="font-size:80px; margin-bottom:20px; animation: float 3s ease-in-out infinite;">🎉</div>
                         <h2 style="color:var(--primary-cobalt); font-size:1.6rem; font-weight:700;" id="ob-success-title">${lang === 'en' ? 'Family created!' : '¡Familia creada!'}</h2>
-                        <p style="color:#64748b; font-size:0.95rem; margin:10px 0 25px;" id="ob-success-msg">${T('fam.success.welcome')}</p>
+                        <p style="color:var(--gh-ink-2); font-size:0.95rem; margin:10px 0 25px;" id="ob-success-msg">${T('fam.success.welcome')}</p>
 
                         <div id="ob-code-display" style="
                             background:linear-gradient(135deg,rgba(11,113,252,0.05),rgba(6,254,254,0.1));
                             border:2px dashed rgba(11,113,252,0.3); border-radius:24px;
                             padding:24px; margin-bottom:24px; display:none;
                         ">
-                            <div style="font-size:11px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:10px;">
+                            <div style="font-size:11px; font-weight:800; color:var(--gh-ink-3); text-transform:uppercase; margin-bottom:10px;">
                                 ${T('fam.success.code.label')}
                             </div>
                             <div id="ob-code-value" style="
                                 font-size:2.2rem; font-weight:700; color:var(--primary-cobalt);
                                 letter-spacing:8px; font-family:monospace;
                             "></div>
-                            <p style="font-size:12px; color:#64748b; margin:10px 0 16px;">${T('fam.success.code.help')}</p>
+                            <p style="font-size:12px; color:var(--gh-ink-2); margin:10px 0 16px;">${T('fam.success.code.help')}</p>
                             <button id="ob-copy-code" style="
                                 background:var(--primary-cobalt); color:white; border:none;
                                 padding:10px 22px; border-radius:12px; font-size:13px;
@@ -204,7 +204,7 @@ window.GoHappyFamilyOnboarding = {
 
                         <button id="ob-finish" style="
                             width:100%; height:56px; border-radius:18px; border:none;
-                            background:var(--brand-bright, linear-gradient(135deg,#0B71FC,#0B4C8F)); color:white;
+                            background:var(--brand-bright, linear-gradient(135deg,var(--gh-primary-bright),var(--gh-primary))); color:white;
                             font-size:1.05rem; font-weight:800; cursor:pointer;
                             box-shadow:0 8px 25px rgba(11,113,252,0.3);
                         ">
@@ -289,7 +289,7 @@ window.GoHappyFamilyOnboarding = {
                 }
             });
             inp.addEventListener('focus', () => inp.style.borderColor = 'var(--primary-cobalt)');
-            inp.addEventListener('blur', () => inp.style.borderColor = '#e2e8f0');
+            inp.addEventListener('blur', () => inp.style.borderColor = 'var(--gh-line)');
         }
 
         // Helper bilingüe

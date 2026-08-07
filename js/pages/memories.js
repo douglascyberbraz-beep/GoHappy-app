@@ -115,7 +115,7 @@ window.GoHappyMemories = {
             events: [{
                 date: 'Hoy', icon: '👋', title: '¡Bienvenido a Memories!',
                 description: 'Aquí aparecerán tus aventuras reales. Sube una foto en Moments, completa una misión o reseña un sitio en el mapa.',
-                color: '#002C77'
+                color: 'var(--gh-ink)'
             }]
         };
 
@@ -162,16 +162,16 @@ window.GoHappyMemories = {
 
     _activityToEvent: (activity) => {
         const types = {
-            'review':            { icon: '⭐', title: 'Nueva reseña',       color: '#27AE60' },
-            'place_reviewed':    { icon: '⭐', title: 'Sitio reseñado',     color: '#27AE60' },
-            'photo':             { icon: '📸', title: 'Foto subida',        color: '#E67E22' },
-            'moment_shared':     { icon: '📸', title: 'Momento compartido', color: '#E67E22' },
-            'quest_completed':   { icon: '⚔️', title: 'Misión completada',  color: '#4A90D9' },
-            'mission_completed': { icon: '⚔️', title: 'Misión completada',  color: '#4A90D9' },
-            'safety_report':     { icon: '🛡️', title: 'Alerta reportada',  color: '#E74C3C' },
-            'post':              { icon: '💬', title: 'Post en La Tribu',   color: '#8E44AD' }
+            'review':            { icon: '⭐', title: 'Nueva reseña',       color: 'var(--gh-success)' },
+            'place_reviewed':    { icon: '⭐', title: 'Sitio reseñado',     color: 'var(--gh-success)' },
+            'photo':             { icon: '📸', title: 'Foto subida',        color: 'var(--gh-warning)' },
+            'moment_shared':     { icon: '📸', title: 'Momento compartido', color: 'var(--gh-warning)' },
+            'quest_completed':   { icon: '⚔️', title: 'Misión completada',  color: 'var(--gh-primary-bright)' },
+            'mission_completed': { icon: '⚔️', title: 'Misión completada',  color: 'var(--gh-primary-bright)' },
+            'safety_report':     { icon: '🛡️', title: 'Alerta reportada',  color: 'var(--gh-danger)' },
+            'post':              { icon: '💬', title: 'Post en La Tribu',   color: 'var(--gh-lilac-ink)' }
         };
-        const t = types[activity.type] || { icon: '📌', title: 'Actividad', color: '#888' };
+        const t = types[activity.type] || { icon: '📌', title: 'Actividad', color: 'var(--gh-ink-3)' };
         const date = activity.timestamp?.toDate ? activity.timestamp.toDate() : new Date();
         return {
             date: date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),

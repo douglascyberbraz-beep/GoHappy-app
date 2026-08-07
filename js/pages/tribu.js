@@ -14,7 +14,7 @@ window.GoHappyTribu = {
                 <!-- El saludo vive solo en Today: repetido en 7 pantallas era ruido -->
                 <h2 id="tribu-title">🏘️ Tribu</h2>
                 <p>${sub}</p>
-                <button id="tribu-ranking-btn" style="margin-top:14px; display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,#F59E0B,#FF6B9D); color:#fff; border:none; border-radius:999px; padding:10px 18px; font-weight:800; font-size:13px; cursor:pointer; box-shadow:0 6px 18px rgba(245,158,11,0.32);">
+                <button id="tribu-ranking-btn" style="margin-top:14px; display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,var(--gh-warning),var(--gh-coral)); color:var(--gh-surface); border:none; border-radius:999px; padding:10px 18px; font-weight:800; font-size:13px; cursor:pointer; box-shadow:0 6px 18px rgba(245,158,11,0.32);">
                     🏆 ${lang === 'en' ? 'Top / Ranking' : 'Top / Ranking'} →
                 </button>
             </div>
@@ -136,7 +136,7 @@ window.GoHappyTribu = {
         contentInput.addEventListener('input', () => {
             const count = contentInput.value.length;
             document.querySelector('.char-count').innerText = `${count}/160`;
-            document.querySelector('.char-count').style.color = count > 160 ? 'red' : '#666';
+            document.querySelector('.char-count').style.color = count > 160 ? 'red' : 'var(--gh-ink-2)';
         });
     },
 

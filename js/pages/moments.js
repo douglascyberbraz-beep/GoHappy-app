@@ -104,7 +104,7 @@ window.GoHappyMoments = {
                 }
                 .moments-prompt-icon {
                     width: 48px; height: 48px; flex-shrink: 0;
-                    background: linear-gradient(135deg, #0B71FC, #17C8D4);
+                    background: linear-gradient(135deg, var(--gh-primary-bright), var(--gh-aqua));
                     border-radius: 50%;
                     display:flex; align-items:center; justify-content:center;
                     font-size: 24px;
@@ -151,7 +151,7 @@ window.GoHappyMoments = {
                 }
                 .moment-avatar {
                     width: 38px; height: 38px; border-radius: 50%;
-                    background: linear-gradient(135deg, #0B71FC, #17C8D4);
+                    background: linear-gradient(135deg, var(--gh-primary-bright), var(--gh-aqua));
                     display: flex; align-items: center; justify-content: center;
                     font-size: 18px; color: white;
                     box-shadow: 0 4px 12px rgba(11,76,143,0.18);
@@ -169,7 +169,7 @@ window.GoHappyMoments = {
 
                 .moment-image {
                     width: 100%; max-height: 380px; object-fit: cover;
-                    display: block; background: #f0f7ff;
+                    display: block; background: var(--gh-surface-2);
                 }
 
                 .moment-caption {
@@ -241,7 +241,7 @@ window.GoHappyMoments = {
                 .comment-avatar-small {
                     width: 30px; height: 30px;
                     border-radius: 50%;
-                    background: linear-gradient(135deg, var(--cobalt), var(--cyan, #17C8D4));
+                    background: linear-gradient(135deg, var(--cobalt), var(--cyan, var(--gh-aqua)));
                     color: white;
                     display: flex; align-items: center; justify-content: center;
                     font-size: 14px;
@@ -315,11 +315,11 @@ window.GoHappyMoments = {
                 .oya-text { flex: 1; min-width: 0; }
                 .oya-title {
                     font-weight: 800; font-size: 13px;
-                    color: #8B5C00;
+                    color: var(--gh-warning-ink);
                     margin-bottom: 2px;
                 }
                 .oya-sub {
-                    font-size: 12px; color: #6B4500;
+                    font-size: 12px; color: var(--gh-warning-ink);
                     overflow: hidden; text-overflow: ellipsis;
                     white-space: nowrap;
                 }
@@ -352,7 +352,7 @@ window.GoHappyMoments = {
                     width: 100%; max-height: 380px; object-fit: cover;
                     border-radius: 16px;
                     margin-bottom: 14px;
-                    background: #f0f7ff;
+                    background: var(--gh-surface-2);
                 }
                 .moment-caption-input {
                     width: 100% !important;
@@ -795,14 +795,14 @@ window.GoHappyMoments = {
                 </div>
 
                 <!-- Aviso GDPR menores (solo se muestra si elige público) -->
-                <div id="mc-gdpr-warn" style="display:none; background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(239,68,68,0.08)); border:1px solid rgba(245,158,11,0.32); border-radius:14px; padding:12px; margin-bottom:14px; font-size:12px; color:#92400E; line-height:1.4;">
-                    <strong style="color:#B45309;">⚠️ ${lang === 'en' ? 'Protect minors' : 'Protección de menores'}</strong><br>
+                <div id="mc-gdpr-warn" style="display:none; background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(239,68,68,0.08)); border:1px solid rgba(245,158,11,0.32); border-radius:14px; padding:12px; margin-bottom:14px; font-size:12px; color:var(--gh-warning-ink); line-height:1.4;">
+                    <strong style="color:var(--gh-warning-ink);">⚠️ ${lang === 'en' ? 'Protect minors' : 'Protección de menores'}</strong><br>
                     ${lang === 'en'
                         ? 'If kids appear in the photo, please cover/blur their faces before sharing publicly. By law in EU, minors faces need consent of both parents to be shared.'
                         : 'Si aparecen menores en la foto, por favor tapa o difumina sus caras antes de compartir públicamente. Por ley en la UE, las caras de menores requieren consentimiento de ambos padres.'}
                     <label style="display:flex; align-items:flex-start; gap:8px; margin-top:10px; cursor:pointer;">
                         <input type="checkbox" id="mc-gdpr-check" style="margin-top:2px; transform:scale(1.2);">
-                        <span style="font-weight:700; color:#7C2D12;">${lang === 'en' ? 'I confirm minors faces are not visible or are blurred.' : 'Confirmo que las caras de menores NO son visibles o están difuminadas.'}</span>
+                        <span style="font-weight:700; color:var(--gh-warning-ink);">${lang === 'en' ? 'I confirm minors faces are not visible or are blurred.' : 'Confirmo que las caras de menores NO son visibles o están difuminadas.'}</span>
                     </label>
                 </div>
 

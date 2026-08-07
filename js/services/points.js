@@ -18,12 +18,12 @@ window.GoHappyPoints = {
     // Cada fase tiene color de aro (ring) que rodea el avatar.
     // Diseño: progresión de verde tierno → cyan → bronce → plata → oro → holográfico.
     LEVELS: [
-        { min: 0,    name: "Explorador Novato",    icon: "🌱", ring: 'linear-gradient(135deg, #A0E0B6, #65C18C)',                              shadow: 'rgba(101,193,140,0.45)' },
-        { min: 150,  name: "Explorador Activo",    icon: "🌿", ring: 'linear-gradient(135deg, #7DC4F0, #17C8D4)',                              shadow: 'rgba(23,200,212,0.50)' },
-        { min: 500,  name: "Guía de la Tribu",     icon: "🌳", ring: 'linear-gradient(135deg, #E8B788, #B47346)',                              shadow: 'rgba(180,115,70,0.55)' },
-        { min: 1200, name: "Maestro GoHappy",      icon: "⭐", ring: 'linear-gradient(135deg, #E8EBF0, #B8C0CC 50%, #E8EBF0)',                  shadow: 'rgba(184,192,204,0.65)' },
-        { min: 2500, name: "Leyenda GoHappy",      icon: "👑", ring: 'linear-gradient(135deg, #FFE27A, #F5B547 50%, #FFE27A)',                 shadow: 'rgba(245,181,71,0.70)' },
-        { min: 5000, name: "Héroe de la Tribu",    icon: "🛡️", ring: 'conic-gradient(from 0deg, #FF6B9D, #FFB347, #FFE27A, #06FEFE, #B084F5, #FF6B9D)', shadow: 'rgba(176,132,245,0.80)' }
+        { min: 0,    name: "Explorador Novato",    icon: "🌱", ring: 'linear-gradient(135deg, var(--gh-success-soft), var(--gh-success))',                              shadow: 'rgba(101,193,140,0.45)' },
+        { min: 150,  name: "Explorador Activo",    icon: "🌿", ring: 'linear-gradient(135deg, var(--gh-sky), var(--gh-aqua))',                              shadow: 'rgba(23,200,212,0.50)' },
+        { min: 500,  name: "Guía de la Tribu",     icon: "🌳", ring: 'linear-gradient(135deg, var(--gh-bingo), var(--gh-bingo-ink))',                              shadow: 'rgba(180,115,70,0.55)' },
+        { min: 1200, name: "Maestro GoHappy",      icon: "⭐", ring: 'linear-gradient(135deg, var(--gh-surface-3), var(--gh-ink-3) 50%, var(--gh-surface-3))',                  shadow: 'rgba(184,192,204,0.65)' },
+        { min: 2500, name: "Leyenda GoHappy",      icon: "👑", ring: 'linear-gradient(135deg, var(--gh-warning-soft), var(--gh-warning) 50%, var(--gh-warning-soft))',                 shadow: 'rgba(245,181,71,0.70)' },
+        { min: 5000, name: "Héroe de la Tribu",    icon: "🛡️", ring: 'conic-gradient(from 0deg, var(--gh-coral), var(--gh-warning), var(--gh-warning-soft), var(--gh-aqua), var(--gh-lilac), var(--gh-coral))', shadow: 'rgba(176,132,245,0.80)' }
     ],
 
     // Obtener información de nivel basada en puntos
@@ -63,7 +63,7 @@ window.GoHappyPoints = {
     levelRingWrapper: (innerHtml, points = 0, size = 56, ringWidth = 3) => {
         const lvl = window.GoHappyPoints.getLevelInfo(points || 0);
         const innerSize = size - (ringWidth * 2);
-        const ringBg = lvl.ring || 'linear-gradient(135deg,#A0E0B6,#65C18C)';
+        const ringBg = lvl.ring || 'linear-gradient(135deg,var(--gh-success-soft),var(--gh-success))';
         const shadow = lvl.shadow || 'rgba(101,193,140,0.45)';
         return `
             <div class="gh-level-ring" data-level="${lvl.name}" style="

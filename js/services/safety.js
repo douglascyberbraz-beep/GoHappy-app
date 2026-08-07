@@ -3,12 +3,19 @@
 // ------------------------------------------------------------------
 window.GoHappySafe = {
 
+    // Cada tipo trae tres colores porque cumplen tres papeles distintos:
+    //   color → borde y acento          (pastel, es relleno)
+    //   soft  → fondo del icono          (pastel muy claro)
+    //   ink   → texto de la etiqueta     (oscuro, legible)
+    // Antes había un solo color y el fondo se hacía con `${color}15`,
+    // concatenando alfa al hex. Con tokens eso genera `var(--x)15`, que es
+    // CSS inválido y el fondo desaparecía sin avisar.
     ALERT_TYPES: {
-        DANGER: { icon: '🚨', label: 'Peligro', color: '#E74C3C' },
-        CONSTRUCTION: { icon: '🚧', label: 'Obras', color: '#F39C12' },
-        CLOSED: { icon: '🔒', label: 'Cerrado', color: '#95A5A6' },
-        WEATHER: { icon: '⛈️', label: 'Clima', color: '#3498DB' },
-        INFO: { icon: 'ℹ️', label: 'Info', color: '#2980B9' }
+        DANGER:       { icon: '🚨', label: 'Peligro', color: 'var(--gh-danger)',         soft: 'var(--gh-danger-soft)',  ink: 'var(--gh-danger-ink)' },
+        CONSTRUCTION: { icon: '🚧', label: 'Obras',   color: 'var(--gh-warning)',        soft: 'var(--gh-warning-soft)', ink: 'var(--gh-warning-ink)' },
+        CLOSED:       { icon: '🔒', label: 'Cerrado', color: 'var(--gh-ink-3)',          soft: 'var(--gh-surface-2)',    ink: 'var(--gh-ink-2)' },
+        WEATHER:      { icon: '⛈️', label: 'Clima',   color: 'var(--gh-sky)',            soft: 'var(--gh-primary-soft)', ink: 'var(--gh-sky-ink)' },
+        INFO:         { icon: 'ℹ️', label: 'Info',    color: 'var(--gh-primary-bright)', soft: 'var(--gh-primary-soft)', ink: 'var(--gh-primary)' }
     },
 
     // Obtener alertas REALES de la comunidad. NUNCA devuelve demos.

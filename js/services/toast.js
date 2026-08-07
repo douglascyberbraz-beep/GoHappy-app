@@ -83,12 +83,12 @@ window.GoHappyToast = {
 
         // Un punto de color como acento — el resto, cristal neutro
         const accent = {
-            success: '#30D158',
-            error:   '#FF453A',
-            warning: '#FF9F0A',
-            info:    '#0B4C8F',
-            points:  '#FFD60A'
-        }[type] || '#0B4C8F';
+            success: 'var(--gh-success)',
+            error:   'var(--gh-danger)',
+            warning: 'var(--gh-warning)',
+            info:    'var(--gh-primary)',
+            points:  'var(--gh-gold)'
+        }[type] || 'var(--gh-primary)';
 
         const toast = document.createElement('div');
         toast.id = 'gh-toast';
@@ -107,7 +107,7 @@ window.GoHappyToast = {
             background: rgba(255, 255, 255, 0.78);
             backdrop-filter: blur(28px) saturate(180%);
             -webkit-backdrop-filter: blur(28px) saturate(180%);
-            color: #0F172A;
+            color: var(--gh-ink);
             font-family: 'Inter', -apple-system, system-ui, sans-serif;
             font-size: 13.5px;
             font-weight: 600;

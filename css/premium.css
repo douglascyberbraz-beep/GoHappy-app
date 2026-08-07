@@ -1,6 +1,6 @@
 /* ================================================================
    GoHappy — iOS 26 Liquid Glass  v3.3
-   Cobalt #0B4C8F · Cyan #17C8D4 · "Tu camino a la alegría"
+   Cobalt var(--gh-primary) · Cyan var(--gh-aqua) · "Tu camino a la alegría"
    Floating orb nav · Splash limpio · Headers unificados · Mapa Waze
    ================================================================ */
 
@@ -19,17 +19,17 @@
 
 :root {
     /* Brand */
-    --cobalt:           #0B4C8F;
-    --cobalt-bright:    #0B71FC;
-    --cyan:             #17C8D4;
-    --cyan-bright:      #00D4E0;
-    --cyan-pastel:      #B8F0F4;
-    --brand-gradient:   linear-gradient(135deg, #0B4C8F 0%, #0B71FC 50%, #17C8D4 100%);
-    --brand-bright:     linear-gradient(135deg, #0B71FC 0%, #17C8D4 100%);
+    --cobalt:           var(--gh-primary);
+    --cobalt-bright:    var(--gh-primary-bright);
+    --cyan:             var(--gh-aqua);
+    --cyan-bright:      var(--gh-aqua-deep);
+    --cyan-pastel:      var(--gh-aqua-soft);
+    --brand-gradient:   linear-gradient(135deg, var(--gh-primary) 0%, var(--gh-primary-bright) 50%, var(--gh-aqua) 100%);
+    --brand-bright:     linear-gradient(135deg, var(--gh-primary-bright) 0%, var(--gh-aqua) 100%);
     --brand-soft:       linear-gradient(135deg, rgba(11,76,143,0.06) 0%, rgba(23,200,212,0.08) 100%);
 
     /* Backgrounds */
-    --bg-app:           #F4F8FF;
+    --bg-app:           var(--gh-bg);
     --bg-card:          rgba(255,255,255,0.72);
     --bg-card-strong:   rgba(255,255,255,0.88);
 
@@ -47,9 +47,13 @@
     --glass-border:     0.5px solid rgba(255,255,255,0.9);
 
     /* Text */
-    --text-primary:     #0F172A;
-    --text-secondary:   rgba(15,23,42,0.6);
-    --text-tertiary:    rgba(15,23,42,0.36);
+    --text-primary:     var(--gh-ink);
+    /* Estos dos eran negro con alfa 0.6 y 0.36. Como premium.css se carga
+       DESPUÉS de palette.css, ganaban a los tokens de la paleta y dejaban
+       las etiquetas pequeñas en 2,3:1 — medido, ilegible. La jerarquía de
+       texto vive ahora en palette.css con los tres niveles ya comprobados. */
+    --text-secondary:   var(--gh-ink-2);
+    --text-tertiary:    var(--gh-ink-3);
 
     /* Radii */
     --r-sm:  14px;
@@ -112,7 +116,7 @@ body {
 
 /* ── 3. Splash Screen — Blanco puro · sin caja · anim viva ─────── */
 .splash-screen {
-    background: #FFFFFF !important;
+    background: var(--gh-surface) !important;
     background-image: none !important;
     position: absolute;
     inset: 0;
@@ -341,7 +345,7 @@ body {
     width: 60px !important;
     height: 60px !important;
     border-radius: 50% !important;
-    background: linear-gradient(135deg, #FFFFFF 0%, #F0F7FF 100%) !important;
+    background: linear-gradient(135deg, var(--gh-surface) 0%, var(--gh-surface-2) 100%) !important;
     backdrop-filter: blur(24px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
     display: flex !important;
@@ -400,7 +404,7 @@ body {
 /* Map viewport: tamaño fixed garantizado (sin height = MapLibre no renderiza tiles) */
 #map-viewport-v11,
 .map-viewport-v11 {
-    background: #DFEEFF !important;
+    background: var(--gh-primary-soft) !important;
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -432,9 +436,9 @@ body {
 .profile-hero-premium,
 .unified-hero {
     background: linear-gradient(180deg,
-        #FFFFFF 0%,
-        #F0F7FF 60%,
-        #E5F2FB 100%) !important;
+        var(--gh-surface) 0%,
+        var(--gh-surface-2) 60%,
+        var(--gh-primary-soft) 100%) !important;
     background-image: none !important;
     position: relative !important;
     overflow: hidden !important;
@@ -680,13 +684,13 @@ body {
     border-left-style: solid !important;
     border-left-color: var(--cobalt-bright) !important;
 }
-.quest-card-smart.cat-fisica    { border-left-color: #3498db !important; }
-.quest-card-smart.cat-familiar  { border-left-color: #f1c40f !important; }
-.quest-card-smart.cat-creativa  { border-left-color: #e91e63 !important; }
-.quest-card-smart.cat-educativa { border-left-color: #9b59b6 !important; }
-.quest-card-smart.cat-bienestar { border-left-color: #27AE60 !important; }
-.quest-card-smart.cat-social    { border-left-color: #16A085 !important; }
-.quest-card-smart.done          { border-left-color: #27AE60 !important; }
+.quest-card-smart.cat-fisica    { border-left-color: var(--gh-primary-bright) !important; }
+.quest-card-smart.cat-familiar  { border-left-color: var(--gh-gold) !important; }
+.quest-card-smart.cat-creativa  { border-left-color: var(--gh-coral) !important; }
+.quest-card-smart.cat-educativa { border-left-color: var(--gh-lilac-ink) !important; }
+.quest-card-smart.cat-bienestar { border-left-color: var(--gh-success) !important; }
+.quest-card-smart.cat-social    { border-left-color: var(--gh-aqua-deep) !important; }
+.quest-card-smart.done          { border-left-color: var(--gh-success) !important; }
 
 /* Quitar la pseudo-stripe vieja que algunos styles inyectados ponían */
 .quest-card-smart::before { display: none !important; }
@@ -932,7 +936,7 @@ body .map-search-container {
     width: 18px !important; height: 18px !important;
     transform: none !important;
     border: 2px solid rgba(11,76,143,0.25) !important;
-    border-top-color: var(--cobalt, #0B4C8F) !important;
+    border-top-color: var(--cobalt, var(--gh-primary)) !important;
     border-radius: 50% !important;
     animation: chip-spin-circ 0.7s linear infinite !important;
 }
@@ -1215,7 +1219,7 @@ input:focus, textarea:focus, .post-input:focus, .review-input:focus, .auth-input
     right: 16px !important;
     width: 56px !important;
     height: 56px !important;
-    background: linear-gradient(135deg, #0B71FC 0%, #17C8D4 100%) !important;
+    background: linear-gradient(135deg, var(--gh-primary-bright) 0%, var(--gh-aqua) 100%) !important;
     color: white !important;
     border: 1.5px solid rgba(255,255,255,0.5) !important;
     border-radius: 50% !important;
@@ -1250,7 +1254,7 @@ input:focus, textarea:focus, .post-input:focus, .review-input:focus, .auth-input
 }
 
 .tribe-insignia {
-    background: linear-gradient(135deg, #FFB830 0%, #FF6B35 100%) !important;
+    background: linear-gradient(135deg, var(--gh-warning) 0%, var(--gh-bingo) 100%) !important;
     border: 1.5px solid white !important;
     box-shadow: 0 4px 10px rgba(255,107,53,0.4) !important;
 }
@@ -1308,7 +1312,7 @@ input:focus, textarea:focus, .post-input:focus, .review-input:focus, .auth-input
     border: 1px solid rgba(23,200,212,0.4) !important;
 }
 
-.star.active { color: #FFB830 !important; }
+.star.active { color: var(--gh-warning-ink) !important; }
 
 .page-transition-overlay {
     background: rgba(255,255,255,0.3) !important;

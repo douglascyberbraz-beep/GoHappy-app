@@ -33,7 +33,7 @@ window.GoHappyAdventures = {
                     'El bosque ha cambiado de color. Las hojas susurran secretos y las castañas esperan ser encontradas. Esta semana sois los Cazadores del Otoño — vuestra misión es descubrir 4 tesoros del bosque y traerlos a casa.',
                     'The forest has changed colour. Leaves whisper secrets and chestnuts wait to be found. This week you are the Autumn Hunters — your mission is to discover 4 forest treasures and bring them home.'
                 ),
-                color: '#D97706',
+                color: 'var(--gh-warning-ink)',
                 misiones: [
                     { titulo: T('Recoged 5 hojas de colores distintos', 'Collect 5 leaves of different colors'), pista: T('Los parques con tilos y robles son ideales', 'Parks with linden and oak trees are ideal'), puntos: 30 },
                     { titulo: T('Encontrad una castaña Y un piñón', 'Find a chestnut AND a pine nut'), pista: T('Mira al suelo bajo los árboles', 'Look on the ground under trees'), puntos: 30 },
@@ -53,7 +53,7 @@ window.GoHappyAdventures = {
                     'El agua corre por vuestra ciudad sin que casi nadie la mire. Fuentes, ríos, lagos. Esta semana seguiréis su rastro. Cada gota cuenta una historia.',
                     'Water flows through your city and almost no one watches. Fountains, rivers, lakes. This week you will follow its trail. Every drop tells a story.'
                 ),
-                color: '#0EA5E9',
+                color: 'var(--gh-primary-bright)',
                 misiones: [
                     { titulo: T('Encontrad la fuente más bonita del barrio', 'Find the prettiest fountain in your neighborhood'), pista: T('Las plazas suelen tener fuentes históricas', 'Squares often have historic fountains'), puntos: 30 },
                     { titulo: T('Visitad un río, lago o playa', 'Visit a river, lake or beach'), pista: T('Aunque sea pequeño, sirve', 'Even a small one counts'), puntos: 40 },
@@ -73,7 +73,7 @@ window.GoHappyAdventures = {
                     'Cada calle tiene historias que casi nadie conoce. Esta semana sois detectives buscando los secretos del barrio. Llevad lápiz y muchas ganas de preguntar.',
                     'Every street has stories almost no one knows. This week you are detectives looking for the secrets of the neighborhood. Bring a pencil and lots of questions.'
                 ),
-                color: '#7C3AED',
+                color: 'var(--gh-lilac-ink)',
                 misiones: [
                     { titulo: T('Encontrad la calle más antigua del barrio', 'Find the oldest street in the neighborhood'), pista: T('Suele tener placas con la fecha', 'Often has plaques with the date'), puntos: 30 },
                     { titulo: T('Buscad un detalle escondido en una fachada', 'Find a hidden detail in a façade'), pista: T('Gárgola, escudo, fecha tallada, mosaico...', 'Gargoyle, shield, carved date, mosaic...'), puntos: 40 },
@@ -93,7 +93,7 @@ window.GoHappyAdventures = {
                     'Esta semana la familia se convierte en un equipo de cocina. Cada miembro propone, todos cocinan. Al final tendréis un mini recetario familiar.',
                     'This week the family becomes a kitchen team. Everyone proposes, everyone cooks. At the end you will have a mini family cookbook.'
                 ),
-                color: '#DC2626',
+                color: 'var(--gh-danger)',
                 misiones: [
                     { titulo: T('Cada miembro propone un plato que quiera probar', 'Each member proposes a dish they want to try'), pista: T('Que sea distinto entre todos', 'Make sure each is different'), puntos: 20 },
                     { titulo: T('Hacéis la lista de la compra juntos', 'Make the shopping list together'), pista: T('Reparted: cada uno escribe lo suyo', 'Share: each writes their own'), puntos: 30 },
@@ -113,7 +113,7 @@ window.GoHappyAdventures = {
                     'Esta noche el salón es la nave. Esta semana es la misión. Volaréis sin moveros del sofá.',
                     'Tonight the living room is the ship. This week is the mission. You will fly without leaving the sofa.'
                 ),
-                color: '#1E40AF',
+                color: 'var(--gh-primary)',
                 misiones: [
                     { titulo: T('Mirad el cielo nocturno e identificad 3 constelaciones', 'Look at the night sky and identify 3 constellations'), pista: T('Apps gratis: SkyView, Stellarium', 'Free apps: SkyView, Stellarium'), puntos: 40 },
                     { titulo: T('Construid un cohete con cajas de cartón', 'Build a rocket with cardboard boxes'), pista: T('Lo que tengáis en casa, lo cutre vale', 'Whatever you have at home, rough is fine'), puntos: 50 },
@@ -133,7 +133,7 @@ window.GoHappyAdventures = {
                     'Esta semana sois una familia de artistas. Cada uno crea su obra. El sábado se inaugura la galería.',
                     'This week you are a family of artists. Each one creates their work. The gallery opens on Saturday.'
                 ),
-                color: '#DB2777',
+                color: 'var(--gh-coral-ink)',
                 misiones: [
                     { titulo: T('Cada miembro elige una técnica artística', 'Each member chooses an art technique'), pista: T('Acuarela, fotos, collage, plastilina...', 'Watercolor, photos, collage, clay...'), puntos: 20 },
                     { titulo: T('Crean obra inspirada en la misma palabra', 'Create a piece inspired by the same word'), pista: T('"Hogar", "verano", "secreto"...', '"Home", "summer", "secret"...'), puntos: 60 },
@@ -256,7 +256,7 @@ window.GoHappyAdventures = {
             ${window.GoHappyAdventures._soloBanner || ''}
             ${completedCount > 0 ? `
                 <div style="background:linear-gradient(135deg,rgba(255,215,0,0.10),rgba(255,165,0,0.12)); border:0.5px solid rgba(255,180,80,0.25); border-radius:16px; padding:14px 16px; margin-bottom:16px;">
-                    <div style="font-size:11px; font-weight:800; color:#8B5C00; text-transform:uppercase; margin-bottom:8px;">🏆 ${T('Insignias ganadas', 'Badges earned')} (${completedCount})</div>
+                    <div style="font-size:11px; font-weight:800; color:var(--gh-warning-ink); text-transform:uppercase; margin-bottom:8px;">🏆 ${T('Insignias ganadas', 'Badges earned')} (${completedCount})</div>
                     <div style="display:flex; gap:8px; flex-wrap:wrap;">${completedBadges}</div>
                 </div>
             ` : ''}
@@ -280,7 +280,7 @@ window.GoHappyAdventures = {
                             position:relative; overflow:hidden;
                             ${isDone ? 'opacity:0.65;' : ''}
                         ">
-                            ${isDone ? `<div style="position:absolute; top:10px; right:14px; background:rgba(39,174,96,0.15); color:#16A34A; padding:3px 10px; border-radius:999px; font-size:10px; font-weight:800;">✓ ${T('COMPLETADA', 'COMPLETED')}</div>` : ''}
+                            ${isDone ? `<div style="position:absolute; top:10px; right:14px; background:rgba(39,174,96,0.15); color:var(--gh-success-ink); padding:3px 10px; border-radius:999px; font-size:10px; font-weight:800;">✓ ${T('COMPLETADA', 'COMPLETED')}</div>` : ''}
                             <div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:8px;">
                                 <div style="font-size:38px; line-height:1; flex-shrink:0;">${adv.emoji}</div>
                                 <div style="flex:1; min-width:0;">
@@ -302,7 +302,7 @@ window.GoHappyAdventures = {
                                     box-shadow:0 6px 16px ${adv.color}44;
                                 ">🚀 ${T('Empezar esta aventura', 'Start this adventure')}</button>
                             ` : `
-                                <div style="text-align:center; padding:8px; color:#16A34A; font-weight:800; font-size:13px;">
+                                <div style="text-align:center; padding:8px; color:var(--gh-success-ink); font-weight:800; font-size:13px;">
                                     ${adv.insignia.emoji} ${safe(adv.insignia.nombre)}
                                 </div>
                             `}
@@ -420,14 +420,14 @@ window.GoHappyAdventures = {
                         <div class="adv-mission" style="
                             background:rgba(255,255,255,0.95);
                             border:0.5px solid ${done ? 'rgba(39,174,96,0.30)' : 'rgba(11,76,143,0.10)'};
-                            border-left:4px solid ${done ? '#27AE60' : adv.color};
+                            border-left:4px solid ${done ? 'var(--gh-success)' : adv.color};
                             border-radius:16px; padding:14px;
                             display:flex; gap:12px; align-items:flex-start;
                             ${done ? 'opacity:0.85;' : ''}
                         ">
                             <div style="
                                 width:32px; height:32px; border-radius:50%; flex-shrink:0;
-                                background:${done ? '#27AE60' : 'rgba(11,76,143,0.08)'};
+                                background:${done ? 'var(--gh-success)' : 'rgba(11,76,143,0.08)'};
                                 color:${done ? 'white' : 'var(--cobalt)'};
                                 display:flex; align-items:center; justify-content:center;
                                 font-weight:700; font-size:14px;
@@ -442,7 +442,7 @@ window.GoHappyAdventures = {
                                         background:${adv.color}; color:white; font-weight:800; font-size:12px;
                                         cursor:pointer;
                                     ">📷 ${T('Completar', 'Complete')} (+${m.puntos} pts)</button>
-                                ` : `<div style="font-size:11px; color:#27AE60; font-weight:700; margin-top:4px;">✓ +${m.puntos} pts</div>`}
+                                ` : `<div style="font-size:11px; color:var(--gh-success-ink); font-weight:700; margin-top:4px;">✓ +${m.puntos} pts</div>`}
                             </div>
                         </div>
                     `;

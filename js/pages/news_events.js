@@ -131,8 +131,8 @@ window.GoHappyNewsEvents = {
                     <div class="news-mag-tag" style="margin-bottom: 5px;">📍 ${item.location}</div>
                     <h3 style="color: var(--primary-navy); margin: 0 0 10px 0;">${item.title}</h3>
                     <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-                        <span style="font-size: 12px; color: #666;">🕒 ${item.date}</span>
-                        <span style="font-size: 12px; color: #666;">💰 ${item.price}</span>
+                        <span style="font-size: 12px; color: var(--gh-ink-2);">🕒 ${item.date}</span>
+                        <span style="font-size: 12px; color: var(--gh-ink-2);">💰 ${item.price}</span>
                     </div>
                 `;
                 content.appendChild(card);
@@ -149,13 +149,13 @@ window.GoHappyNewsEvents = {
 
                 card.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="color: ${item.statusColor === 'green' ? '#27AE60' : '#E67E22'}; font-weight: 800; font-size: 10px; background: ${item.statusColor === 'green' ? 'rgba(39,174,96,0.1)' : 'rgba(230,126,34,0.1)'}; padding: 4px 10px; border-radius: 20px;">
+                        <span style="color: ${item.statusColor === 'green' ? 'var(--gh-success)' : 'var(--gh-warning)'}; font-weight: 800; font-size: 10px; background: ${item.statusColor === 'green' ? 'rgba(39,174,96,0.1)' : 'rgba(230,126,34,0.1)'}; padding: 4px 10px; border-radius: 20px;">
                             ${item.status || 'PLAZO ABIERTO'}
                         </span>
-                        <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">⏳ ${item.deadline || 'Consultar'}</span>
+                        <span style="font-size: 11px; color: var(--gh-ink-3); font-weight: 600;">⏳ ${item.deadline || 'Consultar'}</span>
                     </div>
                     <h4 style="color: var(--primary-cobalt); margin: 0 0 8px 0; font-size: 1.1rem; font-weight: 800;">${item.title}</h4>
-                    <p style="font-size: 13px; color: #475569; margin-bottom: 15px; line-height: 1.4;">${item.description}</p>
+                    <p style="font-size: 13px; color: var(--gh-ink-2); margin-bottom: 15px; line-height: 1.4;">${item.description}</p>
                     
                     <div class="beca-details" style="background: rgba(255,255,255,0.5); border-radius: 12px; padding: 12px; margin-bottom: 15px; font-size: 12px; border: 1px solid rgba(0,0,0,0.03);">
                         <div style="margin-bottom: 8px;"><strong style="color: var(--primary-cobalt);">📋 Requisitos:</strong> ${item.requirements || 'Consultar bases oficiales.'}</div>

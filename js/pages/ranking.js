@@ -45,7 +45,7 @@ window.GoHappyRanking = {
                     gap: 6px !important;
                     min-height: 150px !important;
                     height: auto !important;
-                    color: var(--text-primary, #0F172A) !important;
+                    color: var(--text-primary, var(--gh-ink)) !important;
                     position: relative !important;
                     transform: none;
                 }
@@ -74,7 +74,7 @@ window.GoHappyRanking = {
                     font-size: 20px !important;
                     color: white !important;
                     flex-shrink: 0 !important;
-                    background: linear-gradient(135deg,#0B4C8F,#17C8D4) !important;
+                    background: linear-gradient(135deg,var(--gh-primary),var(--gh-aqua)) !important;
                     box-shadow: 0 4px 12px rgba(11,76,143,0.18) !important;
                     background-size: cover !important;
                     background-position: center !important;
@@ -88,7 +88,7 @@ window.GoHappyRanking = {
                 .gh-pod-v2-name {
                     font-size: 11.5px !important;
                     font-weight: 800 !important;
-                    color: #0B4C8F !important;
+                    color: var(--gh-primary) !important;
                     margin: 0 !important;
                     line-height: 1.2 !important;
                     white-space: nowrap !important;
@@ -98,7 +98,7 @@ window.GoHappyRanking = {
                 .gh-pod-v2-score {
                     font-size: 10.5px !important;
                     font-weight: 700 !important;
-                    color: #64748b !important;
+                    color: var(--gh-ink-2) !important;
                     margin-top: 3px !important;
                     white-space: nowrap !important;
                     overflow: hidden !important;
@@ -125,7 +125,7 @@ window.GoHappyRanking = {
             const clickAttr = item.onclick ? `onclick="${item.onclick}" style="cursor:pointer;"` : '';
             // Aro de nivel: extraer pts del score si viene como "1250 pts"
             const ptsNum = parseInt(String(item.score || '').replace(/[^\d]/g, '')) || 0;
-            const lvl = window.GoHappyPoints?.getLevelInfo?.(ptsNum) || { ring:'linear-gradient(135deg,#A0E0B6,#65C18C)', shadow:'rgba(101,193,140,0.45)', name:'Novato' };
+            const lvl = window.GoHappyPoints?.getLevelInfo?.(ptsNum) || { ring:'linear-gradient(135deg,var(--gh-success-soft),var(--gh-success))', shadow:'rgba(101,193,140,0.45)', name:'Novato' };
             const innerAvatarStyle = isUrl
                 ? `background-image:url('${safeAvatar}'); background-size:cover; background-position:center; font-size:0;`
                 : '';
@@ -181,11 +181,11 @@ window.GoHappyRanking = {
 
         const getPlaceholder = (type) => {
             const colors = {
-                park: '#4CAF50',
-                food: '#FF9800',
-                museum: '#9C27B0',
-                culture: '#E91E63',
-                generic: '#2196F3'
+                park: 'var(--gh-success)',
+                food: 'var(--gh-warning)',
+                museum: 'var(--gh-lilac-ink)',
+                culture: 'var(--gh-coral)',
+                generic: 'var(--gh-primary-bright)'
             };
             const color = colors[type] || colors.generic;
             return `linear-gradient(135deg, ${color}, ${color}dd)`;
@@ -271,7 +271,7 @@ window.GoHappyRanking = {
         };
 
         const renderContributors = async () => {
-            list.innerHTML = '<div class="center-text p-40"><div class="magic-loader">✨</div><p style="margin-top:10px; color:#64748b;">Calculando los puntos de la semana...</p></div>';
+            list.innerHTML = '<div class="center-text p-40"><div class="magic-loader">✨</div><p style="margin-top:10px; color:var(--gh-ink-2);">Calculando los puntos de la semana...</p></div>';
             let users = await window.GoHappyData.getContributors();
             const me = window.GoHappyAuth.checkAuth();
             if (me && !me.isGuest) {
@@ -298,13 +298,13 @@ window.GoHappyRanking = {
             others.forEach((user, i) => {
                 const av = String(user.avatar || '👤');
                 const isUrl = /^https?:\/\//.test(av) || av.startsWith('data:');
-                const lvl = window.GoHappyPoints?.getLevelInfo?.(user.points || 0) || { ring:'linear-gradient(135deg,#A0E0B6,#65C18C)', shadow:'rgba(101,193,140,0.45)', name:'Novato' };
+                const lvl = window.GoHappyPoints?.getLevelInfo?.(user.points || 0) || { ring:'linear-gradient(135deg,var(--gh-success-soft),var(--gh-success))', shadow:'rgba(101,193,140,0.45)', name:'Novato' };
                 const avatarInner = isUrl
                     ? `<div style="width:34px;height:34px;border-radius:50%;background-image:url('${av}');background-size:cover;background-position:center;"></div>`
-                    : `<div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0B4C8F,#17C8D4);color:white;display:flex;align-items:center;justify-content:center;font-size:14px;">${av}</div>`;
+                    : `<div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gh-primary),var(--gh-aqua));color:white;display:flex;align-items:center;justify-content:center;font-size:14px;">${av}</div>`;
                 html += `
                     <div class="ranking-row card-anim ${user.special ? 'is-me' : ''}">
-                        <span class="row-rank" style="font-weight: 800; color: #94a3b8; width: 35px;">#${i + 4}</span>
+                        <span class="row-rank" style="font-weight: 800; color: var(--gh-ink-3); width: 35px;">#${i + 4}</span>
                         <div class="gh-level-ring" data-level="${lvl.name}" title="${lvl.name}" style="
                             position:relative; width:42px; height:42px; padding:2.5px; flex-shrink:0;
                             border-radius:50%; background:${lvl.ring};
@@ -324,7 +324,7 @@ window.GoHappyRanking = {
             html += `
                 <div class="motivation-box entry-anim" style="background: linear-gradient(135deg, rgba(11, 113, 252, 0.05), rgba(11, 113, 252, 0.1)); padding: 20px; border-radius: 24px; margin: 30px 16px 0; text-align: center; border: 1px dashed var(--primary-cobalt);">
                     <h4 style="color: var(--primary-cobalt); margin: 0 0 5px 0;">¡Tú puedes ser el próximo! 🚀</h4>
-                    <p style="font-size: 12px; color: #64748b;">Reporta peligros en SAFE, haz reseñas en el MAPA o completa QUESTS para sumar puntos semanales.</p>
+                    <p style="font-size: 12px; color: var(--gh-ink-2);">Reporta peligros en SAFE, haz reseñas en el MAPA o completa QUESTS para sumar puntos semanales.</p>
                 </div>
             `;
 

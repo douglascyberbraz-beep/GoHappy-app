@@ -166,13 +166,13 @@ window.GoHappyTour = (() => {
                     font-family: 'Poppins', sans-serif;
                     font-weight:700;
                     font-size: 20px;
-                    color: var(--primary-cobalt, #0B4C8F);
+                    color: var(--primary-cobalt, var(--gh-primary));
                     margin: 0 0 8px;
                     letter-spacing: -0.3px;
                 }
                 .gh-tour-tooltip-body {
                     font-size: 14px;
-                    color: var(--text-primary, #0F172A);
+                    color: var(--text-primary, var(--gh-ink));
                     line-height: 1.5;
                     margin: 0 0 16px;
                 }
@@ -189,7 +189,7 @@ window.GoHappyTour = (() => {
                     transition: all 0.2s;
                 }
                 .gh-tour-dot.active {
-                    background: var(--cyan, #17C8D4);
+                    background: var(--cyan, var(--gh-aqua));
                     width: 24px;
                     border-radius: 999px;
                 }
@@ -211,18 +211,18 @@ window.GoHappyTour = (() => {
                 .gh-tour-btn:active { transform: scale(0.96); }
                 .gh-tour-btn-primary {
                     flex: 1;
-                    background: linear-gradient(135deg, #0B71FC, #17C8D4);
+                    background: linear-gradient(135deg, var(--gh-primary-bright), var(--gh-aqua));
                     color: white;
                     box-shadow: 0 6px 18px rgba(11,113,252,0.36);
                 }
                 .gh-tour-btn-skip {
                     background: transparent;
-                    color: var(--text-tertiary, #94a3b8);
+                    color: var(--text-tertiary, var(--gh-ink-3));
                     padding: 12px;
                     font-weight: 600;
                     font-size: 13px;
                 }
-                .gh-tour-btn-skip:hover { color: var(--text-secondary, #64748b); }
+                .gh-tour-btn-skip:hover { color: var(--text-secondary, var(--gh-ink-2)); }
             `;
             document.head.appendChild(style);
         }

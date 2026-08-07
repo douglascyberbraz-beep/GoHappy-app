@@ -139,7 +139,7 @@ window.GoHappyMyFamily = {
                             const inner = isPhoto
                                 ? `<div style="width:100%;height:100%;background-image:url('${encodeURI(photoUrl)}');background-size:cover;background-position:center;border-radius:50%;"></div>`
                                 : (m.photo || '👤');
-                            const lvl = window.GoHappyPoints?.getLevelInfo?.(pts) || { ring:'linear-gradient(135deg,#A0E0B6,#65C18C)', shadow:'rgba(101,193,140,0.45)', name:'Novato' };
+                            const lvl = window.GoHappyPoints?.getLevelInfo?.(pts) || { ring:'linear-gradient(135deg,var(--gh-success-soft),var(--gh-success))', shadow:'rgba(101,193,140,0.45)', name:'Novato' };
                             return `
                             <div style="display:flex; align-items:center; gap:10px; padding:6px 14px 6px 6px; background:rgba(11,76,143,0.05); border-radius:999px;">
                                 <div class="gh-level-ring" data-level="${lvl.name}" title="${lvl.name}" style="
@@ -179,7 +179,7 @@ window.GoHappyMyFamily = {
                                         <div style="font-size:11px; color:var(--text-secondary);">+${parseInt(q.puntos) || 0} pts · ${safe(q.frecuencia || 'semanal')}</div>
                                     </div>
                                     ${done
-                                        ? `<span style="font-size:11px; font-weight:800; color:#27AE60; flex-shrink:0;">${T('Hecho hoy', 'Done today')}</span>`
+                                        ? `<span style="font-size:11px; font-weight:800; color:var(--gh-success-ink); flex-shrink:0;">${T('Hecho hoy', 'Done today')}</span>`
                                         : `<span style="font-size:11px; font-weight:800; color:var(--cobalt); background:rgba(11,113,252,0.10); padding:6px 10px; border-radius:999px; flex-shrink:0;">${T('Completar', 'Complete')} →</span>`}
                                 </div>`;
                             }).join('')
@@ -200,11 +200,11 @@ window.GoHappyMyFamily = {
 
                 ${isAdmin ? `
                     <!-- Acciones admin -->
-                    <button id="mf-delete-family" style="width:100%; margin-top:16px; padding:12px; background:rgba(239,68,68,0.08); color:#DC2626; border:0.5px solid rgba(239,68,68,0.30); border-radius:999px; font-weight:700; font-size:13px; cursor:pointer;">
+                    <button id="mf-delete-family" style="width:100%; margin-top:16px; padding:12px; background:rgba(239,68,68,0.08); color:var(--gh-danger-ink); border:0.5px solid rgba(239,68,68,0.30); border-radius:999px; font-weight:700; font-size:13px; cursor:pointer;">
                         ${T('🚪 Eliminar familia', '🚪 Delete family')}
                     </button>
                 ` : `
-                    <button id="mf-leave-family" style="width:100%; margin-top:16px; padding:12px; background:rgba(239,68,68,0.08); color:#DC2626; border:0.5px solid rgba(239,68,68,0.30); border-radius:999px; font-weight:700; font-size:13px; cursor:pointer;">
+                    <button id="mf-leave-family" style="width:100%; margin-top:16px; padding:12px; background:rgba(239,68,68,0.08); color:var(--gh-danger-ink); border:0.5px solid rgba(239,68,68,0.30); border-radius:999px; font-weight:700; font-size:13px; cursor:pointer;">
                         ${T('🚪 Salir de la familia', '🚪 Leave family')}
                     </button>
                 `}
@@ -458,12 +458,12 @@ window.GoHappyMyFamily = {
             <div class="auth-container" style="padding:20px;">
                 <div class="auth-card premium-glass" style="padding:28px 22px; border-radius:32px; max-width:400px; text-align:center;">
                     <div style="font-size:48px; margin-bottom:12px;">⚠️</div>
-                    <h3 style="color:#DC2626; font-weight:700; margin-bottom:8px;">${T('Eliminar familia', 'Delete family')}</h3>
+                    <h3 style="color:var(--gh-danger-ink); font-weight:700; margin-bottom:8px;">${T('Eliminar familia', 'Delete family')}</h3>
                     <p style="font-size:13px; color:var(--text-secondary); margin-bottom:18px; line-height:1.5;">
                         ${T('Esta acción es irreversible. Se eliminarán todos los datos compartidos.\nEscribe CONFIRMAR para continuar.', 'This action is irreversible. All shared data will be deleted.\nType CONFIRM to continue.')}
                     </p>
-                    <input id="df-confirm-input" type="text" placeholder="${lang === 'en' ? 'CONFIRM' : 'CONFIRMAR'}" style="width:100%; padding:12px 14px; border:1.5px solid #DC2626; border-radius:14px; font-size:14px; text-align:center; font-weight:800; outline:none; box-sizing:border-box; margin-bottom:14px; text-transform:uppercase;">
-                    <button id="df-confirm-btn" style="width:100%; padding:13px; background:#DC2626; color:white; border:none; border-radius:14px; font-weight:800; cursor:pointer; margin-bottom:9px; font-size:14px;">🗑️ ${T('Eliminar permanentemente', 'Delete permanently')}</button>
+                    <input id="df-confirm-input" type="text" placeholder="${lang === 'en' ? 'CONFIRM' : 'CONFIRMAR'}" style="width:100%; padding:12px 14px; border:1.5px solid var(--gh-danger); border-radius:14px; font-size:14px; text-align:center; font-weight:800; outline:none; box-sizing:border-box; margin-bottom:14px; text-transform:uppercase;">
+                    <button id="df-confirm-btn" style="width:100%; padding:13px; background:var(--gh-danger); color:white; border:none; border-radius:14px; font-weight:800; cursor:pointer; margin-bottom:9px; font-size:14px;">🗑️ ${T('Eliminar permanentemente', 'Delete permanently')}</button>
                     <button onclick="this.closest('.modal').remove()" style="width:100%; padding:10px; background:transparent; color:var(--text-secondary); border:none; font-weight:700; cursor:pointer; font-size:13px;">${T('Cancelar', 'Cancel')}</button>
                 </div>
             </div>`;

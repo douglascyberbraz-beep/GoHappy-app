@@ -369,12 +369,12 @@ window.GoHappyMap = {
             const lang = window.GoHappyI18n?.lang || 'es';
             const loaderMsg = lang === 'en' ? 'Loading 3D map…' : 'Invocando mapa 3D…';
             container.innerHTML = `
-                <div id="map-canvas" style="position:absolute; inset:0; z-index:1; background:#DFEEFF;"></div>
-                <div id="map-loader" style="position:absolute; inset:0; background:linear-gradient(180deg,#eaf2fd 0%,#d6e6f9 100%); z-index:10; pointer-events:none;">
+                <div id="map-canvas" style="position:absolute; inset:0; z-index:1; background:var(--gh-primary-soft);"></div>
+                <div id="map-loader" style="position:absolute; inset:0; background:linear-gradient(180deg,var(--gh-surface-2) 0%,var(--gh-surface-3) 100%); z-index:10; pointer-events:none;">
                     <div style="position:absolute; inset:0; background-image: linear-gradient(rgba(11,76,143,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(11,76,143,0.06) 1px, transparent 1px); background-size:60px 60px;"></div>
                     <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-60%); display:flex; flex-direction:column; align-items:center; gap:14px;">
-                        <div style="width:54px; height:54px; border-radius:50% 50% 50% 0; background:var(--primary-cobalt,#0B4C8F); transform:rotate(-45deg); box-shadow:0 8px 22px rgba(11,76,143,0.35); animation:mapPinBounce 1.2s ease-in-out infinite;"></div>
-                        <p style="font-weight:700; color:var(--primary-cobalt,#0B4C8F); font-size:13px; margin:0;">${loaderMsg}</p>
+                        <div style="width:54px; height:54px; border-radius:50% 50% 50% 0; background:var(--primary-cobalt,var(--gh-primary)); transform:rotate(-45deg); box-shadow:0 8px 22px rgba(11,76,143,0.35); animation:mapPinBounce 1.2s ease-in-out infinite;"></div>
+                        <p style="font-weight:700; color:var(--primary-cobalt,var(--gh-primary)); font-size:13px; margin:0;">${loaderMsg}</p>
                     </div>
                     <style>@keyframes mapPinBounce {0%,100%{transform:rotate(-45deg) translateY(0)} 50%{transform:rotate(-45deg) translateY(-8px)}}</style>
                 </div>
@@ -389,9 +389,9 @@ window.GoHappyMap = {
                     loader.innerHTML = `
                         <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
                             <div style="font-size:48px; margin-bottom:14px;">⚠️</div>
-                            <p style="color:var(--primary-cobalt,#0B4C8F); font-weight:700; margin:0 0 12px;">${lang === 'en' ? 'Could not load map' : 'No se pudo cargar el mapa'}</p>
-                            <p style="color:#64748b; font-size:12px; margin:0 0 18px;">${(e?.message || 'Unknown error').slice(0, 120)}</p>
-                            <button onclick="window.location.reload()" style="background:var(--primary-cobalt,#0B4C8F); color:white; border:none; padding:12px 24px; border-radius:999px; font-weight:800; cursor:pointer;">🔄 ${lang === 'en' ? 'Retry' : 'Reintentar'}</button>
+                            <p style="color:var(--primary-cobalt,var(--gh-primary)); font-weight:700; margin:0 0 12px;">${lang === 'en' ? 'Could not load map' : 'No se pudo cargar el mapa'}</p>
+                            <p style="color:var(--gh-ink-2); font-size:12px; margin:0 0 18px;">${(e?.message || 'Unknown error').slice(0, 120)}</p>
+                            <button onclick="window.location.reload()" style="background:var(--primary-cobalt,var(--gh-primary)); color:white; border:none; padding:12px 24px; border-radius:999px; font-weight:800; cursor:pointer;">🔄 ${lang === 'en' ? 'Retry' : 'Reintentar'}</button>
                         </div>`;
                 }
             }
@@ -470,7 +470,7 @@ window.GoHappyMap = {
             if (splashGone && hasSize) break;
             if (i === 20 && !hasSize) {
                 // tras ~330ms sin dimensiones, forzarlas
-                mapDiv.style.cssText = 'position:absolute; inset:0; width:100vw; height:100vh; z-index:1; background:#DFEEFF;';
+                mapDiv.style.cssText = 'position:absolute; inset:0; width:100vw; height:100vh; z-index:1; background:var(--gh-primary-soft);';
             }
             await new Promise(r => requestAnimationFrame(r));
         }
@@ -622,9 +622,9 @@ window.GoHappyMap = {
                     paint: {
                         'circle-color': [
                             'step', ['get', 'point_count'],
-                            '#17C8D4',    // 2-9: cyan
-                            10, '#0B71FC',// 10-29: cobalt-bright
-                            30, '#0B4C8F' // 30+: cobalt dark
+                            window.GoHappyMapStyle.token('--gh-aqua'),    // 2-9: cyan
+                            10, window.GoHappyMapStyle.token('--gh-primary-bright'),// 10-29: cobalt-bright
+                            30, window.GoHappyMapStyle.token('--gh-primary') // 30+: cobalt dark
                         ],
                         'circle-radius': [
                             'step', ['get', 'point_count'],
@@ -647,7 +647,7 @@ window.GoHappyMap = {
                         'text-size': 14,
                         'text-font': ['Noto Sans Bold']
                     },
-                    paint: { 'text-color': '#ffffff' }
+                    paint: { 'text-color': window.GoHappyMapStyle.token('--gh-surface') }
                 });
 
                 // Click en cluster → zoom in
@@ -788,7 +788,7 @@ window.GoHappyMap = {
             <div class="map-search-bar" style="display:flex; align-items:center; background:rgba(255,255,255,0.7); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-radius:30px; padding:2px 8px 2px 20px; box-shadow:0 10px 30px rgba(0,210,211,0.1); flex:1; width:100%; border:1px solid rgba(255,255,255,0.5);">
                 <span class="gemini-sparkle" style="margin-right:8px; font-size:1.2rem;">✨</span>
                 <input type="text" id="map-search-input" class="map-search-input" placeholder="${T('map.search.placeholder')}" style="background:transparent; border:none; color:var(--text-dark); flex:1; outline:none; padding:12px 0; font-size:0.95rem;">
-                <button id="gh-voice-search" title="${lang === 'en' ? 'Voice search' : 'Búsqueda por voz'}" style="background:rgba(11,113,252,0.10); border:none; width:38px; height:38px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--cobalt,#0B4C8F); flex-shrink:0; transition:all 0.2s;">🎤</button>
+                <button id="gh-voice-search" title="${lang === 'en' ? 'Voice search' : 'Búsqueda por voz'}" style="background:rgba(11,113,252,0.10); border:none; width:38px; height:38px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--cobalt,var(--gh-primary)); flex-shrink:0; transition:all 0.2s;">🎤</button>
             </div>
             <div class="map-filters">
                 <div class="filter-chip active" data-type="all" data-label="${T('map.filter.all')}" title="${T('map.filter.all')}">🌐</div>
@@ -823,7 +823,7 @@ window.GoHappyMap = {
                 backdrop-filter:blur(20px) saturate(180%);
                 -webkit-backdrop-filter:blur(20px) saturate(180%);
                 box-shadow:0 8px 22px rgba(11,76,143,0.18), inset 0 1px 0 rgba(255,255,255,0.95);
-                font-size:${big ? 28 : 20}px; color:var(--cobalt,#0B4C8F);
+                font-size:${big ? 28 : 20}px; color:var(--cobalt,var(--gh-primary));
                 display:flex; align-items:center; justify-content:center;
                 cursor:pointer; transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1), background 0.2s;
             `;
@@ -838,16 +838,16 @@ window.GoHappyMap = {
         const heatBtn = makeFab('gh-fab-heat', '🌡️', lang === 'en' ? 'Heatmap' : 'Mapa de calor');
         heatBtn.addEventListener('click', async () => {
             const on = await window.GoHappyMap.toggleHeatmap();
-            heatBtn.style.background = on ? 'linear-gradient(135deg,#F59E0B,#EF4444)' : 'rgba(255,255,255,0.95)';
-            heatBtn.style.color = on ? 'white' : 'var(--cobalt,#0B4C8F)';
+            heatBtn.style.background = on ? 'linear-gradient(135deg,var(--gh-warning),var(--gh-danger))' : 'rgba(255,255,255,0.95)';
+            heatBtn.style.color = on ? 'white' : 'var(--cobalt,var(--gh-primary))';
         });
 
         // 👨‍👩‍👧 Familia activa toggle
         const familyBtn = makeFab('gh-fab-family', '👨‍👩‍👧', lang === 'en' ? 'Family live' : 'Familia activa');
         familyBtn.addEventListener('click', async () => {
             const on = await window.GoHappyMap.toggleFamilyMode();
-            familyBtn.style.background = on ? 'linear-gradient(135deg,#F59E0B,#FFD700)' : 'rgba(255,255,255,0.95)';
-            familyBtn.style.color = on ? 'white' : 'var(--cobalt,#0B4C8F)';
+            familyBtn.style.background = on ? 'linear-gradient(135deg,var(--gh-warning),var(--gh-gold))' : 'rgba(255,255,255,0.95)';
+            familyBtn.style.color = on ? 'white' : 'var(--cobalt,var(--gh-primary))';
             // Sin toast: el botón se ilumina en dorado al activarse.
         });
 
@@ -880,7 +880,7 @@ window.GoHappyMap = {
         followBtn.addEventListener('click', () => {
             window.GoHappyMap._followMode = !window.GoHappyMap._followMode;
             if (window.GoHappyMap._followMode) {
-                followBtn.style.background = 'linear-gradient(135deg,#0B71FC,#17C8D4)';
+                followBtn.style.background = 'linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua))';
                 followBtn.style.color = 'white';
                 if (window.GoHappyMap.userMarker) {
                     const ll = window.GoHappyMap.userMarker.getLngLat();
@@ -890,7 +890,7 @@ window.GoHappyMap = {
                 // El propio cambio ya comunica el estado.
             } else {
                 followBtn.style.background = 'rgba(255,255,255,0.95)';
-                followBtn.style.color = 'var(--cobalt,#0B4C8F)';
+                followBtn.style.color = 'var(--cobalt,var(--gh-primary))';
             }
         });
 
@@ -900,7 +900,7 @@ window.GoHappyMap = {
         // ➕ Añadir reseña (más grande, destacado)
         const addBtn = makeFab('add-review-fab', '<span style="font-size:28px;line-height:1;font-weight:300;">+</span>',
                                window.GoHappyI18n ? window.GoHappyI18n.t('map.review') : 'Añadir reseña', true);
-        addBtn.style.background = 'linear-gradient(135deg,#0B71FC,#17C8D4)';
+        addBtn.style.background = 'linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua))';
         addBtn.style.color = 'white';
         addBtn.style.boxShadow = '0 10px 28px rgba(11,113,252,0.4), inset 0 1px 0 rgba(255,255,255,0.4)';
 
@@ -998,7 +998,7 @@ window.GoHappyMap = {
             }
             const restoreVoice = () => {
                 voiceBtn.style.background = 'rgba(11,113,252,0.10)';
-                voiceBtn.style.color = 'var(--cobalt,#0B4C8F)';
+                voiceBtn.style.color = 'var(--cobalt,var(--gh-primary))';
                 voiceBtn.innerText = '🎤';
                 voiceBtn.style.animation = '';
             };
@@ -1021,7 +1021,7 @@ window.GoHappyMap = {
                 rec.lang = lang === 'en' ? 'en-GB' : 'es-ES';
                 rec.interimResults = false;
                 rec.maxAlternatives = 1;
-                voiceBtn.style.background = 'linear-gradient(135deg,#0B71FC,#17C8D4)';
+                voiceBtn.style.background = 'linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua))';
                 voiceBtn.style.color = 'white';
                 voiceBtn.innerText = '●';
                 voiceBtn.style.animation = 'gh-voice-pulse 1s infinite';
@@ -1208,12 +1208,12 @@ window.GoHappyMap = {
                 transform:rotate(-45deg);
                 display:flex; align-items:center; justify-content:center;
                 box-shadow:0 4px 10px rgba(0,0,0,0.2);
-                border:3px solid ${isFav ? '#F59E0B' : 'var(--primary-cobalt,#0B4C8F)'};
+                border:3px solid ${isFav ? 'var(--gh-warning)' : 'var(--primary-cobalt,var(--gh-primary))'};
                 position:relative;
             ">
                 <div style="transform:rotate(45deg); font-size:20px;">${icon}</div>
-                ${isFav ? `<div style="position:absolute; top:-8px; left:-8px; background:#F59E0B; color:white; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; transform:rotate(45deg); font-size:11px; border:2px solid white;">★</div>` : ''}
-                ${hasReview ? `<div class="tribe-insignia" style="position:absolute; top:-10px; right:-10px; background:#F39C12; color:white; font-size:9px; padding:2px 6px; border-radius:10px; font-weight:700; border:2px solid white; transform:rotate(45deg); white-space:nowrap;">⭐</div>` : ''}
+                ${isFav ? `<div style="position:absolute; top:-8px; left:-8px; background:var(--gh-warning); color:white; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; transform:rotate(45deg); font-size:11px; border:2px solid white;">★</div>` : ''}
+                ${hasReview ? `<div class="tribe-insignia" style="position:absolute; top:-10px; right:-10px; background:var(--gh-warning); color:white; font-size:9px; padding:2px 6px; border-radius:10px; font-weight:700; border:2px solid white; transform:rotate(45deg); white-space:nowrap;">⭐</div>` : ''}
             </div>
         `;
 
@@ -1227,29 +1227,29 @@ window.GoHappyMap = {
 
         const distance = window.GoHappyMap._distanceTo(loc.lat, loc.lng);
         const distBadge = distance
-            ? `<span style="background:rgba(11,113,252,0.10); color:var(--cobalt,#0B4C8F); padding:2px 8px; border-radius:999px; font-size:10.5px; font-weight:800; margin-left:6px;">📍 ${distance}</span>`
+            ? `<span style="background:rgba(11,113,252,0.10); color:var(--cobalt,var(--gh-primary)); padding:2px 8px; border-radius:999px; font-size:10.5px; font-weight:800; margin-left:6px;">📍 ${distance}</span>`
             : '';
         const tFav   = lang === 'en' ? (isFav ? 'Saved'    : 'Save')      : (isFav ? 'Guardado' : 'Guardar');
         const tShare = lang === 'en' ? 'Share' : 'Compartir';
 
         const popupHTML = `
             <div class="popup-premium" style="min-width:240px; max-width:280px; border-radius:20px; overflow:hidden;">
-                <div class="popup-img-container" style="position:relative; height:110px; background:#eee;">
-                    ${safeImage ? `<img src="${safeImage}" style="width:100%; height:100%; object-fit:cover;">` : `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#0B71FC,#17C8D4); color:white; font-size:2.2rem;">🌟</div>`}
-                    <button class="popup-fav-btn" data-name="${safeName}" data-lat="${loc.lat}" data-lng="${loc.lng}" title="${tFav}" style="position:absolute; top:8px; right:8px; width:36px; height:36px; border-radius:50%; border:none; background:rgba(255,255,255,0.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.15); color:${isFav ? '#F59E0B' : '#666'};">${isFav ? '★' : '☆'}</button>
+                <div class="popup-img-container" style="position:relative; height:110px; background:var(--gh-surface-2);">
+                    ${safeImage ? `<img src="${safeImage}" style="width:100%; height:100%; object-fit:cover;">` : `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua)); color:white; font-size:2.2rem;">🌟</div>`}
+                    <button class="popup-fav-btn" data-name="${safeName}" data-lat="${loc.lat}" data-lng="${loc.lng}" title="${tFav}" style="position:absolute; top:8px; right:8px; width:36px; height:36px; border-radius:50%; border:none; background:rgba(255,255,255,0.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.15); color:${isFav ? 'var(--gh-warning)' : 'var(--gh-ink-2)'};">${isFav ? '★' : '☆'}</button>
                 </div>
                 <div class="popup-body" style="padding:12px 14px; background:white;">
-                    <h3 style="margin:0 0 4px 0; font-size:1rem; font-weight:800; color:var(--cobalt,#0B4C8F); line-height:1.25;">${safeName}</h3>
-                    <div style="font-size:11.5px; color:#666; margin-bottom:12px; display:flex; align-items:center; flex-wrap:wrap; gap:2px;">
+                    <h3 style="margin:0 0 4px 0; font-size:1rem; font-weight:800; color:var(--cobalt,var(--gh-primary)); line-height:1.25;">${safeName}</h3>
+                    <div style="font-size:11.5px; color:var(--gh-ink-2); margin-bottom:12px; display:flex; align-items:center; flex-wrap:wrap; gap:2px;">
                         <span>⭐ ${parseFloat(loc.rating) || 4.5}</span>
                         <span style="margin:0 6px; opacity:0.5;">·</span>
                         <span>${safeType}</span>
                         ${distBadge}
                     </div>
-                    <button class="popup-route-btn" data-lat="${loc.lat}" data-lng="${loc.lng}" style="padding:11px; border-radius:12px; font-size:12px; font-weight:800; width:100%; border:none; color:white; cursor:pointer; background:linear-gradient(135deg,#0B71FC,#17C8D4); margin-bottom:8px; box-shadow:0 6px 16px rgba(11,113,252,0.28);">${tRoute}</button>
+                    <button class="popup-route-btn" data-lat="${loc.lat}" data-lng="${loc.lng}" style="padding:11px; border-radius:12px; font-size:12px; font-weight:800; width:100%; border:none; color:white; cursor:pointer; background:linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua)); margin-bottom:8px; box-shadow:0 6px 16px rgba(11,113,252,0.28);">${tRoute}</button>
                     <div style="display:flex; gap:6px;">
-                        <button class="popup-review-btn" data-lat="${loc.lat}" data-lng="${loc.lng}" style="flex:1; padding:9px; border-radius:12px; font-size:11.5px; font-weight:700; border:0.5px solid rgba(11,76,143,0.15); color:var(--cobalt,#0B4C8F); cursor:pointer; background:rgba(11,76,143,0.06);">${tReview}</button>
-                        <button class="popup-share-btn" data-name="${safeName}" data-lat="${loc.lat}" data-lng="${loc.lng}" style="flex:1; padding:9px; border-radius:12px; font-size:11.5px; font-weight:700; border:0.5px solid rgba(11,76,143,0.15); color:var(--cobalt,#0B4C8F); cursor:pointer; background:rgba(11,76,143,0.06);">📤 ${tShare}</button>
+                        <button class="popup-review-btn" data-lat="${loc.lat}" data-lng="${loc.lng}" style="flex:1; padding:9px; border-radius:12px; font-size:11.5px; font-weight:700; border:0.5px solid rgba(11,76,143,0.15); color:var(--cobalt,var(--gh-primary)); cursor:pointer; background:rgba(11,76,143,0.06);">${tReview}</button>
+                        <button class="popup-share-btn" data-name="${safeName}" data-lat="${loc.lat}" data-lng="${loc.lng}" style="flex:1; padding:9px; border-radius:12px; font-size:11.5px; font-weight:700; border:0.5px solid rgba(11,76,143,0.15); color:var(--cobalt,var(--gh-primary)); cursor:pointer; background:rgba(11,76,143,0.06);">📤 ${tShare}</button>
                     </div>
                 </div>
             </div>
@@ -1281,7 +1281,7 @@ window.GoHappyMap = {
                     favBtn.onclick = () => {
                         const nowFav = window.GoHappyMap.toggleFavorite(loc);
                         favBtn.innerText = nowFav ? '★' : '☆';
-                        favBtn.style.color = nowFav ? '#F59E0B' : '#666';
+                        favBtn.style.color = nowFav ? 'var(--gh-warning)' : 'var(--gh-ink-2)';
                         window.GoHappyToast && window.GoHappyToast.success(
                             nowFav
                                 ? (lang === 'en' ? '★ Saved to favourites' : '★ Guardado en favoritos')
@@ -1375,40 +1375,40 @@ window.GoHappyMap = {
             </div>
 
             <!-- Hero image / icon -->
-            <div style="position:relative; height:160px; margin:0 16px 0; border-radius:22px; overflow:hidden; ${safeImage ? `background:url('${safeImage}') center/cover` : 'background:linear-gradient(135deg,#0B71FC,#17C8D4)'};">
+            <div style="position:relative; height:160px; margin:0 16px 0; border-radius:22px; overflow:hidden; ${safeImage ? `background:url('${safeImage}') center/cover` : 'background:linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua))'};">
                 ${!safeImage ? `<div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:80px; opacity:0.55;">${icon}</div>` : ''}
-                <button id="gh-sheet-fav" title="${tFav}" style="position:absolute; top:12px; right:12px; width:44px; height:44px; border-radius:50%; border:none; background:rgba(255,255,255,0.95); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; font-size:22px; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.18); color:${isFav ? '#F59E0B' : '#666'};">${isFav ? '★' : '☆'}</button>
-                ${distance ? `<div style="position:absolute; bottom:12px; left:12px; background:rgba(255,255,255,0.95); backdrop-filter:blur(10px); padding:6px 12px; border-radius:999px; font-size:12px; font-weight:800; color:var(--cobalt,#0B4C8F); box-shadow:0 4px 12px rgba(0,0,0,0.12);">📍 ${distance}</div>` : ''}
+                <button id="gh-sheet-fav" title="${tFav}" style="position:absolute; top:12px; right:12px; width:44px; height:44px; border-radius:50%; border:none; background:rgba(255,255,255,0.95); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; font-size:22px; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.18); color:${isFav ? 'var(--gh-warning)' : 'var(--gh-ink-2)'};">${isFav ? '★' : '☆'}</button>
+                ${distance ? `<div style="position:absolute; bottom:12px; left:12px; background:rgba(255,255,255,0.95); backdrop-filter:blur(10px); padding:6px 12px; border-radius:999px; font-size:12px; font-weight:800; color:var(--cobalt,var(--gh-primary)); box-shadow:0 4px 12px rgba(0,0,0,0.12);">📍 ${distance}</div>` : ''}
             </div>
 
             <!-- Body -->
             <div style="padding:18px 20px 8px;">
-                <h2 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:1.45rem; color:var(--cobalt,#0B4C8F); margin:0 0 4px; line-height:1.2;">${safeName}</h2>
-                <div style="display:flex; align-items:center; gap:6px; font-size:13px; color:#666; margin-bottom:14px;">
+                <h2 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:1.45rem; color:var(--cobalt,var(--gh-primary)); margin:0 0 4px; line-height:1.2;">${safeName}</h2>
+                <div style="display:flex; align-items:center; gap:6px; font-size:13px; color:var(--gh-ink-2); margin-bottom:14px;">
                     <span>⭐ ${parseFloat(loc.rating) || 4.5}</span>
                     <span style="opacity:0.4;">·</span>
                     <span style="text-transform:capitalize;">${loc.type || 'sitio'}</span>
-                    ${loc._osm ? '<span style="opacity:0.4;">·</span><span style="font-size:10px; padding:2px 7px; background:rgba(11,113,252,0.10); color:var(--cobalt,#0B4C8F); border-radius:999px; font-weight:700;">OSM</span>' : ''}
-                    ${loc.isCommunity ? '<span style="opacity:0.4;">·</span><span style="font-size:10px; padding:2px 7px; background:rgba(245,158,11,0.15); color:#92400E; border-radius:999px; font-weight:700;">⭐ Comunidad</span>' : ''}
+                    ${loc._osm ? '<span style="opacity:0.4;">·</span><span style="font-size:10px; padding:2px 7px; background:rgba(11,113,252,0.10); color:var(--cobalt,var(--gh-primary)); border-radius:999px; font-weight:700;">OSM</span>' : ''}
+                    ${loc.isCommunity ? '<span style="opacity:0.4;">·</span><span style="font-size:10px; padding:2px 7px; background:rgba(245,158,11,0.15); color:var(--gh-warning-ink); border-radius:999px; font-weight:700;">⭐ Comunidad</span>' : ''}
                 </div>
 
                 <!-- Primary CTA -->
-                <button id="gh-sheet-route" style="width:100%; padding:14px; border:none; border-radius:16px; background:linear-gradient(135deg,#0B71FC,#17C8D4); color:white; font-weight:800; font-size:15px; cursor:pointer; box-shadow:0 10px 26px rgba(11,113,252,0.35); margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <button id="gh-sheet-route" style="width:100%; padding:14px; border:none; border-radius:16px; background:linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua)); color:white; font-weight:800; font-size:15px; cursor:pointer; box-shadow:0 10px 26px rgba(11,113,252,0.35); margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:8px;">
                     <span style="font-size:18px;">🚗</span> ${tRoute}
                 </button>
 
                 <!-- Secondary actions row -->
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:6px;">
-                    <button id="gh-sheet-review" style="padding:12px; border:0.5px solid rgba(11,76,143,0.18); border-radius:14px; background:rgba(11,76,143,0.05); color:var(--cobalt,#0B4C8F); font-weight:800; font-size:12.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    <button id="gh-sheet-review" style="padding:12px; border:0.5px solid rgba(11,76,143,0.18); border-radius:14px; background:rgba(11,76,143,0.05); color:var(--cobalt,var(--gh-primary)); font-weight:800; font-size:12.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
                         📝 ${tReview}
                     </button>
-                    <button id="gh-sheet-share" style="padding:12px; border:0.5px solid rgba(11,76,143,0.18); border-radius:14px; background:rgba(11,76,143,0.05); color:var(--cobalt,#0B4C8F); font-weight:800; font-size:12.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    <button id="gh-sheet-share" style="padding:12px; border:0.5px solid rgba(11,76,143,0.18); border-radius:14px; background:rgba(11,76,143,0.05); color:var(--cobalt,var(--gh-primary)); font-weight:800; font-size:12.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
                         📤 ${tShare}
                     </button>
                 </div>
 
                 <!-- Close button -->
-                <button id="gh-sheet-close" style="width:100%; margin-top:10px; padding:10px; border:none; background:transparent; color:#94a3b8; font-weight:700; font-size:13px; cursor:pointer;">${tClose}</button>
+                <button id="gh-sheet-close" style="width:100%; margin-top:10px; padding:10px; border:none; background:transparent; color:var(--gh-ink-3); font-weight:700; font-size:13px; cursor:pointer;">${tClose}</button>
             </div>
         `;
         document.body.appendChild(sheet);
@@ -1473,7 +1473,7 @@ window.GoHappyMap = {
             const nowFav = window.GoHappyMap.toggleFavorite(loc);
             const btn = document.getElementById('gh-sheet-fav');
             btn.innerText = nowFav ? '★' : '☆';
-            btn.style.color = nowFav ? '#F59E0B' : '#666';
+            btn.style.color = nowFav ? 'var(--gh-warning)' : 'var(--gh-ink-2)';
             window.GoHappyToast && window.GoHappyToast.success(
                 nowFav ? (lang === 'en' ? '★ Saved' : '★ Guardado') : (lang === 'en' ? 'Removed' : 'Quitado'),
                 1500
@@ -1693,7 +1693,7 @@ window.GoHappyMap = {
                     <div class="user-orb-core" style="
                         width:24px; height:24px;
                         background:white;
-                        border:4px solid var(--primary-cobalt,#0B4C8F);
+                        border:4px solid var(--primary-cobalt,var(--gh-primary));
                         border-radius:50%;
                         box-shadow:0 0 15px rgba(11,76,143,0.5);
                         z-index:2;
@@ -1703,7 +1703,7 @@ window.GoHappyMap = {
                         width:0; height:0;
                         border-left:10px solid transparent;
                         border-right:10px solid transparent;
-                        border-bottom:25px solid var(--primary-cobalt,#0B4C8F);
+                        border-bottom:25px solid var(--primary-cobalt,var(--gh-primary));
                         top:-15px; opacity:0.8;
                         transform-origin:center 45px;
                         transform:rotate(${heading}deg);
@@ -1831,7 +1831,7 @@ window.GoHappyMap = {
         m.addLayer({
             id: 'gh-route-glow', type: 'line', source: 'gh-route',
             paint: {
-                'line-color': '#17C8D4',
+                'line-color': window.GoHappyMapStyle.token('--gh-aqua'),
                 'line-width': ['interpolate', ['linear'], ['zoom'], 12, 10, 18, 24],
                 'line-opacity': 0.35,
                 'line-blur': 6
@@ -1842,7 +1842,7 @@ window.GoHappyMap = {
         m.addLayer({
             id: 'gh-route-line', type: 'line', source: 'gh-route',
             paint: {
-                'line-color': '#0B71FC',
+                'line-color': window.GoHappyMapStyle.token('--gh-primary-bright'),
                 'line-width': ['interpolate', ['linear'], ['zoom'], 12, 5, 18, 11],
                 'line-opacity': 1
             },
@@ -1882,10 +1882,10 @@ window.GoHappyMap = {
         bar.innerHTML = `
             <div style="font-size:30px;">🚶</div>
             <div style="flex:1; min-width:0;">
-                <div style="font-weight:700; font-size:14px; color:var(--cobalt,#0B4C8F); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${destName || (lang === 'en' ? 'Destination' : 'Destino')}</div>
-                <div style="font-size:12px; color:#64748b; margin-top:2px;">⏱️ ${minutes} min · 📏 ${distTxt}</div>
+                <div style="font-weight:700; font-size:14px; color:var(--cobalt,var(--gh-primary)); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${destName || (lang === 'en' ? 'Destination' : 'Destino')}</div>
+                <div style="font-size:12px; color:var(--gh-ink-2); margin-top:2px;">⏱️ ${minutes} min · 📏 ${distTxt}</div>
             </div>
-            <button id="gh-route-close" style="background:rgba(11,76,143,0.08); color:var(--cobalt,#0B4C8F); border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:16px; font-weight:800;">✕</button>
+            <button id="gh-route-close" style="background:rgba(11,76,143,0.08); color:var(--cobalt,var(--gh-primary)); border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:16px; font-weight:800;">✕</button>
         `;
         document.querySelector('#map-viewport-v11')?.appendChild(bar) || document.body.appendChild(bar);
         document.getElementById('gh-route-close').onclick = () => window.GoHappyMap.clearRoute();
@@ -1997,8 +1997,8 @@ window.GoHappyMap = {
                         el.style.cssText = 'width:42px; height:42px; position:relative;';
                         el.innerHTML = `
                             <div style="position:absolute; inset:0; background:radial-gradient(circle, rgba(245,158,11,0.45) 0%, transparent 70%); animation:pulse 2s infinite;"></div>
-                            <div style="position:absolute; inset:4px; background:white; border:3px solid #F59E0B; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 4px 12px rgba(245,158,11,0.5);">${p.photo && p.photo.startsWith('http') ? `<img src="${p.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : (p.photo || '👤')}</div>
-                            <div style="position:absolute; top:-22px; left:50%; transform:translateX(-50%); background:#F59E0B; color:white; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:800; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.18);">${(p.nickname || 'Tribu').slice(0,12)}</div>
+                            <div style="position:absolute; inset:4px; background:white; border:3px solid var(--gh-warning); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 4px 12px rgba(245,158,11,0.5);">${p.photo && p.photo.startsWith('http') ? `<img src="${p.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : (p.photo || '👤')}</div>
+                            <div style="position:absolute; top:-22px; left:50%; transform:translateX(-50%); background:var(--gh-warning); color:white; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:800; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.18);">${(p.nickname || 'Tribu').slice(0,12)}</div>
                         `;
                         marker = new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat([p.lng, p.lat]).addTo(window.GoHappyMap.instance);
                         window.GoHappyMap._familyMarkers.set(d.id, marker);
@@ -2093,7 +2093,7 @@ window.GoHappyMap = {
                 <div style="font-weight:700; font-size:13px; line-height:1.2;">${title}</div>
                 <div style="font-size:11.5px; opacity:0.92; margin-top:2px;">${body}</div>
             </div>
-            <button id="gh-ctx-apply" style="background:white; color:var(--cobalt,#0B4C8F); border:none; padding:8px 13px; border-radius:999px; font-weight:800; font-size:11.5px; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,0.12); flex-shrink:0;">${lang === 'en' ? 'Show' : 'Ver'}</button>
+            <button id="gh-ctx-apply" style="background:white; color:var(--cobalt,var(--gh-primary)); border:none; padding:8px 13px; border-radius:999px; font-weight:800; font-size:11.5px; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,0.12); flex-shrink:0;">${lang === 'en' ? 'Show' : 'Ver'}</button>
             <button id="gh-ctx-close" style="background:transparent; color:white; border:none; padding:0 4px; font-size:20px; cursor:pointer; opacity:0.85; flex-shrink:0;">×</button>
         `;
         const viewport = document.querySelector('#map-viewport-v11') || document.body;
@@ -2135,21 +2135,21 @@ window.GoHappyMap = {
                     <div style="text-align:center; margin-bottom:20px;">
                         <span style="font-size:40px; display:block; margin-bottom:10px;">🌟</span>
                         <h3 style="color:var(--primary-cobalt); font-weight:700; font-size:1.5rem; margin:0;">${name ? T('map.review.review', { name }) : T('map.review.modal.title')}</h3>
-                        <p style="font-size:13px; color:#64748b; margin-top:5px;">${T('map.review.help')}</p>
+                        <p style="font-size:13px; color:var(--gh-ink-2); margin-top:5px;">${T('map.review.help')}</p>
                     </div>
-                    ${name ? '' : `<div style="margin-bottom:15px;"><label style="font-size:11px; font-weight:700; color:var(--primary-cobalt); text-transform:uppercase; margin-bottom:5px; display:block;">${lang === 'en' ? 'Place name' : 'Nombre del lugar'}</label><input type="text" id="new-site-name" placeholder="${lang === 'en' ? 'E.g. Park Hills' : 'Ej: Parque Los Pinos'}" class="review-input" style="width:100%; padding:14px; border-radius:12px; border:1px solid #eee; background:#f8fafc; box-sizing:border-box;"></div>`}
+                    ${name ? '' : `<div style="margin-bottom:15px;"><label style="font-size:11px; font-weight:700; color:var(--primary-cobalt); text-transform:uppercase; margin-bottom:5px; display:block;">${lang === 'en' ? 'Place name' : 'Nombre del lugar'}</label><input type="text" id="new-site-name" placeholder="${lang === 'en' ? 'E.g. Park Hills' : 'Ej: Parque Los Pinos'}" class="review-input" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--gh-surface-2); background:var(--gh-surface-2); box-sizing:border-box;"></div>`}
                     <div style="text-align:center; margin-bottom:20px;">
                         <label style="font-size:11px; font-weight:700; color:var(--primary-cobalt); text-transform:uppercase; margin-bottom:5px; display:block;">${T('map.review.rating')}</label>
-                        <div class="star-rating" style="font-size:2.5rem; color:#ddd; cursor:pointer;">
+                        <div class="star-rating" style="font-size:2.5rem; color:var(--gh-line); cursor:pointer;">
                             <span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span>
                         </div>
                     </div>
                     <div style="margin-bottom:20px;">
                         <label style="font-size:11px; font-weight:700; color:var(--primary-cobalt); text-transform:uppercase; margin-bottom:5px; display:block;">${T('map.review.opinion')}</label>
-                        <textarea id="review-text" class="review-input" placeholder="${T('map.review.placeholder')}" style="width:100%; height:100px; padding:14px; border-radius:12px; border:1px solid #eee; background:#f8fafc; font-size:14px; resize:none; box-sizing:border-box;"></textarea>
+                        <textarea id="review-text" class="review-input" placeholder="${T('map.review.placeholder')}" style="width:100%; height:100px; padding:14px; border-radius:12px; border:1px solid var(--gh-surface-2); background:var(--gh-surface-2); font-size:14px; resize:none; box-sizing:border-box;"></textarea>
                     </div>
                     <button id="post-review-btn" class="btn-primary-gradient" style="width:100%; height:55px; border-radius:16px; font-size:1.1rem; font-weight:800; border:none; box-shadow:0 10px 20px rgba(11,113,252,0.2);">${T('map.review.publish')}</button>
-                    <button class="btn-text full-width" style="margin-top:15px; color:#888; font-size:13px; text-decoration:underline;" onclick="this.closest('.modal').remove()">${T('map.review.skip')}</button>
+                    <button class="btn-text full-width" style="margin-top:15px; color:var(--gh-ink-3); font-size:13px; text-decoration:underline;" onclick="this.closest('.modal').remove()">${T('map.review.skip')}</button>
                 </div>
             </div>
         `;
@@ -2159,7 +2159,7 @@ window.GoHappyMap = {
         modal.querySelectorAll('.star').forEach(s => {
             s.onclick = () => {
                 rating = s.dataset.val;
-                modal.querySelectorAll('.star').forEach(x => x.style.color = x.dataset.val <= rating ? '#FFD700' : '#ccc');
+                modal.querySelectorAll('.star').forEach(x => x.style.color = x.dataset.val <= rating ? 'var(--gh-gold)' : 'var(--gh-line)');
             };
         });
 

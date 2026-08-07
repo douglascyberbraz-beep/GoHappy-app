@@ -154,7 +154,7 @@ REGLAS:
 
                 .care-avatar-hero {
                     width:54px; height:54px; flex-shrink:0;
-                    background: linear-gradient(135deg, #FF8A65, #FF6B6B);
+                    background: linear-gradient(135deg, var(--gh-bingo), var(--gh-danger));
                     border-radius: 50%;
                     display:flex; align-items:center; justify-content:center;
                     font-size: 28px;

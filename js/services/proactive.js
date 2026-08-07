@@ -165,7 +165,7 @@ window.GoHappyProactive = {
                 .gh-pb-title { font-weight: 800; font-size: 13.5px; line-height: 1.2; }
                 .gh-pb-body  { font-size: 12px; opacity: 0.95; margin-top: 2px; line-height: 1.3; }
                 .gh-pb-cta {
-                    background: white; color: var(--primary-cobalt, #0B4C8F);
+                    background: white; color: var(--primary-cobalt, var(--gh-primary));
                     border: none; padding: 8px 14px; border-radius: 999px;
                     font-weight: 800; font-size: 12px; cursor: pointer;
                     box-shadow: 0 4px 10px rgba(0,0,0,0.12);

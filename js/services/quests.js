@@ -19,12 +19,12 @@ window.GoHappyQuests = {
 
     /** Categorías y colores del sistema */
     CATEGORIAS: {
-        fisica:     { icon: '🏃', label: 'Actividad Física',  color: '#E74C3C' },
-        familiar:   { icon: '👨‍👩‍👧', label: 'Tiempo Familiar',  color: '#8E44AD' },
-        educativa:  { icon: '📚', label: 'Educativa',         color: '#2980B9' },
-        bienestar:  { icon: '🌱', label: 'Bienestar',         color: '#27AE60' },
-        creativa:   { icon: '🎨', label: 'Creatividad',       color: '#E67E22' },
-        social:     { icon: '🤝', label: 'Comunidad',         color: '#16A085' }
+        fisica:     { icon: '🏃', label: 'Actividad Física',  color: 'var(--gh-danger)' },
+        familiar:   { icon: '👨‍👩‍👧', label: 'Tiempo Familiar',  color: 'var(--gh-lilac-ink)' },
+        educativa:  { icon: '📚', label: 'Educativa',         color: 'var(--gh-primary)' },
+        bienestar:  { icon: '🌱', label: 'Bienestar',         color: 'var(--gh-success)' },
+        creativa:   { icon: '🎨', label: 'Creatividad',       color: 'var(--gh-warning)' },
+        social:     { icon: '🤝', label: 'Comunidad',         color: 'var(--gh-aqua-deep)' }
     },
 
     // ─────────────────────────────────────────────────────────
@@ -570,11 +570,11 @@ window.GoHappyQuests = {
 
     /** @deprecated Mantenido por compatibilidad con quests.js page */
     MISSION_TYPES: {
-        EXPLORE:   { icon: '🗺️', label: 'Exploración', color: '#4A90D9' },
-        PHOTO:     { icon: '📸', label: 'Fotógrafo',   color: '#E67E22' },
-        GASTRO:    { icon: '🍽️', label: 'Gastro',      color: '#27AE60' },
-        SOCIAL:    { icon: '🤝', label: 'Social',      color: '#8E44AD' },
-        TRIVIA:    { icon: '🧠', label: 'Trivia',      color: '#E74C3C' },
-        ADVENTURE: { icon: '🏃', label: 'Aventura',    color: '#16A085' }
+        EXPLORE:   { icon: '🗺️', label: 'Exploración', color: 'var(--gh-primary-bright)' },
+        PHOTO:     { icon: '📸', label: 'Fotógrafo',   color: 'var(--gh-warning)' },
+        GASTRO:    { icon: '🍽️', label: 'Gastro',      color: 'var(--gh-success)' },
+        SOCIAL:    { icon: '🤝', label: 'Social',      color: 'var(--gh-lilac-ink)' },
+        TRIVIA:    { icon: '🧠', label: 'Trivia',      color: 'var(--gh-danger)' },
+        ADVENTURE: { icon: '🏃', label: 'Aventura',    color: 'var(--gh-aqua-deep)' }
     }
 };
