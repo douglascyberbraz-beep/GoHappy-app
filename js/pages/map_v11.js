@@ -858,145 +858,120 @@ window.GoHappyMap = {
             return b;
         };
 
-        // 🌡️ Heatmap toggle
-        const heatBtn = makeFab('gh-fab-heat', '🌡️', lang === 'en' ? 'Heatmap' : 'Mapa de calor');
-        heatBtn.addEventListener('click', async () => {
-            const on = await window.GoHappyMap.toggleHeatmap();
-            heatBtn.style.background = on ? 'linear-gradient(135deg,var(--gh-warning),var(--gh-danger))' : (heatBtn.dataset.plano ? 'transparent' : 'rgba(255,255,255,0.95)');
-            heatBtn.style.color = on ? 'white' : 'var(--cobalt,var(--gh-primary))';
-        });
+        // ══════════════════════════════════════════════════════════════
+        // CONTROLES DEL MAPA — 3 botones, ni uno más
+        //
+        // Había 8: 🧰 herramientas, 🎯 ubicar, ➕ reseña, y dentro del
+        // desplegable 👨‍👩‍👧 familia, 🌡️ calor, 🎲 2D/3D, 🚶 seguir, 🧭 brújula.
+        // Demasiados para un mapa, que es una pantalla para MIRAR.
+        //
+        // Qué se ha hecho con cada uno:
+        //   🚶 seguir  → fundido en 🎯: primer toque centra, segundo sigue.
+        //                Es como funciona Apple Maps.
+        //   🎲 2D/3D   → fundido en 🧭: la brújula devuelve la cámara a su
+        //                sitio (norte + inclinación 3D) sea cual sea el
+        //                estado. La inclinación se cambia con dos dedos.
+        //   🧭 brújula → sólo aparece cuando el mapa está girado o aplanado.
+        //                Con la cámara en su sitio no pinta nada: no se ve.
+        //   🌡️ calor   → botón retirado. La función sigue en el código
+        //                (toggleHeatmap) por si se quiere recuperar.
+        //   🧰         → ya no hace falta: no hay nada que desplegar.
+        // ══════════════════════════════════════════════════════════════
 
-        // 👨‍👩‍👧 Familia activa toggle
-        const familyBtn = makeFab('gh-fab-family', '👨‍👩‍👧', lang === 'en' ? 'Family live' : 'Familia activa');
+        // ── 👨‍👩‍👧 Familia en directo ──
+        const familyBtn = makeFab('gh-fab-family', '👨‍👩‍👧', lang === 'en' ? 'Family live' : 'Familia en directo');
         familyBtn.addEventListener('click', async () => {
             const on = await window.GoHappyMap.toggleFamilyMode();
-            familyBtn.style.background = on ? 'linear-gradient(135deg,var(--gh-warning),var(--gh-gold))' : (familyBtn.dataset.plano ? 'transparent' : 'rgba(255,255,255,0.95)');
-            familyBtn.style.color = on ? 'white' : 'var(--cobalt,var(--gh-primary))';
-            // Sin toast: el botón se ilumina en dorado al activarse.
+            familyBtn.style.background = on ? 'linear-gradient(135deg,var(--gh-sun),var(--gh-gold))' : 'rgba(255,255,255,0.95)';
+            familyBtn.style.color = on ? 'var(--gh-sun-ink)' : 'var(--gh-primary)';
         });
 
-        // 🧭 Compass (resetea bearing a 0)
-        const compassBtn = makeFab('gh-fab-compass', '🧭', lang === 'en' ? 'Reset orientation' : 'Resetear orientación');
-        compassBtn.id = 'gh-fab-compass';
-        compassBtn.addEventListener('click', () => {
-            window.GoHappyMap.instance.easeTo({ bearing: 0, pitch: window.GoHappyMap._is3D ? 55 : 0, duration: 800 });
-        });
-        // Rotar el icono en función del bearing actual
-        window.GoHappyMap.instance.on('rotate', () => {
-            const b = window.GoHappyMap.instance.getBearing();
-            const inner = compassBtn.firstChild;
-            if (inner) compassBtn.style.transform = `rotate(${-b}deg)`;
-        });
-
-        // 🎲 2D / 3D toggle
-        const toggle3D = makeFab('gh-fab-3d', '🎲', lang === 'en' ? 'Toggle 2D/3D' : 'Cambiar 2D/3D');
-        toggle3D.addEventListener('click', () => {
-            window.GoHappyMap._is3D = !window.GoHappyMap._is3D;
-            window.GoHappyMap.instance.easeTo({
-                pitch: window.GoHappyMap._is3D ? 55 : 0,
-                duration: 1000
-            });
-            toggle3D.innerHTML = window.GoHappyMap._is3D ? '🎲' : '🗺️';
-        });
-
-        // 🚶 Follow mode (sigue al usuario al caminar)
-        const followBtn = makeFab('gh-fab-follow', '🚶', lang === 'en' ? 'Follow me' : 'Sígueme');
-        followBtn.addEventListener('click', () => {
-            window.GoHappyMap._followMode = !window.GoHappyMap._followMode;
-            if (window.GoHappyMap._followMode) {
-                followBtn.style.background = 'linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua))';
-                followBtn.style.color = 'white';
-                if (window.GoHappyMap.userMarker) {
-                    const ll = window.GoHappyMap.userMarker.getLngLat();
-                    window.GoHappyMap.instance.easeTo({ center: ll, zoom: 17, pitch: 60, duration: 1200 });
-                }
-                // Sin toast: el botón cambia de color y el mapa se centra.
-                // El propio cambio ya comunica el estado.
-            } else {
-                followBtn.style.background = followBtn.dataset.plano ? 'transparent' : 'rgba(255,255,255,0.95)';
-                followBtn.style.color = 'var(--cobalt,var(--gh-primary))';
-            }
-        });
-
-        // 🎯 Locate (centra al usuario una vez)
+        // ── 🎯 Ubicación, con seguimiento en el segundo toque ──
         const locateBtn = makeFab('locate-me-btn', '🎯', lang === 'en' ? 'Locate me' : 'Ubícame');
+        const pintarLocate = () => {
+            const on = window.GoHappyMap._followMode;
+            locateBtn.style.background = on ? 'linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua))' : 'rgba(255,255,255,0.95)';
+            locateBtn.style.color = on ? '#fff' : 'var(--gh-primary)';
+            locateBtn.title = on
+                ? (lang === 'en' ? 'Following you — tap to stop' : 'Siguiéndote — toca para parar')
+                : (lang === 'en' ? 'Locate me' : 'Ubícame');
+        };
+        locateBtn.addEventListener('click', () => {
+            if (!window.GoHappyMap._followMode) {
+                // 1er toque: centrar. Si ya estábamos centrados, activar seguimiento.
+                window.GoHappyMap.locateUser(true);
+                window.GoHappyMap._followMode = true;
+            } else {
+                window.GoHappyMap._followMode = false;
+            }
+            pintarLocate();
+        });
 
-        // ➕ Añadir reseña (más grande, destacado)
+        // ── ➕ Añadir reseña (la acción principal) ──
         const addBtn = makeFab('add-review-fab', '<span style="font-size:28px;line-height:1;font-weight:300;">+</span>',
                                window.GoHappyI18n ? window.GoHappyI18n.t('map.review') : 'Añadir reseña', true);
         addBtn.style.background = 'linear-gradient(135deg,var(--gh-primary-bright),var(--gh-aqua))';
         addBtn.style.color = 'white';
-        addBtn.style.boxShadow = '0 10px 28px rgba(11,113,252,0.4), inset 0 1px 0 rgba(255,255,255,0.4)';
+        addBtn.style.boxShadow = '0 10px 28px rgba(47,107,158,0.34), inset 0 1px 0 rgba(255,255,255,0.4)';
 
-        // ══ HERRAMIENTAS: se abren HACIA LA IZQUIERDA, no hacia arriba ══
-        //
-        // Antes las 5 herramientas se apilaban en vertical sobre los otros 3
-        // botones: 448px de columna en la derecha de la pantalla. En un móvil
-        // de 667px eso dejaba 6px hasta el buscador, y con las zonas seguras
-        // de un iPhone real se solapaba. Además tapaba media pantalla de mapa.
-        //
-        // En horizontal ocupan 3 filas (≈160px) y usan el ancho, que sobra.
-        const TOOL = 42;
-        const toolsWrap = document.createElement('div');
-        toolsWrap.id = 'gh-fab-tools';
-        toolsWrap.style.cssText = `
-            display:none; flex-direction:row; gap:8px; align-items:center;
-            padding:6px 8px; border-radius:999px;
-            background:rgba(255,255,255,0.82);
-            backdrop-filter:blur(24px) saturate(180%);
-            -webkit-backdrop-filter:blur(24px) saturate(180%);
-            box-shadow:0 8px 24px rgba(120,90,70,0.16), inset 0 1px 0 rgba(255,255,255,0.95);
-            animation:gh-tools-in 0.26s cubic-bezier(0.16,1,0.3,1);
-            transform-origin:right center;
-        `;
-        if (!document.getElementById('gh-tools-style')) {
-            const s = document.createElement('style');
-            s.id = 'gh-tools-style';
-            s.textContent = `@keyframes gh-tools-in { from{opacity:0; transform:translateX(20px) scale(0.9);} to{opacity:1; transform:none;} }`;
-            document.head.appendChild(s);
-        }
-        // Dentro de la píldora los botones van sin cristal propio: el cristal
-        // es la píldora. Si cada uno lleva el suyo se ve sucio y recargado.
-        [familyBtn, heatBtn, toggle3D, followBtn, compassBtn].forEach(b => {
-            b.style.width = TOOL + 'px';
-            b.style.height = TOOL + 'px';
-            b.style.fontSize = '18px';
-            b.style.background = 'transparent';
-            b.style.backdropFilter = 'none';
-            b.style.webkitBackdropFilter = 'none';
-            b.style.boxShadow = 'none';
-            b.dataset.plano = '1';           // los toggles saben no reponer el cristal
-            toolsWrap.appendChild(b);
+        // ── 🧭 Brújula: SÓLO cuando la cámara no está en su sitio ──
+        const PITCH_3D = 55;
+        const compassBtn = makeFab('gh-fab-compass', '🧭', lang === 'en' ? 'Reset view' : 'Enderezar vista');
+        compassBtn.style.display = 'none';
+        compassBtn.style.opacity = '0';
+        compassBtn.style.pointerEvents = 'none';
+        compassBtn.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        compassBtn.style.transform = 'scale(0.6)';
+        compassBtn.addEventListener('click', () => {
+            window.GoHappyMap._is3D = true;
+            // El seguimiento gira el mapa hacia donde miras. Si no se corta,
+            // enderezar la vista dura un segundo y vuelve a girarse solo.
+            if (window.GoHappyMap._followMode) { window.GoHappyMap._followMode = false; pintarLocate(); }
+            window.GoHappyMap.instance.easeTo({ bearing: 0, pitch: PITCH_3D, duration: 700 });
         });
 
-        // Botón que despliega/oculta las herramientas
-        const toolsToggle = makeFab('gh-fab-tools-toggle', '🧰', lang === 'en' ? 'More tools' : 'Más herramientas');
-        let toolsOpen = false;
-        const cerrarTools = () => {
-            toolsOpen = false;
-            toolsWrap.style.display = 'none';
-            toolsToggle.innerHTML = '🧰';
-            toolsToggle.style.background = 'rgba(255,255,255,0.95)';
+        const revisarCamara = () => {
+            const m = window.GoHappyMap.instance;
+            if (!m) return;
+            // Rumbo normalizado a −180..180. (Antes llevaba un Math.abs de
+            // más y con el mapa al norte daba −180: la brújula salía siempre.)
+            const giro = ((m.getBearing() % 360) + 540) % 360 - 180;
+            const desviado = Math.abs(giro) > 2 || Math.abs(m.getPitch() - PITCH_3D) > 10;
+            // `display:none` y no sólo opacidad: si se queda en el flujo,
+            // reserva 56px de hueco y empuja los otros tres botones hacia
+            // arriba sin motivo. El grupo va anclado abajo, así que aparecer
+            // no mueve nada: la brújula se añade por encima.
+            if (desviado) {
+                if (compassBtn.style.display === 'none') {
+                    compassBtn.style.display = 'flex';
+                    requestAnimationFrame(() => { compassBtn.style.opacity = '1'; });
+                    setTimeout(() => { compassBtn.style.opacity = '1'; }, 30);   // por si no hay rAF
+                }
+                compassBtn.style.pointerEvents = 'auto';
+                compassBtn.style.transform = `scale(1) rotate(${-m.getBearing()}deg)`;
+            } else if (compassBtn.style.display !== 'none') {
+                compassBtn.style.opacity = '0';
+                compassBtn.style.pointerEvents = 'none';
+                compassBtn.style.transform = 'scale(0.6)';
+                setTimeout(() => {
+                    // Comprobar otra vez: puede haber vuelto a girar mientras
+                    if (compassBtn.style.opacity === '0') compassBtn.style.display = 'none';
+                }, 260);
+            }
         };
-        toolsToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toolsOpen = !toolsOpen;
-            toolsWrap.style.display = toolsOpen ? 'flex' : 'none';
-            toolsToggle.innerHTML = toolsOpen ? '✕' : '🧰';
-            toolsToggle.style.background = toolsOpen ? 'rgba(47,107,158,0.12)' : 'rgba(255,255,255,0.95)';
+        window.GoHappyMap.instance.on('rotate', revisarCamara);
+        window.GoHappyMap.instance.on('pitch', revisarCamara);
+        window.GoHappyMap.instance.on('moveend', revisarCamara);
+        revisarCamara();
+
+        // Arrastrar el mapa a mano corta el seguimiento — si no, pelea contigo
+        window.GoHappyMap.instance.on('dragstart', () => {
+            if (window.GoHappyMap._followMode) { window.GoHappyMap._followMode = false; pintarLocate(); }
         });
-        // Tocar el mapa cierra la barra: no se queda abierta estorbando
-        window.GoHappyMap.instance.on('click', cerrarTools);
-        window.GoHappyMap.instance.on('dragstart', cerrarTools);
 
-        // Fila superior: [herramientas ←] [🧰]
-        const filaTools = document.createElement('div');
-        filaTools.style.cssText = 'display:flex; flex-direction:row; align-items:center; gap:10px; justify-content:flex-end;';
-        filaTools.appendChild(toolsWrap);
-        filaTools.appendChild(toolsToggle);
-
-        // Orden visual (arriba → abajo): [herramientas] 🧰 · 🎯 · ➕
-        fabStack.appendChild(filaTools);
+        // Orden (arriba → abajo): 🧭 · 👨‍👩‍👧 · 🎯 · ➕
+        fabStack.appendChild(compassBtn);
+        fabStack.appendChild(familyBtn);
         fabStack.appendChild(locateBtn);
         fabStack.appendChild(addBtn);
 
