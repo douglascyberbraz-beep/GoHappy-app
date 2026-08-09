@@ -119,7 +119,12 @@ window.GoHappyMap = {
         const map = window.GoHappyMap.instance;
         if (!map || !window.GoHappyMapStyle) return;
         try {
-            window.GoHappyMapStyle.apply(map, { noche: window.GoHappyMap._isNightMode() });
+            // Se pasa `navegando` para que el cambio automático de hora no
+            // saque al usuario del modo navegación estando en ruta.
+            window.GoHappyMapStyle.apply(map, {
+                noche: window.GoHappyMap._isNightMode(),
+                navegando: window.GoHappyMap._navegando
+            });
         } catch (e) { console.warn('[Map] modo noche:', e?.message); }
     },
 
@@ -1819,6 +1824,11 @@ window.GoHappyMap = {
                 return;
             }
             window.GoHappyMap.clearRoute();
+            // Al empezar a andar, el mapa se pone en modo navegación: azul
+            // oscuro, edificios opacos y niebla al fondo, como la vista de
+            // conducción de Google. Sobre oscuro la línea de la ruta y tu
+            // posición son lo único que brilla. Al cancelar vuelve al claro.
+            window.GoHappyMap._setNavegando(true);
             window.GoHappyMap._addRouteLayer(route.geometry);
             // Stats
             const minutes = Math.round(route.duration / 60);
@@ -1848,10 +1858,12 @@ window.GoHappyMap = {
         m.addLayer({
             id: 'gh-route-glow', type: 'line', source: 'gh-route',
             paint: {
-                'line-color': window.GoHappyMapStyle.token('--gh-aqua'),
-                'line-width': ['interpolate', ['linear'], ['zoom'], 12, 10, 18, 24],
-                'line-opacity': 0.35,
-                'line-blur': 6
+                // Cian intenso: sobre el azul oscuro del modo navegación es
+                // lo único que brilla, que es justo lo que debe mirarse.
+                'line-color': '#22D3EE',
+                'line-width': ['interpolate', ['linear'], ['zoom'], 12, 10, 18, 26],
+                'line-opacity': 0.45,
+                'line-blur': 8
             },
             layout: { 'line-cap': 'round', 'line-join': 'round' }
         });
@@ -1876,6 +1888,26 @@ window.GoHappyMap = {
         const bar = document.getElementById('gh-route-bar');
         if (bar) bar.remove();
         window.GoHappyMap._routeLayer = null;
+        window.GoHappyMap._setNavegando(false);
+    },
+
+    // ─── MODO NAVEGACIÓN ──────────────────────────────────────────
+    // Repinta el mapa con la paleta oscura de conducción y sube la cámara
+    // a 62° para que se vea la calle "hacia delante" en vez de en planta.
+    // Al salir vuelve al mapa claro (o al nocturno si es de noche).
+    _navegando: false,
+    _setNavegando: (activo) => {
+        const M = window.GoHappyMap;
+        if (M._navegando === !!activo) return;      // idempotente
+        M._navegando = !!activo;
+        if (!M.instance || !window.GoHappyMapStyle) return;
+        try {
+            window.GoHappyMapStyle.apply(M.instance, {
+                noche: M._isNightMode(),
+                navegando: M._navegando
+            });
+            M.instance.easeTo({ pitch: activo ? 62 : 50, duration: 900 });
+        } catch (e) { console.warn('[Map] modo navegación:', e?.message); }
     },
     _showRouteStatsBar: (destName, minutes, distTxt) => {
         const old = document.getElementById('gh-route-bar');
