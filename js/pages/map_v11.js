@@ -101,27 +101,6 @@ window.GoHappyMap = {
         return km.toFixed(1) + ' km';
     },
 
-    // ─── ALTURA REAL de la barra de navegación ───────────────────
-    // Se mide del DOM en lugar de fiarse de --nav-total, que da 80px
-    // cuando la barra ocupa 90 (main.css dice 85px de alto y premium.css
-    // 68; gana premium, pero el relleno de zona segura la estira). Esa
-    // diferencia era la que dejaba el botón de reseña pegado al nav.
-    _navAlto: () => {
-        try {
-            const nav = document.getElementById('bottom-nav');
-            if (nav) {
-                const r = nav.getBoundingClientRect();
-                // Lo que hace falta NO es el alto de la barra sino cuánto
-                // ocupa contando desde el borde inferior de la pantalla: la
-                // barra flota y deja un hueco debajo. Midiendo sólo su alto
-                // el botón quedaba a 2px del nav.
-                const ocupa = Math.round(window.innerHeight - r.top);
-                if (ocupa > 20) return ocupa;
-            }
-        } catch (e) {}
-        return 110;   // respaldo prudente
-    },
-
     // ─── MODO NOCTURNO automático según hora local ───────────────
     _isNightMode: () => {
         const h = new Date().getHours();
@@ -826,12 +805,15 @@ window.GoHappyMap = {
         // ════════ STACK PREMIUM de FABs (derecha inferior) ════════
         const fabStack = document.createElement('div');
         fabStack.className = 'gh-map-fab-stack';
-        // El ancla de abajo se mide contra la barra de navegación REAL, no
-        // contra --nav-total: esa variable calcula 80px mientras la barra
-        // mide 90, y dejaba sólo 8px de aire. Con `_navAlto()` el margen es
-        // siempre el mismo en cualquier móvil.
+        // El ancla sale de --nav-total (premium.css):
+        // separación del borde + altura + zona segura, resuelto por el propio
+        // navegador en cada dispositivo. Antes se medía aquí con JS y salía
+        // 34px corto en iPhone —env(safe-area-inset-bottom) vale 0 en el
+        // escritorio y 34 en el móvil— y además el nav todavía estaba oculto
+        // cuando se medía. Por eso la barra se comía el botón de reseña.
         fabStack.style.cssText = `
-            position:absolute; right:14px; bottom:${window.GoHappyMap._navAlto() + 16}px; z-index:6;
+            position:absolute; right:14px;
+            bottom:calc(var(--nav-total, 124px) + 18px); z-index:6;
             display:flex; flex-direction:column; gap:10px; align-items:flex-end;
         `;
         container.appendChild(fabStack);

@@ -67,10 +67,16 @@
     --safe-top:    env(safe-area-inset-top, 44px);
     --safe-bottom: env(safe-area-inset-bottom, 20px);
 
-    /* Floating nav: pill + margin abajo */
-    --nav-height:  68px;
-    --nav-margin-bottom: 12px;
-    --nav-total:   calc(68px + 12px + env(safe-area-inset-bottom, 20px));
+    /* Floating nav: píldora + separación del borde.
+       OJO: los valores REALES de .bottom-nav son 76px de alto y 14px de
+       separación (ver más abajo, sección 4). Estos decían 68 y 12, así que
+       --nav-total salía 10px corto y todo lo que se apoya en ella —la barra
+       de escribir de Care, los botones flotantes, el relleno inferior de
+       varias páginas— quedaba 10px por debajo de donde debía.
+       Ahora los tres salen del mismo sitio y no pueden volver a separarse. */
+    --nav-height:  76px;
+    --nav-margin-bottom: 14px;
+    --nav-total:   calc(env(safe-area-inset-bottom, 20px) + 14px + 76px);
 }
 
 /* ── 1. Reset + iOS scroll ──────────────────────────────────────── */
@@ -170,29 +176,12 @@ body {
     margin-bottom: 0;
     animation: none !important;
 }
-.brand-family-text {
-    display: none !important;
-}
-    font-family: 'Poppins', sans-serif;
-    font-size: clamp(2.2rem, 8vw, 2.8rem);
-    font-weight: 800;
-    color: var(--cyan);
-    letter-spacing: -1px;
-    line-height: 1;
-    margin-top: 0;
-    animation: fadeUp 1.2s cubic-bezier(0.19,1,0.22,1) both 0.4s;
-}
-.brand-tagline-text {
-    display: none !important;
-}
-    font-size: clamp(0.95rem, 3.2vw, 1.1rem);
-    font-weight: 700;
-    color: var(--cobalt);
-    letter-spacing: 0.2px;
-    margin-top: 14px;
-    text-align: center;
-    animation: fadeUp 1.4s cubic-bezier(0.19,1,0.22,1) both 0.7s;
-}
+/* Ambos textos están ocultos (el logo ya los lleva dibujados). Debajo de
+   cada regla colgaban sus declaraciones antiguas SIN selector ni llave de
+   apertura: CSS inválido que el navegador descarta en bloque, arrastrando
+   con él lo que viniera detrás. Borrado. */
+.brand-family-text,
+.brand-tagline-text { display: none !important; }
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -216,6 +205,21 @@ body {
 .splash-loader { display: none !important; }
 
 /* ── 4. FLOATING ORB NAV — Liquid Glass iOS 26 (v3.6) ──────────── */
+
+/* CUÁNTO OCUPA LA BARRA contando desde el borde inferior de la pantalla.
+   = separación del borde + su altura. Lo usa cualquier cosa que tenga que
+   quedar POR ENCIMA del nav (los botones del mapa, sobre todo).
+   Si cambias `bottom` o `height` de .bottom-nav, cambia esto también.
+
+   Es --nav-total (arriba, sección de tokens). No se duplica aquí.
+
+   Antes esto se medía desde JavaScript al arrancar el mapa. Dos fallos:
+   el nav todavía tiene .hidden (display:none) en ese momento, así que no
+   tiene caja que medir; y en el navegador de escritorio
+   env(safe-area-inset-bottom) vale 0 mientras que en un iPhone vale 34px.
+   Resultado: el número salía 34px corto y la barra se comía el botón de
+   reseña. En CSS se resuelve solo, en cada dispositivo y sin depender de
+   cuándo se ejecute nada. */
 .bottom-nav {
     position: fixed !important;
     bottom: calc(env(safe-area-inset-bottom, 20px) + 14px) !important;
